@@ -1,4 +1,4 @@
-// ignore_for_file: must_call_super, non_constant_identifier_names, must_be_immutable, unused_local_variable, avoid_types_as_parameter_names, prefer_is_empty, prefer_const_constructors, use_key_in_widget_constructors
+// ignore_for_file: must_call_super, non_constant_identifier_names, must_be_immutable, unused_local_variable, avoid_types_as_parameter_names, prefer_is_empty, prefer_const_constructors, use_key_in_widget_constructors, empty_catches
 
 import 'dart:async';
 import 'package:ecm_application/Screens/Login/Dashboard.dart';

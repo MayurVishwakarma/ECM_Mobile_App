@@ -2020,7 +2020,7 @@ class _NodeDetailsState extends State<NodeDetails> {
 
       var checkListId = imageList.map((e) => e.checkListId).toList().join(",");
       var valueData = imageList.map((e) => e.value ?? '').toList().join(",");
-      var aproveStatus = apporvedStatus;
+      var aproveStatus                              = apporvedStatus;
       var Insertobj = new Map<String, dynamic>();
 
       Insertobj["processId"] = processId;

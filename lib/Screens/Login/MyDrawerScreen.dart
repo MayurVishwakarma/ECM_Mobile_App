@@ -1,7 +1,8 @@
 // ignore_for_file: file_names, prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable, use_build_context_synchronously, use_key_in_widget_constructors, unused_import
-import 'package:ecm_application/Screens/Login/Attendance.dart';
+// import 'package:ecm_application/Screens/Login/Attendance.dart';
 import 'package:ecm_application/Screens/Login/Dashboard.dart';
 import 'package:ecm_application/Screens/Login/LoginScreen.dart';
+import 'package:ecm_application/Screens/Login/UserAttendance.dart';
 import 'package:ecm_application/main.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -111,7 +112,7 @@ class _MyDrawerScreenState extends State<MyDrawerScreen> {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => AttendanceScreen()),
-                  (Route<dynamic> route) => false,
+                  (Route<dynamic> route) => true,
                 );
               }),
             ),

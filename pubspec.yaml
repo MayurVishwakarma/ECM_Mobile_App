@@ -60,6 +60,7 @@ dependencies:
   geolocator: ^9.0.2
   google_fonts: ^4.0.4
   geocoding: ^2.1.0
+  permission_handler: ^10.4.2
 
 
 
