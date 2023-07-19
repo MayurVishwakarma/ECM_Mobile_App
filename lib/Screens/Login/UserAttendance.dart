@@ -6,6 +6,8 @@ import 'package:ecm_application/Model/Project/Login/UserDetailsMasterModel.dart'
 import 'package:ecm_application/Model/project/Constants.dart';
 import 'package:ecm_application/Operations/StatelistOperation.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,6 +37,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   ProjectModel? selectProject;
   Future<List<ProjectModel>>? futureProjectList;
   UserDetailsMasterModel? userDetals;
+  String? StartLocationAddress, EndLocationAddress;
 
   Future<void> getProjectList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -71,6 +74,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           });
           userDetals =
               UserDetailsMasterModel.fromJson(json['data']['Response']);
+
+          fetchStartLocationAddress();
+          fetchEndLocationAddress();
         } else {
           setState(() {
             isAttendanceAvai = false;
@@ -90,157 +96,219 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Attendance')),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Card(
-              elevation: 8,
-              child: SizedBox(
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [const Text('Date :'), Text(now)],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            const Text('User name :'),
-                            Text(username ?? '')
-                          ],
-                        ),
-                      ),
-                      if (isAttendanceAvai)
+      body: Container(
+        decoration: BoxDecoration(color: Colors.grey.shade200),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Card(
+                elevation: 8,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
-                              const Text('Start Time :'),
-                              Text(userDetals?.attendanceStartTime ?? ''),
+                              const Text('Date : '),
+                              Text(
+                                now,
+                                style: TextStyle(color: Colors.cyan),
+                              )
                             ],
                           ),
                         ),
-                      if (isAttendanceAvai)
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
-                              const Text('Start Location :'),
-                              Text(userDetals?.startLocationCoordinate ?? ''),
+                              const Text('User name : '),
+                              Text(
+                                username ?? '',
+                                style: TextStyle(color: Colors.cyan),
+                              )
                             ],
                           ),
                         ),
-                      if (isAttendanceAvai)
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              const Text('End Time :'),
-                              Text(userDetals?.attendanceEndTime ?? ''),
-                            ],
+                        if (isAttendanceAvai)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                const Text('Start Time : '),
+                                Text(DateFormat('hh:mm:ss a').format(
+                                    DateTime.parse(
+                                        userDetals!.attendanceStartTime ??
+                                            ''))),
+                              ],
+                            ),
                           ),
-                        ),
-                      if (isAttendanceAvai)
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              const Text('End Location :'),
-                              Text(userDetals!.endLocationCoordinate ?? ''),
-                            ],
+                        if (isAttendanceAvai)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                const Text('Start Location : '),
+                                Expanded(child: Text(StartLocationAddress!)),
+                              ],
+                            ),
                           ),
-                        ),
-                      if (isAttendanceAvai)
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              const Text('Total Working Hour :'),
-                              Text(userDetals!.workingHours ?? ''),
-                            ],
+                        if (isAttendanceAvai)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                const Text('End Time : '),
+                                Text(DateFormat('hh:mm:ss a').format(
+                                    DateTime.parse(
+                                        userDetals!.attendanceEndTime!))),
+                              ],
+                            ),
                           ),
-                        ),
-                      if (!isAttendanceAvai)
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              const Text('Working On Project :'),
-                              Expanded(
-                                child: Center(
-                                  child: DropdownButton<ProjectModel>(
-                                    value: selectProject,
-                                    items:
-                                        projectList!.map((ProjectModel items) {
-                                      return DropdownMenuItem(
-                                        value: items,
-                                        child: Center(
-                                            child: Text(items.projectName!
-                                                .toUpperCase())),
-                                      );
-                                    }).toList(),
-                                    onChanged: (ProjectModel? newValue) {
-                                      setState(() {
-                                        selectProject = newValue;
-                                      });
-                                    },
+                        if (isAttendanceAvai)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                const Text('End Location : '),
+                                Expanded(child: Text(EndLocationAddress!)),
+                              ],
+                            ),
+                          ),
+                        if (isAttendanceAvai)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                const Text('Total Working Hour : '),
+                                Text(userDetals!.workingHours ?? ''),
+                              ],
+                            ),
+                          ),
+                        if (!isAttendanceAvai)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                const Text(
+                                  'Working On Project : ',
+                                  textScaleFactor: 1,
+                                  style: TextStyle(
+                                    fontSize: 12,
                                   ),
                                 ),
-                              ),
-                            ],
+                                Expanded(
+                                  child: Center(
+                                    child: DropdownButton<ProjectModel>(
+                                      value: selectProject,
+                                      items: projectList!
+                                          .map((ProjectModel items) {
+                                        return DropdownMenuItem(
+                                          value: items,
+                                          child: Center(
+                                              child: Text(items.projectName!
+                                                  .toUpperCase())),
+                                        );
+                                      }).toList(),
+                                      onChanged: (ProjectModel? newValue) {
+                                        setState(() {
+                                          selectProject = newValue;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      if (!isAttendanceAvai)
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
+                        if (!isAttendanceAvai)
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                            ),
+                            onPressed: () {
+                              InsertAttendance().then((value) {
+                                if (value) {
+                                  print('Inserted');
+                                  fetchUserDetails();
+                                } else {
+                                  print('Error');
+                                }
+                              });
+                            },
+                            child: const Text('Start Session'),
                           ),
-                          onPressed: () {
-                            InsertAttendance().then((value) {
-                              if (value) {
-                                print('Inserted');
-                                fetchUserDetails();
-                              } else {
-                                print('Error');
-                              }
-                            });
-                          },
-                          child: const Text('Start Session'),
-                        ),
-                      if (isAttendanceAvai)
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
+                        if (isAttendanceAvai &&
+                            userDetals!.endLocationCoordinate!.isEmpty)
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                            ),
+                            onPressed: () {
+                              InsertAttendance().then((value) {
+                                if (value) {
+                                  print('Inserted');
+                                  fetchUserDetails();
+                                } else {
+                                  print('Error');
+                                }
+                              });
+                            },
+                            child: const Text('End Session'),
                           ),
-                          onPressed: () {
-                            InsertAttendance().then((value) {
-                              if (value) {
-                                print('Inserted');
-                                fetchUserDetails();
-                              } else {
-                                print('Error');
-                              }
-                            });
-                          },
-                          child: const Text('End Session'),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
+  }
+
+  Future<void> fetchStartLocationAddress() async {
+    double lat = double.parse(userDetals!.startLocationCoordinate!
+        .substring(0, userDetals!.startLocationCoordinate!.indexOf(',')));
+    double lon = double.parse(userDetals!.startLocationCoordinate!
+        .substring(userDetals!.startLocationCoordinate!.indexOf(',') + 1));
+    try {
+      String address = await GetAddressFromLatLong(lat, lon);
+      setState(() {
+        StartLocationAddress = address;
+      });
+    } catch (ex) {
+      // Handle the exception here, e.g., display an error message or fallback behavior
+    }
+  }
+
+  Future<void> fetchEndLocationAddress() async {
+    double lat = double.parse(userDetals!.endLocationCoordinate!
+        .substring(0, userDetals!.endLocationCoordinate!.indexOf(',')));
+    double lon = double.parse(userDetals!.endLocationCoordinate!
+        .substring(userDetals!.endLocationCoordinate!.indexOf(',') + 1));
+    try {
+      String address = await GetAddressFromLatLong(lat, lon);
+      setState(() {
+        EndLocationAddress = address;
+      });
+    } catch (ex) {
+      // Handle the exception here, e.g., display an error message or fallback behavior
+    }
+  }
+
+  Future<String> GetAddressFromLatLong(double lat, double lon) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(lat, lon);
+    Placemark place = placemarks[0];
+    String? address =
+        ' ${place.subLocality}, ${place.locality},${place.administrativeArea}, ${place.postalCode}';
+    return address;
   }
 
   Future<bool> InsertAttendance() async {

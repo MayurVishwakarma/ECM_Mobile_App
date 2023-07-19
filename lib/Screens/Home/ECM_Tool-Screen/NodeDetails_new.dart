@@ -2274,7 +2274,7 @@ class _NodeDetailsState extends State<NodeDetails> {
     }
   }
 
-  bool connectivity = false;
+  // bool connectivity = false;
   List<ECM_Checklist_Model>? newdata;
   Future<String> GetImagebyPath(String imgPath) async {
     String img64base = "";
