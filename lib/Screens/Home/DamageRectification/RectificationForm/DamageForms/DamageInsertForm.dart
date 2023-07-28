@@ -1,15 +1,11 @@
 // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, sort_child_properties_last, unused_element, prefer_typing_uninitialized_variables, unused_field, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_collection_literals, duplicate_ignore, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, no_leading_underscores_for_local_identifiers, unnecessary_null_in_if_null_operators, must_be_immutable, avoid_function_literals_in_foreach_calls, unused_local_variable, use_build_context_synchronously, curly_braces_in_flow_control_structures, unnecessary_null_comparison, unnecessary_new, unused_import, camel_case_types, library_private_types_in_public_api, file_names, unused_catch_stack
 
 import 'dart:convert';
-// import 'package:ecm_application/Model/Project/Damage/DamageReportInsert.dart';
 import 'package:ecm_application/Model/Project/Damage/DamageCommanModel.dart';
 import 'package:ecm_application/Model/Project/Damage/OmsDamageModel.dart';
-// import 'package:ecm_application/Services/RestAMSInsert.dart';
 import 'package:ecm_application/Services/RestDamage.dart';
 import 'package:ecm_application/Model/Common/EngineerModel.dart';
 import 'package:ecm_application/Model/project/Constants.dart';
-/*import 'package:ecm_application/Services/RestOMSInsert.dart';
-import 'package:ecm_application/Services/RestRMSInsert.dart';*/
 import 'package:flutter/foundation.dart';
 import 'package:ecm_application/Widget/ExpandableTiles.dart';
 import 'package:flutter/material.dart';
@@ -181,7 +177,7 @@ class _DamageInsertState extends State<DamageInsert> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => PreviewImageWidget(photos
-                                  // imagebytearray!
+                                 
                                   ))),
                       child: Image.memory(
                         photos!,

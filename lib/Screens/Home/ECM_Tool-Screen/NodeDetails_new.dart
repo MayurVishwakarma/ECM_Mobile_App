@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, sort_child_properties_last, unused_element, prefer_typing_uninitialized_variables, unused_field, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_collection_literals, duplicate_ignore, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, no_leading_underscores_for_local_identifiers, unnecessary_null_in_if_null_operators, must_be_immutable, avoid_function_literals_in_foreach_calls, unused_local_variable, empty_catches, unnecessary_new, curly_braces_in_flow_control_structures, use_build_context_synchronously, file_names, library_private_types_in_public_api, unused_catch_stack, unnecessary_null_comparison
+// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, sort_child_properties_last, unused_element, prefer_typing_uninitialized_variables, unused_field, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_collection_literals, duplicate_ignore, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, no_leading_underscores_for_local_identifiers, unnecessary_null_in_if_null_operators, must_be_immutable, avoid_function_literals_in_foreach_calls, unused_local_variable, empty_catches, unnecessary_new, curly_braces_in_flow_control_structures, use_build_context_synchronously, file_names, library_private_types_in_public_api, unused_catch_stack, unnecessary_null_comparison, unrelated_type_equality_checks
 
 import 'dart:convert';
 import 'dart:io';
@@ -1439,6 +1439,7 @@ class _NodeDetailsState extends State<NodeDetails> {
     return widget;
   }
 
+  List<int> isCheckedList = List.generate(6, (_) => 0);
   /*getECMFeed() {
     Widget? widget = const Center(child: CircularProgressIndicator());
     if (subProcessName!.isNotEmpty && _ChecklistModel!.isNotEmpty) {
@@ -1684,26 +1685,6 @@ class _NodeDetailsState extends State<NodeDetails> {
         } else {
           approveStatus = 2;
         }
-        /*bool isPartialProcess =
-            selectedProcess!.toLowerCase().contains("dry") ||
-                selectedProcess!.toLowerCase().contains('auto');
-        if (checkCount !=
-                _checkList.where((e) => e.inputText != "image").length ||
-            imageCount != 0) {
-          if (imageCount >= 3 && checkCount == 0)
-            approveStatus = isPartialProcess ? 1 : 2;
-          else if (!isPartialProcess) {
-            approveStatus = 1;
-          } else {
-            if (imageCount < 3) 
-            print("atleast 3 image must be uploaded");
-            if (checkCount != 0)
-            print("Partially done is not allow in this process");
-            return false;
-          }
-        } else {
-          return false;
-        }*/
 
         int flagCounter = 0;
         for (var subpro in subProcessName!) {
@@ -2020,7 +2001,7 @@ class _NodeDetailsState extends State<NodeDetails> {
 
       var checkListId = imageList.map((e) => e.checkListId).toList().join(",");
       var valueData = imageList.map((e) => e.value ?? '').toList().join(",");
-      var aproveStatus                              = apporvedStatus;
+      var aproveStatus = apporvedStatus;
       var Insertobj = new Map<String, dynamic>();
 
       Insertobj["processId"] = processId;

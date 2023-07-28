@@ -68,7 +68,7 @@ class _MyDrawerScreenState extends State<MyDrawerScreen> {
               ),
               Padding(
                 padding: EdgeInsets.fromLTRB(10.0, 3.0, 0.0, 10.0),
-                child: Text('App Version-v0.5',
+                child: Text('App Version-v0.6',
                     textScaleFactor: 1,
                     style: TextStyle(
                       fontSize: 10,

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, prefer_const_literals_to_create_immutables, unnecessary_new, file_names, use_key_in_widget_constructors, prefer_collection_literals, unnecessary_null_comparison, unused_field, must_be_immutable
 
+import 'package:ecm_application/Screens/Home/DamageRectification/DamageReportStatus/DamageReport_Screen.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/RectificationForm/DamageReportList.dart';
 import 'package:ecm_application/Model/Project/Login/State_list_Model.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +101,13 @@ class _DamageMenuScreenState extends State<DamageMenuScreen> {
                       ),
                       InkWell(
                         onTap: () async {
-                          showDialog(
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DamageReport_Screen()),
+                            (Route<dynamic> route) => true,
+                          );
+                          /*showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
@@ -116,7 +123,7 @@ class _DamageMenuScreenState extends State<DamageMenuScreen> {
                                 ],
                               );
                             },
-                          );
+                          );*/
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
