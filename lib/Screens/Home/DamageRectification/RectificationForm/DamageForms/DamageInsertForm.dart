@@ -2,10 +2,14 @@
 
 import 'dart:convert';
 import 'package:ecm_application/Model/Project/Damage/DamageCommanModel.dart';
+import 'package:ecm_application/Model/Project/Damage/Information.dart';
+import 'package:ecm_application/Model/Project/Damage/MaterialConsumption.dart';
 import 'package:ecm_application/Model/Project/Damage/OmsDamageModel.dart';
+import 'package:ecm_application/Screens/Home/DamageRectification/DamageReportStatus/SelectDamageListScreen.dart';
 import 'package:ecm_application/Services/RestDamage.dart';
 import 'package:ecm_application/Model/Common/EngineerModel.dart';
 import 'package:ecm_application/Model/project/Constants.dart';
+import 'package:ecm_application/core/app_export.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ecm_application/Widget/ExpandableTiles.dart';
 import 'package:flutter/material.dart';
@@ -65,6 +69,10 @@ class _DamageInsertState extends State<DamageInsert> {
   var selectedProcess;
   List<DamageInsertModel> imageList = [];
   List<DamageInsertModel>? _ChecklistModel;
+  List<MaterialConsumptionModel>? _ChecklistModel2;
+  List<InfoModel>? _ChecklistModel3;
+  List<InfoModel>? imageList1;
+
   var listdistinctProcess = [
     "Damage Form",
     "Material Consumption",
@@ -176,9 +184,8 @@ class _DamageInsertState extends State<DamageInsert> {
                       onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => PreviewImageWidget(photos
-                                 
-                                  ))),
+                              builder: (context) =>
+                                  PreviewImageWidget(photos))),
                       child: Image.memory(
                         photos!,
                         //to show image, you type like this.
@@ -337,12 +344,22 @@ class _DamageInsertState extends State<DamageInsert> {
               onPressed: () {
                 if (_remarkController != null) {
                   Navigator.of(context).pop();
-                  damageCheckListData(_ChecklistModel!).then((value) =>
-                      _showToast(
-                          isSubmited!
-                              ? "Data Updated Successfully"
-                              : "Something Went Wrong!!!",
-                          MessageType: isSubmited! ? 0 : 1));
+                  if (_ChecklistModel!.isNotEmpty) {
+                    damageCheckListData(_ChecklistModel!).then((value) =>
+                        _showToast(
+                            isSubmited!
+                                ? "Data Updated Successfully"
+                                : "Something Went Wrong!!!",
+                            MessageType: isSubmited! ? 0 : 1));
+                  } else if (_ChecklistModel2!.isNotEmpty) {
+                    damageCheckListDataForMaterial(
+                            _ChecklistModel2!, _remarkController ?? "")
+                        .then((value) => _showToast(
+                            isSubmited!
+                                ? "Data Updated Successfully"
+                                : "Something Went Wrong!!!",
+                            MessageType: isSubmited! ? 0 : 1));
+                  }
                 }
               },
             ),
@@ -465,7 +482,9 @@ class _DamageInsertState extends State<DamageInsert> {
                     },
                   ),
                 ),
-                if (selectedProcess == "Damage Form")
+                if (selectedProcess == "Damage Form" ||
+                    selectedProcess == "Material Consumption" ||
+                    selectedProcess == "Info")
                   Expanded(
                     child: SingleChildScrollView(
                       physics: AlwaysScrollableScrollPhysics(),
@@ -475,62 +494,62 @@ class _DamageInsertState extends State<DamageInsert> {
                           children: [
                             //Expandable Tile
                             getDamageFeed(),
-                            //Image Selection Tile
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: imageList
-                                              .where((element) =>
-                                                  element.type == 'Image' &&
-                                                  element.value != null)
-                                              .isNotEmpty
-                                          ? GestureDetector(
-                                              onTap: () {
-                                                imageListpopup();
-                                              },
-                                              child: Image(
-                                                image: AssetImage(
-                                                    'assets/images/imagepreview.png'),
-                                                fit: BoxFit.cover,
-                                                height: 80,
-                                                width: 80,
-                                              ))
-                                          : GestureDetector(
-                                              onTap: () {
-                                                imageListpopup();
-                                              },
-                                              child: Image(
-                                                image: AssetImage(
-                                                    'assets/images/uploadimage.png'),
-                                                fit: BoxFit.cover,
-                                                height: 80,
-                                                width: 80,
-                                              ))),
-                                  imageList
-                                          .where((element) =>
-                                              // element.id == Id &&
-                                              element.type == 'Image' &&
-                                              element.value != null)
-                                          .isNotEmpty
-                                      ? Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20),
-                                          child: SizedBox(
-                                              child: Center(
-                                                  child:
-                                                      Text('Image Uploaded'))))
-                                      : Center(
-                                          child: Text(
-                                            "No Image Uploaded",
-                                            style: TextStyle(fontSize: 16),
+                            if (imageList.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: imageList
+                                                .where((element) =>
+                                                    element.type == 'Image' &&
+                                                    element.value != null)
+                                                .isNotEmpty
+                                            ? GestureDetector(
+                                                onTap: () {
+                                                  imageListpopup();
+                                                },
+                                                child: Image(
+                                                  image: AssetImage(
+                                                      'assets/images/imagepreview.png'),
+                                                  fit: BoxFit.cover,
+                                                  height: 80,
+                                                  width: 80,
+                                                ))
+                                            : GestureDetector(
+                                                onTap: () {
+                                                  imageListpopup();
+                                                },
+                                                child: Image(
+                                                  image: AssetImage(
+                                                      'assets/images/uploadimage.png'),
+                                                  fit: BoxFit.cover,
+                                                  height: 80,
+                                                  width: 80,
+                                                ))),
+                                    imageList
+                                            .where((element) =>
+                                                // element.id == Id &&
+                                                element.type == 'Image' &&
+                                                element.value != null)
+                                            .isNotEmpty
+                                        ? Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20),
+                                            child: SizedBox(
+                                                child: Center(
+                                                    child: Text(
+                                                        'Image Uploaded'))))
+                                        : Center(
+                                            child: Text(
+                                              "No Image Uploaded",
+                                              style: TextStyle(fontSize: 16),
+                                            ),
                                           ),
-                                        ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
 
                             ElevatedButton(
                               child: Text(buttonText),
@@ -565,6 +584,60 @@ class _DamageInsertState extends State<DamageInsert> {
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.blueGrey),
                             ),
+                            // Row(
+                            //   children: [
+                            //     Padding(
+                            //       padding: const EdgeInsets.only(left: 80),
+                            //       child: ElevatedButton(
+                            //         child: Text("Back To List"),
+                            //         onPressed: (() async {
+                            //           Navigator.pop(context);
+                            //         }),
+                            //         style: ElevatedButton.styleFrom(
+                            //             backgroundColor: Colors.blueGrey),
+                            //       ),
+                            //     ),
+                            //     Padding(
+                            //       padding: const EdgeInsets.only(left: 80),
+                            //       child: ElevatedButton(
+                            //         child: Text(buttonText),
+                            //         onPressed: (() async {
+                            //           if (buttonText == 'Edit') {
+                            //             showDialog(
+                            //               context: context,
+                            //               builder: (BuildContext context) {
+                            //                 return AlertDialog(
+                            //                   title: Text("Do you want edit ?"),
+                            //                   actions: [
+                            //                     TextButton(
+                            //                         child: Text("Cencel"),
+                            //                         onPressed: () {
+                            //                           Navigator.of(context)
+                            //                               .pop();
+                            //                         }),
+                            //                     TextButton(
+                            //                         child: Text("OK"),
+                            //                         onPressed: () async {
+                            //                           Navigator.of(context)
+                            //                               .pop();
+                            //                           buttonText = 'Update';
+                            //                           isEdit = true;
+                            //                         }),
+                            //                   ],
+                            //                 );
+                            //               },
+                            //             );
+                            //           } else {
+                            //             _showAlert(context);
+                            //           }
+                            //         }),
+                            //         style: ElevatedButton.styleFrom(
+                            //             backgroundColor: Colors.blueGrey),
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
+
                             if (remarkval.isNotEmpty)
                               Padding(
                                   padding: EdgeInsets.all(8),
@@ -662,11 +735,6 @@ class _DamageInsertState extends State<DamageInsert> {
                           ]),
                     ),
                   ),
-                // if (selectedProcess != "Damage Form")
-                //   Expanded(
-                //       child: Center(
-                //     child: Text("Page Under Construction"),
-                //   ))
               ],
             ),
           )),
@@ -674,10 +742,114 @@ class _DamageInsertState extends State<DamageInsert> {
   }
 
   getECMData(String processname) {
-    if (processname == "Material Consumption" ||
-        processname == "Info" ||
-        processname == "Issues") {
+    if (processname == "Issues") {
       return null;
+    } else if (processname == "Info") {
+      _ChecklistModel2 = [];
+      _ChecklistModel3 = [];
+      _ChecklistModel = [];
+      imageList = [];
+      imageList1 = [];
+      processList = Set();
+      selectedProcess = Set();
+      try {
+        if (widget.Source == 'oms') {
+          Infomation(modelData!.omsId!, widget.Source!).then((value) {
+            setState(() {
+              remarkval = value.first.remark ?? '';
+              workedondate = (value.first.reportedOn ?? '').toString();
+              getWorkedByNAme((value.first.reportedBy ?? '').toString());
+              _ChecklistModel3 = value;
+              for (var element in _ChecklistModel3!) {
+                processList!.add(element.infoTypeName!);
+                imageList1!
+                    .addAll(value.where((element) => element.type == 'image'));
+              }
+              selectedProcess = "Info";
+            });
+          });
+        } else if (widget.Source == 'ams') {
+          Infomation(modelData!.amsId!, widget.Source!).then((value) {
+            setState(() {
+              remarkval = value.first.remark ?? '';
+              workedondate = (value.first.reportedOn ?? '').toString();
+              getWorkedByNAme((value.first.reportedBy ?? '').toString());
+              _ChecklistModel3 = value;
+              for (var element in _ChecklistModel3!) {
+                processList!.add(element.infoTypeName!);
+                imageList1!
+                    .addAll(value.where((element) => element.type == 'image'));
+              }
+              selectedProcess = "Info";
+            });
+          });
+        } else if (widget.Source == 'rms') {
+          Infomation(modelData!.rmsId!, widget.Source!).then((value) {
+            setState(() {
+              remarkval = value.first.remark ?? '';
+              workedondate = (value.first.reportedOn ?? '').toString();
+              getWorkedByNAme((value.first.reportedBy ?? '').toString());
+              _ChecklistModel3 = value;
+              for (var element in _ChecklistModel3!) {
+                processList!.add(element.infoTypeName!);
+                imageList1!
+                    .addAll(value.where((element) => element.type == 'image'));
+              }
+              selectedProcess = "Info";
+            });
+          });
+        }
+        // getECMData(selectedProcess!);
+      } catch (_) {}
+    } else if (processname == "Material Consumption") {
+      _ChecklistModel2 = [];
+      _ChecklistModel = [];
+      imageList = [];
+      processList = Set();
+      selectedProcess = Set();
+      try {
+        if (widget.Source == 'oms') {
+          getDamageformCommon(modelData!.omsId!, widget.Source!).then((value) {
+            setState(() {
+              remarkval = value.first.remark ?? '';
+              workedondate = (value.first.reportedOn ?? '').toString();
+              getWorkedByNAme((value.first.reportedBy ?? '').toString());
+              _ChecklistModel2 = value;
+              for (var element in _ChecklistModel2!) {
+                processList!.add(element.type!);
+              }
+            });
+            selectedProcess = "Material Consumption";
+          });
+        } else if (widget.Source == 'ams') {
+          getDamageformCommon(modelData!.amsId!, widget.Source!).then((value) {
+            setState(() {
+              remarkval = value.first.remark ?? '';
+              workedondate = (value.first.reportedOn ?? '').toString();
+              getWorkedByNAme((value.first.reportedBy ?? '').toString());
+              _ChecklistModel2 = value;
+              for (var element in _ChecklistModel2!) {
+                processList!.add(element.type!);
+              }
+            });
+            selectedProcess = "Material Consumption";
+          });
+        } else if (widget.Source == 'rms') {
+          getDamageformCommon(modelData!.rmsId!, widget.Source!).then((value) {
+            setState(() {
+              remarkval = value.first.remark ?? '';
+              workedondate = (value.first.reportedOn ?? '').toString();
+              getWorkedByNAme((value.first.reportedBy ?? '').toString());
+              _ChecklistModel2 = value;
+              for (var element in _ChecklistModel2!) {
+                processList!.add(element.type!);
+              }
+            });
+            selectedProcess = "Material Consumption";
+          });
+        }
+        getECMData(selectedProcess!);
+      } catch (_) {}
     } else {
       _ChecklistModel = [];
       imageList = [];
@@ -779,10 +951,8 @@ class _DamageInsertState extends State<DamageInsert> {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       String? conString = preferences.getString('ConString');
-
       final res = await http.get(Uri.parse(
           'http://wmsservices.seprojects.in/api/login/GetUserDetailsByMobile?mobile=""&userid=$userid&conString=$conString'));
-
       if (res.statusCode == 200) {
         var json = jsonDecode(res.body);
         if (json['Status'] == WebApiStatusOk) {
@@ -907,10 +1077,224 @@ class _DamageInsertState extends State<DamageInsert> {
               )
         ],
       );
+    } else if (processList!.isNotEmpty && _ChecklistModel2!.isNotEmpty) {
+      widget = Column(
+        children: [
+          for (var subProcess in processList!)
+            if (subProcess == "Electrical" ||
+                subProcess == "Mechanical" ||
+                subProcess == "Tubing")
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: ExpandableTile(
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          subProcess.toString().toUpperCase(),
+                          softWrap: true,
+                        ),
+                        Text("Qty",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 12,
+                            )),
+                      ],
+                    ),
+                    body: Column(children: [
+                      for (var item in _ChecklistModel2!
+                          .where((e) => e.type.toString() == subProcess))
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Expanded(
+                                flex: 15,
+                                child: Text(item.rectification!,
+                                    textAlign: TextAlign.left, softWrap: true),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              // if (item.rectification == 'text')
+                              Expanded(
+                                flex: 1,
+                                child: TextFormField(
+                                  initialValue: item.value,
+                                  decoration: InputDecoration(
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          // inline-size: 1,
+                                          color: Colors.blue), //<-- SEE HERE
+                                    ),
+                                    // suffixText: (item.rectification != null &&
+                                    //         item.value!.isNotEmpty)
+                                    //     ? item.value!
+                                    //     : '',
+                                  ),
+                                  onChanged: isEdit!
+                                      ? (value) {
+                                          setState(() {
+                                            item.value = value;
+                                            value = item.value = value;
+                                          });
+                                        }
+                                      : null,
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Text(""),
+                              ),
+                              // Expanded(
+                              //     flex: 0,
+                              //     child: Checkbox(
+                              //       activeColor: Colors.white54,
+                              //       checkColor: Color.fromARGB(255, 251, 3, 3),
+                              //       value: item.value == '1' ? true : false,
+                              //       onChanged: isEdit!
+                              //           ? (value) {
+                              //               setState(() {
+                              //                 item.value = value! ? '1' : '';
+                              //               });
+                              //             }
+                              //           : null,
+                              //     ))
+                            ],
+                          ),
+                        )
+                    ])),
+              )
+        ],
+      );
+    } else if (processList!.isNotEmpty && _ChecklistModel3!.isNotEmpty) {
+      widget = Column(
+        children: [
+          for (var subProcess in processList!)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: ExpandableTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        subProcess.toString().toUpperCase(),
+                        softWrap: true,
+                      ),
+                      Text("Is Available",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                          )),
+                    ],
+                  ),
+                  body: Column(children: [
+                    for (var item in _ChecklistModel3!
+                        .where((e) => e.type.toString() == subProcess))
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Expanded(
+                              flex: 15,
+                              child: Text(item.infoTypeName!,
+                                  textAlign: TextAlign.left, softWrap: true),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            if (item.infoTypeName == 'text')
+                              Expanded(
+                                flex: 1,
+                                child: TextFormField(
+                                  initialValue: item.value,
+                                  decoration: InputDecoration(
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          // inline-size: 1,
+                                          color: Colors.blue), //<-- SEE HERE
+                                    ),
+                                    suffixText: (item.infoTypeName != null &&
+                                            item.value!.isNotEmpty)
+                                        ? item.value!
+                                        : '',
+                                  ),
+                                  onChanged: isEdit!
+                                      ? (value) {
+                                          setState(() {
+                                            item.value = value;
+                                            value = item.value = value;
+                                          });
+                                        }
+                                      : null,
+                                ),
+                              ),
+                            // Expanded(
+                            //   flex: 2,
+                            //   child: Text(""),
+                            // ),
+                            Expanded(
+                                flex: 0,
+                                child: Checkbox(
+                                  activeColor: Colors.white54,
+                                  checkColor: Color.fromARGB(255, 251, 3, 3),
+                                  value: item.value == '1' ? true : false,
+                                  onChanged: isEdit!
+                                      ? (value) {
+                                          setState(() {
+                                            item.value = value! ? '1' : '';
+                                          });
+                                        }
+                                      : null,
+                                ))
+                         
+                          ],
+                        ),
+                      )
+                  ])),
+            )
+        ],
+      );
     } else {
       widget = const Center(child: CircularProgressIndicator());
     }
     return widget;
+  }
+
+  Future<bool> damageCheckListDataForMaterial(
+      List<MaterialConsumptionModel> _checkList, String _Controller) async {
+    bool flag = false;
+    var respflag;
+    try {
+      if (_checkList != null) {
+        int flagCounter = 0;
+        if (widget.Source == 'oms') {
+          respflag = await insertRectifyCommon(
+              _checkList, _Controller, modelData!.omsId!, widget.Source!);
+        } else if (widget.Source == 'ams') {
+          respflag = await insertRectifyCommon(
+              _checkList, _Controller, modelData!.amsId!, widget.Source!);
+        } else if (widget.Source == 'rms') {
+          respflag = await insertRectifyCommon(
+              _checkList, _Controller, modelData!.rmsId!, widget.Source!);
+        }
+
+        if (respflag) {
+          getECMData(selectedProcess!);
+          setState(() {
+            isSubmited = true;
+          });
+          flag = true;
+        }
+      }
+    } catch (_, ex) {
+      flag = false;
+    }
+    return flag;
   }
 
   Future<bool> damageCheckListData(List<DamageInsertModel> _checkList) async {
@@ -1214,6 +1598,51 @@ class _DamageInsertState extends State<DamageInsert> {
     } catch (_) {
       throw new Exception();
     }
+  }
+}
+
+Future<bool> insertRectifyCommon(List<MaterialConsumptionModel> checklist,
+    String Remark, int Id, String source) async {
+  try {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? conString = preferences.getString('ConString');
+    int proUserId = preferences.getInt('ProUserId')!;
+    int countflag = 0;
+    int uploadflag = 0;
+
+    var checkListId = checklist.map((e) => e.id).toList().join(",");
+    var valueData = checklist.map((e) => e.value ?? '').toList().join(",");
+
+    var Insertobj = new Map<String, dynamic>();
+
+    Insertobj["id"] = Id;
+    Insertobj["rectifydata"] = checkListId;
+    Insertobj["valuedata"] = valueData;
+    Insertobj["reportedby"] = proUserId.toString();
+    Insertobj["remark"] = Remark;
+    Insertobj["source"] = source;
+    Insertobj["conString"] = conString;
+
+    if (countflag == uploadflag) {
+      var headers = {'Content-Type': 'application/json'};
+      final request = http.Request(
+          "POST",
+          Uri.parse(
+              'http://wmsservices.seprojects.in/api/Rectify/InsertRectifyReport'));
+      request.headers.addAll(headers);
+      request.body = json.encode(Insertobj);
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        dynamic json = jsonDecode(await response.stream.bytesToString());
+        if (json["Status"] == "Ok") {
+          return true;
+        } else
+          throw new Exception();
+      } else {}
+    } else {}
+    throw new Exception();
+  } catch (_) {
+    throw new Exception();
   }
 }
 

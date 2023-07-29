@@ -1,43 +1,36 @@
-// ignore_for_file: use_key_in_widget_constructors, file_names, library_private_types_in_public_api, non_constant_identifier_names, unused_local_variable, prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_catch_stack, unrelated_type_equality_checks, unused_field, unused_import, camel_case_types
+// ignore_for_file: use_key_in_widget_constructors, file_names, library_private_types_in_public_api, non_constant_identifier_names, unused_local_variable, prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_catch_stack, unrelated_type_equality_checks, unused_field, camel_case_types
 
 import 'package:ecm_application/Model/Project/ECMTool/ECMCountMasterModel.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/DamageReportStatus/DamageReportList/Oms.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/RectificationForm/DamageList/DamageAMSList.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/RectificationForm/DamageList/DamageLoraList.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/RectificationForm/DamageList/DamageOmsList.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/RectificationForm/DamageList/DamageRMSList.dart';
 import 'package:ecm_application/Model/Project/Login/AreaModel.dart';
 import 'package:ecm_application/Model/Project/Login/DistibutoryModel.dart';
 import 'package:ecm_application/Operations/StatelistOperation.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/DamageReportStatus/DamageReportList/Ams.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/DamageReportStatus/DamageReportList/Lora.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/DamageReportStatus/DamageReportList/Rms.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/DamageReportStatus/SelectDamageListScreen.dart';
+import 'package:ecm_application/Screens/Home/DamageRectification/DamageHistory/DamageList/Ams.dart';
+import 'package:ecm_application/Screens/Home/DamageRectification/DamageHistory/DamageList/Lora.dart';
+import 'package:ecm_application/Screens/Home/DamageRectification/DamageHistory/DamageList/Oms.dart';
+import 'package:ecm_application/Screens/Home/DamageRectification/DamageHistory/DamageList/Rms.dart';
 import 'package:ecm_application/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
-class DamageReport_Screen extends StatefulWidget {
+class DamageHistory_Screen extends StatefulWidget {
   @override
-  _DamageReport_ScreenState createState() => _DamageReport_ScreenState();
+  _DamageHistory_ScreenState createState() => _DamageHistory_ScreenState();
 }
 
-class _DamageReport_ScreenState extends State<DamageReport_Screen> {
+class _DamageHistory_ScreenState extends State<DamageHistory_Screen> {
   int pageIndex = 0;
-
   @override
   void initState() {
     super.initState();
     getDataString();
-    getDropDownAsync();
+    // getDropDownAsync();
   }
 
   ECMStatusCountMasterModel? _DisplayList;
 
   String? dcString = '1111';
-  String? projectName;
-  String? userType = '';
+/*  String? projectName;
 
   var area = 'All';
   var distibutory = 'ALL';
@@ -47,48 +40,38 @@ class _DamageReport_ScreenState extends State<DamageReport_Screen> {
 
   Future<List<DistibutroryModel>>? futureDistributory;
   Future<List<AreaModel>>? futureArea;
-
+*/
   getDataString() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
       dcString = preferences.getString('DcString');
-      projectName = preferences.getString('ProjectName');
-      userType = preferences.getString('usertype');
+      // projectName = preferences.getString('ProjectName');
     });
   }
 
-  getDropDownAsync() async {
+  /*getDropDownAsync() async {
     setState(() {
       futureArea = getAreaid();
       futureDistributory = getDistibutoryid();
     });
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? project = preferences.getString('project');
-  }
+  }*/
 
   var source = 'OMS';
-  var sourceoms = 'OMS';
-  var sourceams = 'AMS';
-  var sourcerms = 'RMS';
-  var sourcelora = 'LORA';
-  bool isToggled = false;
   @override
   Widget build(BuildContext context) {
     final pages = [
-      if (dcString![0] == '1')
-        Oms_ReportList(ProjectName: projectName, Source: sourceoms),
-      if (dcString![1] == '1')
-        Ams_ReportList(ProjectName: projectName, Source: sourceams),
-      if (dcString![2] == '1')
-        Rms_ReportList(ProjectName: projectName, Source: sourcerms),
-      if (dcString![3] == '1')
-        Lora_ReportList(ProjectName: projectName, Source: sourcelora),
+      if (dcString![0] == '1') Oms_History(),
+      if (dcString![1] == '1') Ams_History(),
+      if (dcString![2] == '1') Rms_History(),
+      if (dcString![3] == '1') Lora_History(),
     ];
 
     return Scaffold(
         backgroundColor: ColorConstant.whiteA700,
         appBar: AppBar(
-          title: Text('Damage Summary'),
+          title: Text('Damage History'),
         ),
         body: pages[pageIndex],
         bottomNavigationBar: Container(
@@ -238,7 +221,3 @@ class _DamageReport_ScreenState extends State<DamageReport_Screen> {
             )));
   }
 }
-
-
-
-

@@ -9,7 +9,7 @@ class DamageInsertModel {
   int? id;
   String? damage;
   String? type;
-  String? datetime;
+  DateTime? datetime;
   int? userId;
   int? amsId;
   int? omsId;
@@ -41,7 +41,7 @@ class DamageInsertModel {
     id = json['Id'];
     damage = json['Damage'];
     type = json['Type'];
-    datetime = json['Datetime'];
+    datetime = DateTime.tryParse(json['Datetime'].toString());
     userId = json['UserId'];
     amsId = json['AmsId'];
     rmsId = json['RmsId'];

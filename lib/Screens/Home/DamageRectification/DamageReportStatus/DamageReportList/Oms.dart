@@ -175,706 +175,718 @@ class _Oms_ReportListState extends State<Oms_ReportList> {
   bool isClicked = false;
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        _DisplayList = [];
-        _firstLoad();
-      },
-      child: GestureDetector(
-        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-        child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          child: _DisplayList != null
-              ? Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                      //dropdown
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            /// This Future Builder is Used for Area DropDown list
-                            FutureBuilder(
-                              future: futureArea,
-                              builder: (BuildContext context,
-                                  AsyncSnapshot snapshot) {
-                                if (snapshot.hasData) {
-                                  return Expanded(
-                                      child: getArea(context, snapshot.data!));
-                                } else if (snapshot.hasError) {
-                                  return Text(
-                                    "Something Went Wrong: " +
-                                        snapshot.error.toString(),
-                                    textScaleFactor: 1,
-                                  );
-                                } else {
-                                  return Center(child: Container());
-                                }
-                              },
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-
-                            ///This Future Builder is Used for Distibutory DropDown List
-                            FutureBuilder(
-                              future: futureDistributory,
-                              builder: (BuildContext context,
-                                  AsyncSnapshot snapshot) {
-                                if (snapshot.hasData) {
-                                  return Expanded(
-                                      child: getDist(context, snapshot.data!));
-                                } else if (snapshot.hasError) {
-                                  return Container();
-                                } else {
-                                  return Center(child: Container());
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Container(
-                          height: 50,
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 0, 110, 189),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Text(
-                              "TOTAL OMS : " +
-                                  (_DisplayList!.first.totalOMS!).toString(),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            ///Total
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    isClicked = false;
-                                  });
-                                  selectedDamageType = "Total Damage";
-                                  _firstLoad();
-                                },
-                                onDoubleTap: () {
-                                  setState(() {
-                                    color:
-                                    Colors.blue;
-                                  });
-
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ListCommonScreen(
-                                                area_: selectedArea,
-                                                dist_: selectedDistributory,
-                                                ListStatus_: _selectedTotalId
-                                                    .join(',')
-                                                    .toString(),
-                                                Source_: "OMS",
-                                              ))).whenComplete(() {
-                                    _firstLoad();
-                                  });
-                                },
-                                child: Container(
-                                  height: 80,
-                                  width: 100,
-                                  margin: EdgeInsets.only(
-                                    bottom: getVerticalSize(
-                                      12.58,
-                                    ),
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: selectedDamageType!
-                                            .toLowerCase()
-                                            .contains('total')
-                                        ? Colors.lightBlue
-                                        : Colors.white,
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: ColorConstant.black90026,
-                                        spreadRadius: getHorizontalSize(
-                                          2.00,
-                                        ),
-                                        blurRadius: getHorizontalSize(
-                                          2.00,
-                                        ),
-                                        offset: Offset(
-                                          0,
-                                          2,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "TOTAL DAMAGE",
-                                          textScaleFactor: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: ColorConstant.black900,
-                                            fontSize: getFontSize(
-                                              9,
-                                            ),
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            (_DisplayList!.first.total!)
-                                                .toString(),
-                                            textScaleFactor: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: selectedDamageType!
-                                                      .toLowerCase()
-                                                      .contains('total')
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              fontSize: getFontSize(
-                                                14,
-                                              ),
-                                              fontFamily: 'Inter',
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            ///Electrical
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    isClicked = false;
-                                  });
-                                  selectedDamageType = "Electrical Damage";
-                                  _firstLoad();
-                                },
-                                onDoubleTap: () {
-                                  setState(() {
-                                    color:
-                                    Colors.blue;
-                                  });
-
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ListCommonScreen(
-                                                area_: selectedArea,
-                                                dist_: selectedDistributory,
-                                                ListStatus_: _selectedTotalId
-                                                    .join(',')
-                                                    .toString(),
-                                                Source_: "OMS",
-                                              ))).whenComplete(() {
-                                    _firstLoad();
-                                  });
-                                },
-                                child: Container(
-                                  height: 80,
-                                  width: 100,
-                                  margin: EdgeInsets.only(
-                                    bottom: getVerticalSize(
-                                      12.58,
-                                    ),
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: selectedDamageType!
-                                            .toLowerCase()
-                                            .contains('electrical')
-                                        ? Colors.lightBlue
-                                        : Colors.white,
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: ColorConstant.black90026,
-                                        spreadRadius: getHorizontalSize(
-                                          2.00,
-                                        ),
-                                        blurRadius: getHorizontalSize(
-                                          2.00,
-                                        ),
-                                        offset: Offset(
-                                          0,
-                                          2,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "Electrical Damage".toUpperCase(),
-                                          textScaleFactor: 1,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: ColorConstant.black900,
-                                            fontSize: getFontSize(
-                                              9,
-                                            ),
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            (_DisplayList!.first.electrical!)
-                                                .toString(),
-                                            textScaleFactor: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: selectedDamageType!
-                                                      .toLowerCase()
-                                                      .contains('electrical')
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              fontSize: getFontSize(
-                                                14,
-                                              ),
-                                              fontFamily: 'Inter',
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            ///Mechanical
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    isClicked = false;
-                                  });
-
-                                  selectedDamageType = "Mechanical Damage";
-                                  _firstLoad();
-                                },
-                                onDoubleTap: () {
-                                  setState(() {
-                                    color:
-                                    Colors.blue;
-                                  });
-
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ListCommonScreen(
-                                                area_: selectedArea,
-                                                dist_: selectedDistributory,
-                                                ListStatus_: _selectedTotalId
-                                                    .join(',')
-                                                    .toString(),
-                                                Source_: "OMS",
-                                              ))).whenComplete(() {
-                                    _firstLoad();
-                                  });
-                                },
-                                child: Container(
-                                  height: 80,
-                                  width: 100,
-                                  margin: EdgeInsets.only(
-                                    bottom: getVerticalSize(
-                                      12.58,
-                                    ),
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: selectedDamageType!
-                                            .toLowerCase()
-                                            .contains('mechanical')
-                                        ? Colors.lightBlue
-                                        : Colors.white,
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: ColorConstant.black90026,
-                                        spreadRadius: getHorizontalSize(
-                                          2.00,
-                                        ),
-                                        blurRadius: getHorizontalSize(
-                                          2.00,
-                                        ),
-                                        offset: Offset(
-                                          0,
-                                          2,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "Mechanical Damage".toUpperCase(),
-                                          textScaleFactor: 1,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: ColorConstant.black900,
-                                            fontSize: getFontSize(
-                                              9,
-                                            ),
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            (_DisplayList!.first.mechanical!)
-                                                .toString(),
-                                            textScaleFactor: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: selectedDamageType!
-                                                      .toLowerCase()
-                                                      .contains('mechanical')
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              fontSize: getFontSize(
-                                                14,
-                                              ),
-                                              fontFamily: 'Inter',
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      if (selectedDamageType!.toLowerCase().contains('total') ||
-                          selectedDamageType!
-                              .toLowerCase()
-                              .contains('electrical'))
-                        //electrica;
-                        ExpansionTile(
-                          title: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                  color: Color.fromARGB(255, 0, 110, 189),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              child: Padding(
-                                padding: EdgeInsets.all(15.0),
-                                child: Text(
-                                  "electrical Damage".toUpperCase(),
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
-                              ),
-                            ),
-                          ),
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: GridView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: _electricalList!.length,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3, // Number of columns
-                                  crossAxisSpacing:
-                                      1.5, // Spacing between columns
-                                  childAspectRatio: 1,
-                                  mainAxisSpacing: 1.5,
-                                ),
-                                itemBuilder: (BuildContext context, int i) {
-                                  bool isSelected = _selectedTotalId
-                                      .contains(_electricalList![i].damageId!);
-
-                                  return InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        if (isSelected) {
-                                          _selectedTotalId.remove(
-                                              _electricalList![i].damageId!);
-                                        } else {
-                                          _selectedTotalId.add(
-                                              _electricalList![i].damageId!);
-                                        }
-                                      });
-                                    },
-                                    child: Card(
-                                      elevation: 5,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            _electricalList![i]
-                                                .damage!
-                                                .toUpperCase(),
-                                            textScaleFactor: 1,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: ColorConstant.black900,
-                                              fontSize: getFontSize(10),
-                                              fontFamily: 'Inter',
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              _electricalList![i]
-                                                  .cNT
-                                                  .toString(),
-                                              textScaleFactor: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                                fontSize: getFontSize(14),
-                                                fontFamily: 'Inter',
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ),
-                                          Checkbox(
-                                            activeColor: Colors.white54,
-                                            checkColor:
-                                                Color.fromARGB(255, 251, 3, 3),
-                                            value: isSelected,
-                                            onChanged: (bool? newValue) {
-                                              setState(() {
-                                                if (newValue == true) {
-                                                  _selectedTotalId.add(
-                                                      _electricalList![i]
-                                                          .damageId!);
-                                                } else {
-                                                  _selectedTotalId.remove(
-                                                      _electricalList![i]
-                                                          .damageId!);
-                                                }
-                                              });
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      if (selectedDamageType!.toLowerCase().contains('total') ||
-                          selectedDamageType!
-                              .toLowerCase()
-                              .contains('mechanical'))
-                        ExpansionTile(
-                          title: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                  color: Color.fromARGB(255, 0, 110, 189),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              child: Padding(
-                                padding: EdgeInsets.all(15.0),
-                                child: Text(
-                                  "Mechanical Damage".toUpperCase(),
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
-                              ),
-                            ),
-                          ), // Change the title as per your requirement
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: GridView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: _mechanicalList!.length,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3, // Number of columns
-                                  crossAxisSpacing:
-                                      1.5, // Spacing between columns
-                                  childAspectRatio: 1,
-                                  mainAxisSpacing: 1.5,
-                                ),
-                                itemBuilder: (BuildContext context, int i) {
-                                  bool isSelected = _selectedTotalId
-                                      .contains(_mechanicalList![i].damageId!);
-
-                                  return InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        if (isSelected) {
-                                          _selectedTotalId.remove(
-                                              _mechanicalList![i].damageId!);
-                                        } else {
-                                          _selectedTotalId.add(
-                                              _mechanicalList![i].damageId!);
-                                        }
-                                      });
-                                    },
-                                    child: Card(
-                                      elevation: 5,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            _mechanicalList![i]
-                                                .damage!
-                                                .toUpperCase(),
-                                            textScaleFactor: 1,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: ColorConstant.black900,
-                                              fontSize: getFontSize(10),
-                                              fontFamily: 'Inter',
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              _mechanicalList![i]
-                                                  .cNT
-                                                  .toString(),
-                                              textScaleFactor: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                                fontSize: getFontSize(14),
-                                                fontFamily: 'Inter',
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ),
-                                          Checkbox(
-                                            activeColor: Colors.white54,
-                                            checkColor:
-                                                Color.fromARGB(255, 251, 3, 3),
-                                            value: isSelected,
-                                            onChanged: (bool? newValue) {
-                                              setState(() {
-                                                if (newValue == true) {
-                                                  _selectedTotalId.add(
-                                                      _mechanicalList![i]
-                                                          .damageId!);
-                                                } else {
-                                                  _selectedTotalId.remove(
-                                                      _mechanicalList![i]
-                                                          .damageId!);
-                                                }
-                                              });
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                    ])
-              : Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+    if (_DisplayList!.isNotEmpty) {
+      return RefreshIndicator(
+        onRefresh: () async {
+          _DisplayList = [];
+          _firstLoad();
+        },
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+          child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            child: _DisplayList != null
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Image.asset(
-                        'assets/images/soon.gif',
-                        width: 200,
-                        height: 200,
-                      ),
-                      SizedBox(height: 20.0),
-                      Text(
-                        'Page under construction',
-                        style: TextStyle(
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
+                        //dropdown
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              /// This Future Builder is Used for Area DropDown list
+                              FutureBuilder(
+                                future: futureArea,
+                                builder: (BuildContext context,
+                                    AsyncSnapshot snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Expanded(
+                                        child:
+                                            getArea(context, snapshot.data!));
+                                  } else if (snapshot.hasError) {
+                                    return Text(
+                                      "Something Went Wrong: " +
+                                          snapshot.error.toString(),
+                                      textScaleFactor: 1,
+                                    );
+                                  } else {
+                                    return Center(child: Container());
+                                  }
+                                },
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+
+                              ///This Future Builder is Used for Distibutory DropDown List
+                              FutureBuilder(
+                                future: futureDistributory,
+                                builder: (BuildContext context,
+                                    AsyncSnapshot snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Expanded(
+                                        child:
+                                            getDist(context, snapshot.data!));
+                                  } else if (snapshot.hasError) {
+                                    return Container();
+                                  } else {
+                                    return Center(child: Container());
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Container(
+                            height: 50,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 0, 110, 189),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text(
+                                "TOTAL OMS : " +
+                                    (_DisplayList!.first.totalOMS!).toString(),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              ///Total
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      isClicked = false;
+                                    });
+                                    selectedDamageType = "Total Damage";
+                                    _firstLoad();
+                                  },
+                                  onDoubleTap: () {
+                                    setState(() {
+                                      color:
+                                      Colors.blue;
+                                    });
+
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ListCommonScreen(
+                                                  area_: selectedArea,
+                                                  dist_: selectedDistributory,
+                                                  ListStatus_: _selectedTotalId
+                                                      .join(',')
+                                                      .toString(),
+                                                  Source_: "OMS",
+                                                ))).whenComplete(() {
+                                      _firstLoad();
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 80,
+                                    width: 100,
+                                    margin: EdgeInsets.only(
+                                      bottom: getVerticalSize(
+                                        12.58,
+                                      ),
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: selectedDamageType!
+                                              .toLowerCase()
+                                              .contains('total')
+                                          ? Colors.lightBlue
+                                          : Colors.white,
+                                      borderRadius: BorderRadius.circular(5.0),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: ColorConstant.black90026,
+                                          spreadRadius: getHorizontalSize(
+                                            2.00,
+                                          ),
+                                          blurRadius: getHorizontalSize(
+                                            2.00,
+                                          ),
+                                          offset: Offset(
+                                            0,
+                                            2,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "TOTAL DAMAGE",
+                                            textScaleFactor: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: ColorConstant.black900,
+                                              fontSize: getFontSize(
+                                                9,
+                                              ),
+                                              fontFamily: 'Inter',
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              (_DisplayList!.first.total!)
+                                                  .toString(),
+                                              textScaleFactor: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: selectedDamageType!
+                                                        .toLowerCase()
+                                                        .contains('total')
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                                fontSize: getFontSize(
+                                                  14,
+                                                ),
+                                                fontFamily: 'Inter',
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              ///Electrical
+                              Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      isClicked = false;
+                                    });
+                                    selectedDamageType = "Electrical Damage";
+                                    _firstLoad();
+                                  },
+                                  onDoubleTap: () {
+                                    setState(() {
+                                      color:
+                                      Colors.blue;
+                                    });
+
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ListCommonScreen(
+                                                  area_: selectedArea,
+                                                  dist_: selectedDistributory,
+                                                  ListStatus_: _selectedTotalId
+                                                      .join(',')
+                                                      .toString(),
+                                                  Source_: "OMS",
+                                                ))).whenComplete(() {
+                                      _firstLoad();
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 80,
+                                    width: 100,
+                                    margin: EdgeInsets.only(
+                                      bottom: getVerticalSize(
+                                        12.58,
+                                      ),
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: selectedDamageType!
+                                              .toLowerCase()
+                                              .contains('electrical')
+                                          ? Colors.lightBlue
+                                          : Colors.white,
+                                      borderRadius: BorderRadius.circular(5.0),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: ColorConstant.black90026,
+                                          spreadRadius: getHorizontalSize(
+                                            2.00,
+                                          ),
+                                          blurRadius: getHorizontalSize(
+                                            2.00,
+                                          ),
+                                          offset: Offset(
+                                            0,
+                                            2,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Electrical Damage".toUpperCase(),
+                                            textScaleFactor: 1,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: ColorConstant.black900,
+                                              fontSize: getFontSize(
+                                                9,
+                                              ),
+                                              fontFamily: 'Inter',
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              (_DisplayList!.first.electrical!)
+                                                  .toString(),
+                                              textScaleFactor: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: selectedDamageType!
+                                                        .toLowerCase()
+                                                        .contains('electrical')
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                                fontSize: getFontSize(
+                                                  14,
+                                                ),
+                                                fontFamily: 'Inter',
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              ///Mechanical
+                              Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      isClicked = false;
+                                    });
+
+                                    selectedDamageType = "Mechanical Damage";
+                                    _firstLoad();
+                                  },
+                                  onDoubleTap: () {
+                                    setState(() {
+                                      color:
+                                      Colors.blue;
+                                    });
+
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ListCommonScreen(
+                                                  area_: selectedArea,
+                                                  dist_: selectedDistributory,
+                                                  ListStatus_: _selectedTotalId
+                                                      .join(',')
+                                                      .toString(),
+                                                  Source_: "OMS",
+                                                ))).whenComplete(() {
+                                      _firstLoad();
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 80,
+                                    width: 100,
+                                    margin: EdgeInsets.only(
+                                      bottom: getVerticalSize(
+                                        12.58,
+                                      ),
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: selectedDamageType!
+                                              .toLowerCase()
+                                              .contains('mechanical')
+                                          ? Colors.lightBlue
+                                          : Colors.white,
+                                      borderRadius: BorderRadius.circular(5.0),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: ColorConstant.black90026,
+                                          spreadRadius: getHorizontalSize(
+                                            2.00,
+                                          ),
+                                          blurRadius: getHorizontalSize(
+                                            2.00,
+                                          ),
+                                          offset: Offset(
+                                            0,
+                                            2,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Mechanical Damage".toUpperCase(),
+                                            textScaleFactor: 1,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: ColorConstant.black900,
+                                              fontSize: getFontSize(
+                                                9,
+                                              ),
+                                              fontFamily: 'Inter',
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              (_DisplayList!.first.mechanical!)
+                                                  .toString(),
+                                              textScaleFactor: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: selectedDamageType!
+                                                        .toLowerCase()
+                                                        .contains('mechanical')
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                                fontSize: getFontSize(
+                                                  14,
+                                                ),
+                                                fontFamily: 'Inter',
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        if (selectedDamageType!
+                                .toLowerCase()
+                                .contains('total') ||
+                            selectedDamageType!
+                                .toLowerCase()
+                                .contains('electrical'))
+                          //electrica;
+                          ExpansionTile(
+                            title: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                    color: Color.fromARGB(255, 0, 110, 189),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                child: Padding(
+                                  padding: EdgeInsets.all(15.0),
+                                  child: Text(
+                                    "electrical Damage".toUpperCase(),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GridView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: _electricalList!.length,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3, // Number of columns
+                                    crossAxisSpacing:
+                                        1.5, // Spacing between columns
+                                    childAspectRatio: 1,
+                                    mainAxisSpacing: 1.5,
+                                  ),
+                                  itemBuilder: (BuildContext context, int i) {
+                                    bool isSelected = _selectedTotalId.contains(
+                                        _electricalList![i].damageId!);
+
+                                    return InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          if (isSelected) {
+                                            _selectedTotalId.remove(
+                                                _electricalList![i].damageId!);
+                                          } else {
+                                            _selectedTotalId.add(
+                                                _electricalList![i].damageId!);
+                                          }
+                                        });
+                                      },
+                                      child: Card(
+                                        elevation: 5,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              _electricalList![i]
+                                                  .damage!
+                                                  .toUpperCase(),
+                                              textScaleFactor: 1,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: ColorConstant.black900,
+                                                fontSize: getFontSize(10),
+                                                fontFamily: 'Inter',
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                _electricalList![i]
+                                                    .cNT
+                                                    .toString(),
+                                                textScaleFactor: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: getFontSize(14),
+                                                  fontFamily: 'Inter',
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ),
+                                            Checkbox(
+                                              activeColor: Colors.white54,
+                                              checkColor: Color.fromARGB(
+                                                  255, 251, 3, 3),
+                                              value: isSelected,
+                                              onChanged: (bool? newValue) {
+                                                setState(() {
+                                                  if (newValue == true) {
+                                                    _selectedTotalId.add(
+                                                        _electricalList![i]
+                                                            .damageId!);
+                                                  } else {
+                                                    _selectedTotalId.remove(
+                                                        _electricalList![i]
+                                                            .damageId!);
+                                                  }
+                                                });
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        if (selectedDamageType!
+                                .toLowerCase()
+                                .contains('total') ||
+                            selectedDamageType!
+                                .toLowerCase()
+                                .contains('mechanical'))
+                          ExpansionTile(
+                            title: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                    color: Color.fromARGB(255, 0, 110, 189),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                child: Padding(
+                                  padding: EdgeInsets.all(15.0),
+                                  child: Text(
+                                    "Mechanical Damage".toUpperCase(),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  ),
+                                ),
+                              ),
+                            ), // Change the title as per your requirement
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: GridView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: _mechanicalList!.length,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3, // Number of columns
+                                    crossAxisSpacing:
+                                        1.5, // Spacing between columns
+                                    childAspectRatio: 1,
+                                    mainAxisSpacing: 1.5,
+                                  ),
+                                  itemBuilder: (BuildContext context, int i) {
+                                    bool isSelected = _selectedTotalId.contains(
+                                        _mechanicalList![i].damageId!);
+
+                                    return InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          if (isSelected) {
+                                            _selectedTotalId.remove(
+                                                _mechanicalList![i].damageId!);
+                                          } else {
+                                            _selectedTotalId.add(
+                                                _mechanicalList![i].damageId!);
+                                          }
+                                        });
+                                      },
+                                      child: Card(
+                                        elevation: 5,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              _mechanicalList![i]
+                                                  .damage!
+                                                  .toUpperCase(),
+                                              textScaleFactor: 1,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: ColorConstant.black900,
+                                                fontSize: getFontSize(10),
+                                                fontFamily: 'Inter',
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                _mechanicalList![i]
+                                                    .cNT
+                                                    .toString(),
+                                                textScaleFactor: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: getFontSize(14),
+                                                  fontFamily: 'Inter',
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ),
+                                            Checkbox(
+                                              activeColor: Colors.white54,
+                                              checkColor: Color.fromARGB(
+                                                  255, 251, 3, 3),
+                                              value: isSelected,
+                                              onChanged: (bool? newValue) {
+                                                setState(() {
+                                                  if (newValue == true) {
+                                                    _selectedTotalId.add(
+                                                        _mechanicalList![i]
+                                                            .damageId!);
+                                                  } else {
+                                                    _selectedTotalId.remove(
+                                                        _mechanicalList![i]
+                                                            .damageId!);
+                                                  }
+                                                });
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                      ])
+                : Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/images/soon.gif',
+                          width: 200,
+                          height: 200,
+                        ),
+                        SizedBox(height: 20.0),
+                        Text(
+                          'Page under construction',
+                          style: TextStyle(
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      return _widget = const Center(child: CircularProgressIndicator());
+    }
   }
 
   String? selectedDamageType = "Total Damage";

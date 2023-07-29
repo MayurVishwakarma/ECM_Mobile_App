@@ -1688,7 +1688,6 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
     // return formatted; // something like 2013-04-20
   }
 
-/*
   Future<void> getCurrentLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -1725,7 +1724,7 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
     double longitude = position.longitude;
     setState(() {});
   }
-*/
+
   getUserType() async {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
@@ -1776,7 +1775,7 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
         } else {
           approveStatus = 2;
         }
-
+        
         int flagCounter = 0;
         for (var subpro in subProcessName!) {
           var list = _checkList
