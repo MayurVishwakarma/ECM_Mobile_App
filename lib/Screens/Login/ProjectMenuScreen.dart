@@ -7,6 +7,7 @@ import 'package:ecm_application/Model/project/Constants.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageMenuScreen.dart';
 import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/ECMToolScreen.dart';
 import 'package:ecm_application/Screens/Home/RoutineCheck/RoutineCheckScreen.dart';
+import 'package:ecm_application/Screens/Home/RoutineCheck/RoutineCheckStatusCommon.dart';
 import 'package:http/http.dart' as http;
 import 'package:ecm_application/Model/Project/Login/State_list_Model.dart';
 import 'package:ecm_application/Operations/StatelistOperation.dart';
@@ -63,6 +64,7 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
   String dropdownvalue = 'Item 1';
   String? ecString = '1111';
   String? dcString = '1111';
+  String? rcString = '1000';
 
   var _current = 0;
 
@@ -71,6 +73,7 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
     setState(() {
       ecString = preferences.getString('EcString');
       dcString = preferences.getString('DcString');
+      rcString = preferences.getString('RcString');
     });
   }
 
@@ -282,7 +285,7 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      RoutineCheckScreen(widget.projectName!)),
+                                      RoutineCheckScreenCommon()),
                               (Route<dynamic> route) => true,
                             );
                           },

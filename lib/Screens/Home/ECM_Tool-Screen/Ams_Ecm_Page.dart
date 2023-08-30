@@ -768,7 +768,7 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       Container(
-                        height: 50,
+                        // height: 50,
                         width: double.infinity,
                         decoration: BoxDecoration(
                             color: colorchnger(index),
@@ -785,9 +785,11 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
                             ),
                             Text(
                               '( ' +
-                                  _DisplayList![index].areaName.toString() +
-                                  '-' +
-                                  _DisplayList![index].description.toString() +
+                                  (_DisplayList![index].areaName!.trim())
+                                      .toString() +
+                                  ' - ' +
+                                  (_DisplayList![index].description ?? '')
+                                      .toString() +
                                   ' )',
                               softWrap: true,
                               style: TextStyle(color: Colors.white),

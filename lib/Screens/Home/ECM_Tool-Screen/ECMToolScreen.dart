@@ -291,18 +291,12 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Title"),
-          content: Text("Dialog content"),
+          title: Text("ERROR"),
+          content: Text("Something Went Wrong!"),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-              },
-              child: Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () {
-                // Perform action on button press
               },
               child: Text("OK"),
             ),

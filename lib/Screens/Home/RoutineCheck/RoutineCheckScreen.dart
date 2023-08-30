@@ -1019,8 +1019,8 @@ class _RoutineCheckScreenState extends State<RoutineCheckScreen> {
                   builder: (context) => RoutineManual_CheckList(
                       _DisplayList[index].omsId!,
                       _DisplayList[index].chakNo!,
-                      _DisplayList[index].areaName!,
-                      _DisplayList[index].description!,
+                      _DisplayList[index].areaName ?? '',
+                      _DisplayList[index].description ?? '',
                       widget.ProjectName!,
                       true)),
               (Route<dynamic> route) => true,
@@ -1040,7 +1040,7 @@ class _RoutineCheckScreenState extends State<RoutineCheckScreen> {
                     width: 80,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Center(
                           child: Text(_DisplayList[index].chakNo!,
@@ -1051,18 +1051,14 @@ class _RoutineCheckScreenState extends State<RoutineCheckScreen> {
                                 fontWeight: FontWeight.bold,
                               )),
                         ),
-                        Expanded(
-                          child: FittedBox(
-                            child: Text(
-                                '( ${_DisplayList[index].description}-${_DisplayList[index].areaName} )',
-                                textScaleFactor: 1,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.normal,
-                                    color: Colors.cyan)),
-                          ),
-                        ),
+                        Text(
+                            '( ${_DisplayList[index].description ?? ' '}-${_DisplayList[index].areaName ?? ' '} )',
+                            textScaleFactor: 1,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.cyan)),
                       ],
                     )),
 

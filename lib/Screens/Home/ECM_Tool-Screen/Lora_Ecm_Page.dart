@@ -711,9 +711,11 @@ class _LoraPageState extends State<LoraPage>
                             ),
                             Text(
                               '( ' +
-                                  _DisplayList![index].areaName.toString() +
-                                  '-' +
-                                  _DisplayList![index].description.toString() +
+                                  (_DisplayList![index].areaName ?? '')
+                                      .toString() +
+                                  ' - ' +
+                                  (_DisplayList![index].description ?? '')
+                                      .toString() +
                                   ' )',
                               softWrap: true,
                               style: TextStyle(color: Colors.white),

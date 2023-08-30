@@ -2084,12 +2084,10 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
             throw new Exception();
         } else {}
       } else {
-        // addSQL();
+       
       }
       throw new Exception();
-      // } else {
-      //   return false;
-      // }
+      
     } catch (_, ex) {
       throw new Exception();
     }

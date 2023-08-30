@@ -1,7 +1,6 @@
-// ignore_for_file: prefer_const_constructors, file_names, empty_catches, non_constant_identifier_names, unused_catch_stack, unused_local_variable
+// ignore_for_file: prefer_const_constructors, file_names, empty_catches, non_constant_identifier_names, unused_catch_stack, unused_local_variable, unrelated_type_equality_checks
 
 import 'dart:convert';
-// import 'dart:io';
 import 'package:ecm_application/Model/Project/Login/State_list_Model.dart';
 import 'package:ecm_application/Model/Project/Login/UserDetailsMasterModel.dart';
 import 'package:ecm_application/Model/project/Constants.dart';
@@ -11,7 +10,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-// import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AttendanceScreen extends StatefulWidget {
@@ -25,38 +23,49 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   String? username;
   bool isAttendanceAvai = false;
   late String now;
+  bool? isLoader = true;
 
   @override
   void initState() {
     super.initState();
     now = DateFormat('yyyy-MMMM-dd').format(DateTime.now());
-
-    fetchUserDetails().whenComplete(() => getProjectList());
+    getData();
   }
 
   String? currentLocation;
 
   List<ProjectModel>? projectList;
   ProjectModel? selectProject;
+  String? workingProject;
   Future<List<ProjectModel>>? futureProjectList;
   UserDetailsMasterModel? userDetals;
   String? StartLocationAddress, EndLocationAddress;
   String? startLocation = '';
   String? endLocation = '';
+  String? btnName = 'Start Session';
+  bool? bntpresent = true;
 
-  Future<void> getProjectList() async {
+  getData() async {
+    await fetchUserDetails();
+    await getProjectList().then((value) => workingProject = value!
+            .where((e) => e.id == userDetals!.workingOnProjects!)
+            .first
+            .projectName ??
+        "");
+  }
+
+  Future<List<ProjectModel>?> getProjectList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     username = '${prefs.getString('firstname')} ${prefs.getString('lastname')}';
-    setState(() {
+    var result = await getStateAuthority();
+    setState(() async {
       projectList = [];
       projectList!.add(ProjectModel(id: 0, projectName: 'SELECT PROJECT'));
-
-      futureProjectList = getStateAuthority();
-      futureProjectList!.then((value) {
-        projectList!.addAll(value);
-      });
+      projectList = List.from(result);
       selectProject = projectList!.first;
+      isLoader = false;
     });
+    return projectList;
   }
 
   Future<void> fetchUserDetails() async {
@@ -74,9 +83,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         if (json['Status'] == WebApiStatusOk) {
           setState(() {
             isAttendanceAvai = true;
+            btnName = 'End Session';
           });
           userDetals =
               UserDetailsMasterModel.fromJson(json['data']['Response']);
+
+          if (userDetals!.endLocationCoordinate!.isNotEmpty) {
+            bntpresent = false;
+          } else {
+            bntpresent = true;
+          }
 
           fetchStartLocationAddress();
           fetchEndLocationAddress();
@@ -101,343 +117,301 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       appBar: AppBar(title: const Text('Attendance')),
       body: Container(
         decoration: BoxDecoration(color: Colors.grey.shade200),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Card(
-                elevation: 8,
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
+        child: isLoader!
+            ? Center(child: CircularProgressIndicator())
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Card(
+                      elevation: 8,
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
                             children: [
-                              const Text('Date : '),
-                              Text(
-                                now,
-                                style: TextStyle(color: Colors.cyan),
-                              )
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              const Text('User name : '),
-                              Text(
-                                username ?? '',
-                                style: TextStyle(color: Colors.cyan),
-                              )
-                            ],
-                          ),
-                        ),
-                        if ((StartLocationAddress ?? '').isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Row(
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
                                   children: [
-                                    const Text('Start Time : '),
-                                    Text(DateFormat('hh:mm:ss a').format(
-                                        DateTime.parse(
-                                            userDetals!.attendanceStartTime ??
-                                                ''))),
+                                    const Text('Date : '),
+                                    Text(
+                                      now,
+                                      style: TextStyle(color: Colors.cyan),
+                                    )
                                   ],
                                 ),
-                                Row(
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
                                   children: [
-                                    const Text('Start Location : '),
-                                    Expanded(
-                                        child:
-                                            Text(StartLocationAddress ?? '')),
+                                    const Text('User name : '),
+                                    Text(
+                                      username ?? '',
+                                      style: TextStyle(color: Colors.cyan),
+                                    )
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        if ((EndLocationAddress ?? '').isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    const Text('End Time : '),
-                                    Text(DateFormat('hh:mm:ss a').format(
-                                        DateTime.parse(
-                                            userDetals!.attendanceEndTime!))),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    const Text('End Location : '),
-                                    Expanded(
-                                        child: Text(EndLocationAddress ?? '')),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        if ((EndLocationAddress ?? '').isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                const Text('Total Working Hour : '),
-                                Text(userDetals!.workingHours ?? ''),
-                              ],
-                            ),
-                          ),
-                        if (!isAttendanceAvai)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                const Text(
-                                  'Working On Project : ',
-                                  textScaleFactor: 1,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Center(
-                                    child: DropdownButton<ProjectModel>(
-                                      value: selectProject,
-                                      items: projectList!
-                                          .map((ProjectModel items) {
-                                        return DropdownMenuItem(
-                                          value: items,
-                                          child: Center(
+                              ),
+                              if ((StartLocationAddress ?? '').isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          const Text('Start Time : '),
+                                          Text(DateFormat('hh:mm:ss a').format(
+                                              DateTime.parse(userDetals!
+                                                      .attendanceStartTime ??
+                                                  ''))),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Text('Start Location : '),
+                                          Expanded(
                                               child: Text(
-                                            items.projectName!.toUpperCase(),
-                                            style: TextStyle(fontSize: 10),
-                                          )),
-                                        );
-                                      }).toList(),
-                                      onChanged: (ProjectModel? newValue) {
-                                        setState(() {
-                                          selectProject = newValue;
-                                        });
-                                      },
-                                    ),
+                                                  StartLocationAddress ?? '')),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        if ((StartLocationAddress ?? '').isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                const Text(
-                                  'Working On Project : ',
-                                  textScaleFactor: 1,
-                                  style: TextStyle(
-                                    fontSize: 12,
+                              if ((EndLocationAddress ?? '').isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          const Text('End Time : '),
+                                          Text(DateFormat('hh:mm:ss a').format(
+                                              DateTime.parse(userDetals!
+                                                  .attendanceEndTime!))),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Text('End Location : '),
+                                          Expanded(
+                                              child: Text(
+                                                  EndLocationAddress ?? '')),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Text(
-                                  userDetals!.workingOnProjects ?? '',
-                                  style: TextStyle(color: Colors.cyan),
-                                )
-                              ],
-                            ),
-                          ),
-                        if (!isAttendanceAvai)
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                            ),
-                            onPressed: () async {
-                              bool serviceEnabled;
-                              LocationPermission permission;
-
-                              // Check if location services are enabled
-                              serviceEnabled =
-                                  await Geolocator.isLocationServiceEnabled();
-                              if (!serviceEnabled) {
-                                return;
-                              }
-
-                              // Request location permission
-                              permission = await Geolocator.checkPermission();
-                              if (permission ==
-                                  LocationPermission.deniedForever) {
-                                AlertDialog(
-                                  title: Text('Enable Location'),
-                                  content: Text(
-                                      'Please enable location services to proceed.'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: Text('CANCEL'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
+                              if ((EndLocationAddress ?? '').isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      const Text('Total Working Hour : '),
+                                      Text(userDetals!.workingHours ?? ''),
+                                    ],
+                                  ),
+                                ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    const Text(
+                                      'Working On Project : ',
+                                      textScaleFactor: 1,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                      ),
                                     ),
-                                    TextButton(
-                                      child: Text('ENABLE'),
-                                      onPressed: () {
-                                        _enableLocationService();
-                                        Navigator.of(context).pop();
-                                      },
+                                    Expanded(
+                                      child: Center(
+                                        child: DropdownButton<ProjectModel>(
+                                          value: userDetals
+                                                      ?.workingOnProjects !=
+                                                  null
+                                              ? projectList?.firstWhere(
+                                                  (element) =>
+                                                      element.id ==
+                                                      int.parse(userDetals!
+                                                          .workingOnProjects!),
+                                                  orElse: () => selectProject!,
+                                                )
+                                              : selectProject,
+                                          /*userDetals!.workingOnProjects!.isEmpty
+                                            ? selectProject
+                                            : projectList!
+                                                .where((element) =>
+                                                    element.id ==
+                                                    int.parse(userDetals!
+                                                        .workingOnProjects!))
+                                                .first,*/
+                                          items: projectList
+                                              ?.map((ProjectModel items) {
+                                            return DropdownMenuItem(
+                                              value: items,
+                                              child: Center(
+                                                  child: Text(
+                                                items.projectName!
+                                                    .toUpperCase(),
+                                                style: TextStyle(fontSize: 10),
+                                              )),
+                                            );
+                                          }).toList(),
+                                          onChanged: !isAttendanceAvai
+                                              ? (ProjectModel? newValue) {
+                                                  setState(() {
+                                                    selectProject = newValue;
+                                                    workingProject =
+                                                        newValue!.projectName;
+                                                  });
+                                                }
+                                              : null,
+                                        ),
+                                      ),
                                     ),
                                   ],
-                                );
-                              }
+                                ),
+                              ),
+                              if (bntpresent!)
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: btnName == 'Start Session'
+                                        ? Colors.green
+                                        : Colors.red,
+                                  ),
+                                  onPressed: () async {
+                                    bool serviceEnabled;
+                                    LocationPermission permission;
 
-                              if (permission == LocationPermission.denied) {
-                                // Location permissions are denied, request permission
-                                permission =
-                                    await Geolocator.requestPermission();
-                                if (permission !=
-                                        LocationPermission.whileInUse &&
-                                    permission != LocationPermission.always) {
-                                  // Location permissions are denied (again), handle it accordingly
-                                  return;
-                                }
-                              }
+                                    // Check if location services are enabled
+                                    serviceEnabled = await Geolocator
+                                        .isLocationServiceEnabled();
+                                    if (!serviceEnabled) {
+                                      return;
+                                    }
 
-                              // Get the current position
-                              Position position =
-                                  await Geolocator.getCurrentPosition();
-
-                              // Retrieve the latitude and longitude
-                              double latitude = position.latitude;
-                              double longitude = position.longitude;
-                              startLocation =
-                                  ('${latitude.toStringAsFixed(4)},${longitude.toStringAsFixed(4)}');
-
-                              await StartAttendance().then((value) {
-                                if (value) {
-                                  fetchUserDetails();
-                                } else {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text("Error"),
-                                        content: Text("Something went wrong."),
-                                        actions: [
-                                          ElevatedButton(
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(),
-                                            child: Text("OK"),
+                                    // Request location permission
+                                    permission =
+                                        await Geolocator.checkPermission();
+                                    if (permission ==
+                                        LocationPermission.deniedForever) {
+                                      AlertDialog(
+                                        title: Text('Enable Location'),
+                                        content: Text(
+                                            'Please enable location services to proceed.'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text('CANCEL'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: Text('ENABLE'),
+                                            onPressed: () {
+                                              _enableLocationService();
+                                              Navigator.of(context).pop();
+                                            },
                                           ),
                                         ],
                                       );
-                                    },
-                                  );
-                                }
-                              });
-                            },
-                            child: const Text('Start Session'),
+                                    }
+
+                                    if (permission ==
+                                        LocationPermission.denied) {
+                                      // Location permissions are denied, request permission
+                                      permission =
+                                          await Geolocator.requestPermission();
+                                      if (permission !=
+                                              LocationPermission.whileInUse &&
+                                          permission !=
+                                              LocationPermission.always) {
+                                        // Location permissions are denied (again), handle it accordingly
+                                        return;
+                                      }
+                                    }
+
+                                    // Get the current position
+                                    Position position =
+                                        await Geolocator.getCurrentPosition();
+
+                                    // Retrieve the latitude and longitude
+                                    double latitude = position.latitude;
+                                    double longitude = position.longitude;
+                                    if (btnName == 'Start Session') {
+                                      startLocation =
+                                          ('${latitude.toStringAsFixed(4)},${longitude.toStringAsFixed(4)}');
+                                      await StartAttendance().then((value) {
+                                        if (value) {
+                                          fetchUserDetails();
+                                        } else {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: Text("Error"),
+                                                content: Text(
+                                                    "Something went wrong."),
+                                                actions: [
+                                                  ElevatedButton(
+                                                    onPressed: () =>
+                                                        Navigator.of(context)
+                                                            .pop(),
+                                                    child: Text("OK"),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        }
+                                      });
+                                    } else {
+                                      endLocation =
+                                          ('${latitude.toStringAsFixed(4)},${longitude.toStringAsFixed(4)}');
+                                      await EndAttendance().then((value) {
+                                        if (value) {
+                                          fetchUserDetails();
+                                        } else {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: Text("Error"),
+                                                content: Text(
+                                                    "Something went wrong."),
+                                                actions: [
+                                                  ElevatedButton(
+                                                    onPressed: () =>
+                                                        Navigator.of(context)
+                                                            .pop(),
+                                                    child: Text("OK"),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        }
+                                      });
+                                    }
+
+                                    setState(() {
+                                      btnName = 'End Session';
+                                    });
+                                  },
+                                  child: Text(btnName!.toString()),
+                                ),
+                            ],
                           ),
-                        if (isAttendanceAvai &&
-                            userDetals!.endLocationCoordinate!.isEmpty)
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                            ),
-                            onPressed: () async {
-                              bool serviceEnabled;
-                              LocationPermission permission;
-                              // Check if location services are enabled
-                              serviceEnabled =
-                                  await Geolocator.isLocationServiceEnabled();
-                              if (!serviceEnabled) {
-                                return;
-                              }
-
-                              // Request location permission
-                              permission = await Geolocator.checkPermission();
-                              if (permission ==
-                                  LocationPermission.deniedForever) {
-                                AlertDialog(
-                                  title: Text('Enable Location'),
-                                  content: Text(
-                                      'Please enable location services to proceed.'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: Text('CANCEL'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                    TextButton(
-                                      child: Text('ENABLE'),
-                                      onPressed: () {
-                                        _enableLocationService();
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              }
-
-                              if (permission == LocationPermission.denied) {
-                                // Location permissions are denied, request permission
-                                permission =
-                                    await Geolocator.requestPermission();
-                                if (permission !=
-                                        LocationPermission.whileInUse &&
-                                    permission != LocationPermission.always) {
-                                  // Location permissions are denied (again), handle it accordingly
-                                  return;
-                                }
-                              }
-
-                              Position position =
-                                  await Geolocator.getCurrentPosition();
-                              double latitude = position.latitude;
-                              double longitude = position.longitude;
-                              startLocation =
-                                  ('${latitude.toStringAsFixed(4)},${longitude.toStringAsFixed(4)}');
-                              endLocation =
-                                  ('${latitude.toStringAsFixed(4)},${longitude.toStringAsFixed(4)}');
-
-                              await EndAttendance().then((value) {
-                                if (value) {
-                                  fetchUserDetails();
-                                } else {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text("Error"),
-                                        content: Text("Something went wrong."),
-                                        actions: [
-                                          ElevatedButton(
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(),
-                                            child: Text("OK"),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                }
-                              });
-                            },
-                            child: const Text('End Session'),
-                          ),
-                      ],
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -513,15 +487,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       var projectId = selectProject!.id;
 
       var insertObj = <String, dynamic>{
-        'attendenceId': '',
-        'attendanceStartTime': '',
-        'attendanceEndTime': '',
-        'startLocationCoordinate': startLocation,
-        'endLocationCoordinate': '',
-        'workingHours': '',
-        'workingOnProjects': projectId,
-        'userId': userId,
-        'attendanceDate': now,
+        'AttendanceId': '',
+        'AttendanceStartTime': '',
+        'AttendanceEndTime': '',
+        'StartLocationCoordinate': startLocation,
+        'EndLocationCoordinate': '',
+        "EndLocationPlacemark": "",
+        'WorkingHours': '',
+        'WorkingOnProjects': projectId,
+        'UserId': userId,
+        'AttendanceDate': (DateTime.now()).toString(),
       };
 
       var headers = {'Content-Type': 'application/json'};
@@ -559,15 +534,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       var projectId = userDetals!.workingOnProjects;
 
       var insertObj = <String, dynamic>{
-        'attendenceId': userDetals!.attendanceId,
-        'attendanceStartTime': userDetals!.attendanceStartTime,
-        'attendanceEndTime': '',
-        'startLocationCoordinate': userDetals!.startLocationCoordinate,
-        'endLocationCoordinate': endLocation,
-        'workingHours': '',
-        'workingOnProjects': projectId,
-        'userId': userId,
-        'attendanceDate': now,
+        'AttendanceId': userDetals!.attendanceId,
+        'AttendanceStartTime': userDetals!.attendanceStartTime,
+        'AttendanceEndTime': '0001-01-01T00:00:00',
+        'StartLocationCoordinate': userDetals!.startLocationCoordinate,
+        'EndLocationCoordinate': endLocation,
+        "EndLocationPlacemark": "",
+        'WorkingHours': '',
+        'WorkingOnProjects': projectId,
+        'UserId': userId,
+        'AttendanceDate': (DateTime.now()).toString(),
       };
 
       var headers = {'Content-Type': 'application/json'};
@@ -596,90 +572,3 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     }
   }
 }
-
-/*
- ElevatedButton(
-                                      // icon: Icon(
-                                      //   Icons.gps_fixed,
-                                      //   color: Colors.blue,
-                                      // ),
-                                      child: Text('Get Location'),
-                                      onPressed: isEdit()
-                                          ? () async {
-                                              bool serviceEnabled;
-                                              LocationPermission permission;
-
-                                              // Check if location services are enabled
-                                              serviceEnabled = await Geolocator
-                                                  .isLocationServiceEnabled();
-                                              if (!serviceEnabled) {
-                                                return;
-                                              }
-
-                                              // Request location permission
-                                              permission = await Geolocator
-                                                  .checkPermission();
-                                              if (permission ==
-                                                  LocationPermission
-                                                      .deniedForever) {
-                                                AlertDialog(
-                                                  title:
-                                                      Text('Enable Location'),
-                                                  content: Text(
-                                                      'Please enable location services to proceed.'),
-                                                  actions: <Widget>[
-                                                    TextButton(
-                                                      child: Text('CANCEL'),
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                    ),
-                                                    TextButton(
-                                                      child: Text('ENABLE'),
-                                                      onPressed: () {
-                                                        _enableLocationService();
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                    ),
-                                                  ],
-                                                );
-                                              }
-
-                                              if (permission ==
-                                                  LocationPermission.denied) {
-                                                // Location permissions are denied, request permission
-                                                permission = await Geolocator
-                                                    .requestPermission();
-                                                if (permission !=
-                                                        LocationPermission
-                                                            .whileInUse &&
-                                                    permission !=
-                                                        LocationPermission
-                                                            .always) {
-                                                  // Location permissions are denied (again), handle it accordingly
-                                                  return;
-                                                }
-                                              }
-
-                                              // Get the current position
-                                              Position position =
-                                                  await Geolocator
-                                                      .getCurrentPosition();
-
-                                              // Retrieve the latitude and longitude
-                                              double latitude =
-                                                  position.latitude;
-                                              double longitude =
-                                                  position.longitude;
-                                              String location = ('lat: ' +
-                                                  latitude.toStringAsFixed(4) +
-                                                  ' long: ' +
-                                                  longitude.toStringAsFixed(4));
-
-                                              item.value = location;
-                                            }
-                                          : null,
-                                    ),
-                                 */

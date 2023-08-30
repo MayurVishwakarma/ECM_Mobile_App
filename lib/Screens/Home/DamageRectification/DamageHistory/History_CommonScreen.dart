@@ -1,7 +1,6 @@
 // ignore_for_file: unnecessary_import, must_be_immutable, non_constant_identifier_names, prefer_const_constructors, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, unnecessary_null_in_if_null_operators, no_leading_underscores_for_local_identifiers, unused_field, sort_child_properties_last, prefer_const_literals_to_create_immutables, camel_case_types, avoid_unnecessary_containers, sized_box_for_whitespace, unused_local_variable, prefer_typing_uninitialized_variables, use_build_context_synchronously
 
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:ecm_application/Model/Project/Damage/DamageHistory.dart';
 import 'package:ecm_application/Model/Project/Damage/DamageReportDetails._Model.dart';
 import 'package:ecm_application/Model/Project/Damage/OmsDamageModel.dart';
@@ -12,7 +11,6 @@ import 'package:ecm_application/Model/Project/Constants.dart';
 import 'package:ecm_application/Services/RestDamage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 DamageModel? modelData;
@@ -114,7 +112,7 @@ class _History_CommonListState extends State<History_CommonList> {
                               conString = preferences.getString('ConString');
                               projectName =
                                   preferences.getString('ProjectName')!;
-                              Navigator.pushAndRemoveUntil(
+                              Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => History_DetailsScreen(
@@ -122,7 +120,7 @@ class _History_CommonListState extends State<History_CommonList> {
                                           projectName,
                                           widget.Source!,
                                         )),
-                                (Route<dynamic> route) => true,
+                                // (Route<dynamic> route) => true,
                               );
                             },
                             child: Card(
@@ -509,4 +507,3 @@ class _History_CommonListState extends State<History_CommonList> {
     }
   }
 }
-

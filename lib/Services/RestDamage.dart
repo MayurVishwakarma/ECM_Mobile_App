@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, non_constant_identifier_names
+// ignore_for_file: avoid_print, non_constant_identifier_names, unused_catch_stack
 
 import 'dart:convert';
 
@@ -7,7 +7,9 @@ import 'dart:convert';
 import 'package:ecm_application/Model/Project/Damage/DamageCommanModel.dart';
 import 'package:ecm_application/Model/Project/Damage/DamageHistory.dart';
 import 'package:ecm_application/Model/Project/Damage/Information.dart';
+import 'package:ecm_application/Model/Project/Damage/IssuesMasterModel.dart';
 import 'package:ecm_application/Model/Project/Damage/MaterialConsumption.dart';
+import 'package:ecm_application/Model/Project/Damage/MaterialConsumptionHistoryModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -158,6 +160,33 @@ Future<List<DamageHistory>> getDamageHistorCommon(
   }
 }
 
+Future<List<MaterialConsumptionHistoryDamageModel>>
+    getMaterialConsumptionHistory(int deviceId, String source) async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  String? conString = preferences.getString('ConString');
+
+  try {
+    final response = await http.get(Uri.parse(
+        'http://wmsservices.seprojects.in/api/Rectify/RectifyHistory?deviceId=$deviceId&source=$source&conString=$conString'));
+    print(
+        'http://wmsservices.seprojects.in/api/Rectify/RectifyHistory?deviceId=$deviceId&source=$source&conString=$conString');
+
+    if (response.statusCode == 200) {
+      List<MaterialConsumptionHistoryDamageModel> result =
+          <MaterialConsumptionHistoryDamageModel>[];
+      var json = jsonDecode(response.body);
+      json['data']['Response'].forEach(
+          (v) => result.add(MaterialConsumptionHistoryDamageModel.fromJson(v)));
+      return result;
+    } else {
+      throw Exception("API Consumed Failed");
+    }
+  } on Exception catch (e) {
+    print(e.toString());
+    throw Exception("API Consumed Failed");
+  }
+}
+
 Future<List<InfoModel>> Infomation(int deviceId, String source) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
   String? conString = preferences.getString('ConString');
@@ -183,4 +212,51 @@ Future<List<InfoModel>> Infomation(int deviceId, String source) async {
   }
 }
 
+Future<List<DamageIssuesMasterModel>> Issues(
+    int deviceId, String source) async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  String? conString = preferences.getString('ConString');
 
+  try {
+    final response = await http.get(Uri.parse(
+        'http://wmsservices.seprojects.in/api/infoReport/GetInfoReport?DeviceId=$deviceId&Source=$source&InfoTypeId=2&conString=$conString'));
+    print(
+        'http://wmsservices.seprojects.in/api/infoReport/GetInfoReport?DeviceId=$deviceId&Source=$source&InfoTypeId=2&conString=$conString');
+
+    if (response.statusCode == 200) {
+      List<DamageIssuesMasterModel> result = <DamageIssuesMasterModel>[];
+      var json = jsonDecode(response.body);
+      json['data']['Response']
+          .forEach((v) => result.add(DamageIssuesMasterModel.fromJson(v)));
+
+      return result;
+    } else {
+      throw Exception("API Consumed Failed");
+    }
+  } on Exception catch (e) {
+    print(e.toString());
+    throw Exception("API Consumed Failed");
+  }
+}
+
+Future<String?> GetImagebyPath(String imgPath) async {
+  String? img64base;
+  try {
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            'http://wmsservices.seprojects.in/api/Image/GetImage?imgPath=$imgPath'));
+    print(
+        'http://wmsservices.seprojects.in/api/Image/GetImage?imgPath=$imgPath');
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      img64base = await response.stream.bytesToString();
+    } else {
+      print(response.reasonPhrase);
+    }
+  } catch (_, ex) {}
+
+  return img64base!.replaceAll('"', '');
+}

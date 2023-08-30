@@ -12,6 +12,7 @@ class ProjectModel {
   String? userName;
   String? password;
   String? eCString;
+  String? rCString;
   String? dRString;
   String? allowDeviceTypeString;
 
@@ -29,6 +30,7 @@ class ProjectModel {
       this.userName,
       this.password,
       this.eCString,
+      this.rCString,
       this.dRString,
       this.allowDeviceTypeString});
 
@@ -46,6 +48,7 @@ class ProjectModel {
     userName = json['userName'];
     password = json['Password'];
     eCString = json['ECString'];
+    rCString = json['RCString'];
     dRString = json['DRString'];
     allowDeviceTypeString = json['AllowDeviceTypeString'];
   }
@@ -65,6 +68,7 @@ class ProjectModel {
     data['userName'] = this.userName;
     data['Password'] = this.password;
     data['ECString'] = this.eCString;
+    data['RCString'] = this.rCString;
     data['DRString'] = this.dRString;
     data['AllowDeviceTypeString'] = this.allowDeviceTypeString;
     return data;

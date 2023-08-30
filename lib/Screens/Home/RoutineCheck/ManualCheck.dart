@@ -1,5 +1,6 @@
-// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, sort_child_properties_last, unused_element, prefer_typing_uninitialized_variables, unused_field, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_collection_literals, duplicate_ignore, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, no_leading_underscores_for_local_identifiers, unnecessary_null_in_if_null_operators, must_be_immutable, avoid_function_literals_in_foreach_calls, unused_local_variable, use_build_context_synchronously, curly_braces_in_flow_control_structures, unused_catch_stack, unnecessary_null_comparison, camel_case_types
+// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, sort_child_properties_last, unused_element, prefer_typing_uninitialized_variables, unused_field, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_collection_literals, duplicate_ignore, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, no_leading_underscores_for_local_identifiers, unnecessary_null_in_if_null_operators, must_be_immutable, avoid_function_literals_in_foreach_calls, unused_local_variable, use_build_context_synchronously, curly_braces_in_flow_control_structures, unused_catch_stack, unnecessary_null_comparison, camel_case_types, prefer_const_declarations
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:ecm_application/Model/Project/RoutineCheck/RoutineCheckListModel.dart';
 import 'package:ecm_application/Model/Project/RoutineCheck/RoutineCheckModel.dart';
@@ -324,30 +325,19 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
             children: [
               TextFormField(
                 decoration: InputDecoration(
-                  hintText:
-                      'Enter Remark*', // Placeholder text for Remark field
+                  hintText: 'Enter Remark*',
                 ),
                 onChanged: (value) {
                   _remarkController = value;
                 },
                 validator: (value) {
                   if (value! == '') {
-                    return 'Please enter Remark'; // Validation for Remark field
+                    return 'Please enter Remark';
                   }
                   return null;
                 },
               ),
               SizedBox(height: 16.0),
-              // if (conString!.contains('ID=dba'))
-              //   TextFormField(
-              //     decoration: InputDecoration(
-              //       hintText:
-              //           'Enter Site Team Members', // Placeholder text for Site Team Members field
-              //     ),
-              //     onChanged: (value) {
-              //       _siteEngineerTeamController = value;
-              //     },
-              //   ),
             ],
           ),
           actions: [
@@ -365,14 +355,9 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
                 if (_remarkController != null) {
                   currDate = DateTime.now();
                   insertRoutineCheckListData(
-                          _ChecklistModel!, _remarkController!, 0)
+                          _ChecklistModel!, _remarkController!)
                       .then(
                     (value) {
-                      // _showToast(
-                      //     isSubmited!
-                      //         ? "Data Updated Successfully"
-                      //         : "Something Went Wrong!!!",
-                      //     MessageType: isSubmited! ? 0 : 1);
                       switch (value) {
                         case 1:
                           _showToast(
@@ -382,8 +367,6 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
                         case 2:
                           _showToast("Data Updated Successfully",
                               MessageType: 0);
-
-                          // await widget.viewModel.refresh();
                           break;
                         case 3:
                           _showToast("Minimum 3 Images are required to proceed",
@@ -482,7 +465,7 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.Chakno!),
+          title: Text(widget.Chakno ?? ''),
         ),
         body: Padding(
           padding: EdgeInsets.all(8.0),
@@ -501,8 +484,8 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Distibutory : ' + widget.Areaname!),
-                              Text('Sub Area : ' + widget.Description!)
+                              Text('Distibutory : ' + widget.Areaname! ?? ''),
+                              Text('Sub Area : ' + widget.Description! ?? '')
                             ],
                           ),
                         ),
@@ -843,9 +826,20 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
     }
   }
 
+  String generateRandomString({int length = 6}) {
+    var random = Random.secure();
+    var values = List<int>.generate(length, (i) => random.nextInt(256));
+    return base64Url.encode(values);
+  }
+
   Future<String?> uploadImage(String ImagePath, XFile? image) async {
     try {
-      var imgData = await http.MultipartFile.fromPath('Image', image!.path);
+      var uniqueIdentifier =
+          generateRandomString(); // Generate a random alphanumeric string
+      var timestamp = DateTime.now().millisecondsSinceEpoch;
+      var imageName = '$uniqueIdentifier-$timestamp.jpg';
+      var imgData = await http.MultipartFile.fromPath('Image', image!.path,
+          filename: imageName);
       var request = http.MultipartRequest(
           'POST',
           Uri.parse(
@@ -859,6 +853,7 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
 
       if (response.statusCode == 200) {
         var path = await response.stream.bytesToString();
+
         if (path == '""')
           return '';
         else
@@ -919,8 +914,8 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
     }
   }
 
-  Future<int> insertRoutineCheckListData(List<RoutineCheckListModel> _checkList,
-      String _remark, int _processIndex) async {
+  Future<int> insertRoutineCheckListData(
+      List<RoutineCheckListModel> _checkList, String _remark) async {
     bool flag = false;
     int _routineStatus = 0;
     try {
@@ -954,25 +949,20 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       String? conString = preferences.getString('ConString');
       String? project = preferences.getString('ProjectName');
-      String? projectName =
-          preferences.getString('ProjectName')!.replaceAll(' ', '_');
       int? proUserId = preferences.getInt('ProUserId');
       var omsId = widget.OmsId;
       String submitDate = DateFormat('ddMMyyyy-HHmmss').format(currDate!);
       final _userName = preferences.getString('firstname');
-
-      final dirPath = "${projectName}/$omsId/${_userName}${submitDate}/";
+      final dirPath = "$project/$omsId/$_userName$submitDate/";
       final _routineStatus = 2;
 
       int countflag = 0;
       int uploadflag = 0;
-
       if (_listdataWithoutNullValue.isEmpty) {
-        return 1; // refer no checklist selected
+        return 1;
       }
-
       if (_imglistdataWithoutNullValue.length < 3) {
-        return 3; // refer mandatary 3 image conaition is not satisfied
+        return 3;
       } else {
         await Future.wait(_imglistdataWithoutNullValue
             .where((element) =>
@@ -987,20 +977,23 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
           countflag++;
         }));
       }
+      // var checkListId = _list.map((e) => e.id).toList().join(",");
+      // var valueData = _list.map((e) => e.value ?? '').toList().join(",");
 
-      final _checkListData = _list.map((x) => x.id.toString()).join(',') +
+      final checkListId = _list.map((x) => x.id.toString()).join(',') +
           ',' +
           _imglist.map((x) => x.id.toString()).join(',');
 
-      final _valueData = _list.map((x) => x.value?.trim() ?? '').join(',') +
+      final valueData = _list.map((x) => x.value?.trim() ?? '').join(',') +
           ',' +
           _imglist.map((x) => x.value?.trim() ?? '').join(',');
-      var Insertobj = new Map<String, dynamic>();
 
-      Insertobj["checkListData"] = _checkListData;
+      var Insertobj = Map<String, dynamic>();
+
+      Insertobj["checkListData"] = checkListId;
       Insertobj["OmsId"] = widget.OmsId;
       Insertobj["userId"] = proUserId.toString();
-      Insertobj["valuedata"] = _valueData;
+      Insertobj["valuedata"] = valueData;
       Insertobj["Remark"] = _remark;
       Insertobj["RoutineStatus"] = _routineStatus;
       Insertobj["conString"] = conString;
@@ -1019,7 +1012,6 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
           if (json["Status"] == "Ok") {
             isSubmited = true;
             firstLoad();
-            // getECMData('MANUAL CHECK');
             return 2;
           } else
             throw Exception();
@@ -1060,7 +1052,7 @@ class PreviewImageWidget extends StatelessWidget {
     );
   }
 }
-
+/*
 // // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, sort_child_properties_last, unused_element, prefer_typing_uninitialized_variables, unused_field, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_collection_literals, duplicate_ignore, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, no_leading_underscores_for_local_identifiers, unnecessary_null_in_if_null_operators, must_be_immutable, avoid_function_literals_in_foreach_calls, unused_local_variable, use_build_context_synchronously, curly_braces_in_flow_control_structures, unused_catch_stack, unnecessary_null_comparison
 // import 'dart:convert';
 
@@ -2321,3 +2313,4 @@ class PreviewImageWidget extends StatelessWidget {
 //     );
 //   }
 // }
+*/

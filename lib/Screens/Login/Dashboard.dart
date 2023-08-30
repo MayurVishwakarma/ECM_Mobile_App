@@ -125,13 +125,19 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                               child: DropdownButton(
                                 isExpanded: true,
                                 value: selectProject,
-                                items: projectList!
-                                    .where((element) =>
-                                        element.state ==
-                                        (selectState != 'ALL STATE'
-                                            ? selectState
-                                            : element.state))
-                                    .map((ProjectModel items) {
+                                items: projectList!.where((element) {
+                                  if (element.state ==
+                                      (selectState != 'ALL STATE'
+                                          ? selectState
+                                          : element.state)) {
+                                    return true;
+                                  } else if (element.projectName ==
+                                      "ALL PROJECT") {
+                                    return true;
+                                  } else {
+                                    return false;
+                                  }
+                                }).map((ProjectModel items) {
                                   return DropdownMenuItem(
                                     value: items,
                                     child: Center(
@@ -225,13 +231,19 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
               );
             } else if (snapshot.hasData) {
               List<ProjectModel> data = [];
-              data = (snapshot.data as List<ProjectModel>)
-                  .where((element) =>
-                      element.projectName ==
-                      (selectProject!.projectName != 'ALL PROJECT'
-                          ? selectProject!.projectName
-                          : element.projectName))
-                  .toList();
+              data = (snapshot.data as List<ProjectModel>).where((element) {
+                if (selectProject?.projectName == "ALL PROJECT" &&
+                    element.state == selectState) {
+                  return true;
+                } else if (selectProject?.projectName != "ALL PROJECT" &&
+                    selectProject == element) {
+                  return true;
+                } else if (selectProject?.projectName == "ALL PROJECT" &&
+                    selectState == "ALL STATE") {
+                  return true;
+                }
+                return false;
+              }).toList();
               var items = data.toList();
               return ListView.builder(
                 physics: BouncingScrollPhysics(),
@@ -253,6 +265,9 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                             'EcString', data[index].eCString!);
                         preferences.setString(
                             'DcString', data[index].dRString!);
+                        preferences.setString(
+                            'RcString', data[index].rCString!);
+
                         preferences.setString('AllowDeviceTypeString',
                             data[index].allowDeviceTypeString!);
                         preferences.setString('ConString', conString);
@@ -2343,63 +2358,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                             width: 10,
                                                           ),
                                                           Expanded(
-                                                            child:
-                                                                /*PieChart(
-                                                            dataMap: i.pieData!,
-                                                            animationDuration:
-                                                                Duration(
-                                                                    seconds: 5),
-                                                            chartLegendSpacing:
-                                                                10,
-                                                            chartRadius:
-                                                                MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width *
-                                                                    0.35,
-                                                            colorList: [
-                                                              Colors.green,
-                                                              Colors.red,
-                                                              Colors.orange
-                                                            ],
-                                                            initialAngleInDegree:
-                                                                0,
-                                                            chartType:
-                                                                ChartType.ring,
-                                                            ringStrokeWidth: 32,
-                                                            centerText: i.title!,
-                                                            legendOptions:
-                                                                LegendOptions(
-                                                              showLegendsInRow:
-                                                                  true,
-                                                              legendPosition:
-                                                                  LegendPosition
-                                                                      .bottom,
-                                                              showLegends: false,
-                                                              // legendShape: _BoxShape.circle,
-                                                              legendTextStyle:
-                                                                  TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                            chartValuesOptions:
-                                                                ChartValuesOptions(
-                                                              showChartValueBackground:
-                                                                  false,
-                                                              showChartValues:
-                                                                  false,
-                                                              showChartValuesInPercentage:
-                                                                  false,
-                                                              showChartValuesOutside:
-                                                                  false,
-                                                              decimalPlaces: 1,
-                                                            ),
-                                                            // gradientList: ---To add gradient colors---
-                                                            // emptyColorGradient: ---Empty Color gradient---
-                                                          )*/
-                                                                PieChart(
+                                                            child: PieChart(
                                                               animationDuration:
                                                                   Duration(
                                                                       seconds:
@@ -2447,7 +2406,29 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                         height: 10,
                                       ),
                                       //Page Indicator
+
                                       Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: listData.pieData!.map((item) {
+                                          int index =
+                                              listData.pieData!.indexOf(item);
+                                          return Container(
+                                            width: 8,
+                                            height: 8,
+                                            margin: EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 4),
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: _current == index
+                                                  ? Colors.blue
+                                                  : Colors.grey,
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
+
+                                      /* Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [1, 2, 3, 4]
@@ -2466,6 +2447,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                 ))
                                             .toList(),
                                       ),
+                                    */
                                     ],
                                   );
                                 } else if (snap.hasError) {

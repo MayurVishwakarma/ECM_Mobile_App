@@ -98,7 +98,6 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
         key: _formKey,
         child: Column(
           children: <Widget>[
-            // sizedbox,
             sizedbox,
             _buildPhoneField(context),
             _buildPasswordField(context),

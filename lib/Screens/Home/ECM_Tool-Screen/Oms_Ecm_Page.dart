@@ -714,9 +714,12 @@ class _OmsPageState extends State<OmsPage> {
                             ),
                             Text(
                               '( ' +
-                                  _DisplayList![index].areaName.toString() +
-                                  '-' +
-                                  _DisplayList![index].description.toString() +
+                                  ((_DisplayList![index].areaName ?? '').trim())
+                                      .toString() +
+                                  ' - ' +
+                                  (_DisplayList![index].description ?? '')
+                                      .trim()
+                                      .toString() +
                                   ' )',
                               softWrap: true,
                               style: TextStyle(color: Colors.white),

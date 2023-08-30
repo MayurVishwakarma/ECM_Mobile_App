@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, prefer_const_literals_to_create_immutables, unnecessary_new, file_names, use_key_in_widget_constructors, prefer_collection_literals, unnecessary_null_comparison, unused_field, must_be_immutable
 
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageHistory/DamageNodeHistoryList.dart';
+import 'package:ecm_application/Screens/Home/DamageRectification/DamageInformation/DamageInformationCommon.dart';
+import 'package:ecm_application/Screens/Home/DamageRectification/DamageMaterialCunsumption/MaterialConsumptionCommon.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageReportStatus/DamageReport_Screen.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/RectificationForm/DamageReportList.dart';
 import 'package:ecm_application/Model/Project/Login/State_list_Model.dart';
@@ -232,22 +234,12 @@ class _DamageMenuScreenState extends State<DamageMenuScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: InkWell(
                           onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text("Page Under Construction"),
-                                  content: Text(
-                                      "Sorry, this page is still under construction."),
-                                  actions: [
-                                    TextButton(
-                                      child: Text("OK"),
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(),
-                                    ),
-                                  ],
-                                );
-                              },
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      MaterialConsumption_Screen()),
+                              (Route<dynamic> route) => true,
                             );
                           },
                           child: Container(
@@ -290,7 +282,14 @@ class _DamageMenuScreenState extends State<DamageMenuScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: InkWell(
                           onTap: () {
-                            showDialog(
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      DamageInformation_Screen()),
+                              (Route<dynamic> route) => true,
+                            );
+                            /*showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
@@ -307,6 +306,7 @@ class _DamageMenuScreenState extends State<DamageMenuScreen> {
                                 );
                               },
                             );
+                          */
                           },
                           child: Container(
                             width: double.infinity,
