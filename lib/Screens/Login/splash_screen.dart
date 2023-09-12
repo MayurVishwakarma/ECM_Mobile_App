@@ -263,7 +263,7 @@ class SplashScreen extends StatelessWidget {
                                     ),
                                   ),
                                   child: Text(
-                                    "Version 0.6",
+                                    "Version 0.7",
                                     textScaleFactor: 1,
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.center,

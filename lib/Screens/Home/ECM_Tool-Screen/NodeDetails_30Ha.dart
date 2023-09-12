@@ -331,7 +331,10 @@ class _NodeDetails30HaState extends State<NodeDetails30Ha> {
                     //if user click this button, user can upload image from gallery
                     onPressed: () {
                       setState(() {
-                        imageList![index].imageByteArray = imagebytearray;
+                        imageList![index].image = null;
+                        imageList![index].imageByteArray = null;
+                        imageList![index].value = null;
+                        // imageList![index].imageByteArray = imagebytearray;
                         Navigator.pop(context);
                       });
                     },
@@ -1736,144 +1739,6 @@ class _NodeDetails30HaState extends State<NodeDetails30Ha> {
     return widget;
   }
 
-/*  getECMFeed() {
-    Widget? widget = const Center(child: CircularProgressIndicator());
-
-    if (subProcessName!.isNotEmpty && _ChecklistModel!.isNotEmpty) {
-      widget = Column(
-        children: [
-          for (var subProcess in subProcessName!)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: ExpandableTile(
-                  title: Text(
-                    subProcess.toUpperCase(),
-                    softWrap: true,
-                  ),
-                  body: Column(children: [
-                    for (var item in _ChecklistModel!.where((e) =>
-                        e.subProcessName == subProcess &&
-                        e.processId == processId &&
-                        e.inputType != 'image'))
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: getDescription(item.description!),
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            if (item.inputType == 'text' ||
-                                item.inputType == 'float')
-                              Expanded(
-                                flex: 1,
-                                child: TextFormField(
-                                  initialValue: item.value,
-                                  decoration: InputDecoration(
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1,
-                                          color: Colors.blue), //<-- SEE HERE
-                                    ),
-                                    suffixText: (item.inputText != null &&
-                                            item.inputText!.isNotEmpty)
-                                        ? item.inputText!
-                                        : '',
-                                  ),
-                                  onChanged: (value) async {
-                                    if (item.description!
-                                            .toLowerCase()
-                                            .contains('width') ||
-                                        item.description!
-                                            .toLowerCase()
-                                            .contains('depth') ||
-                                        item.description!
-                                            .toLowerCase()
-                                            .contains('length')) {
-                                      fetchTotalValue();
-                                      setState(() {
-                                        item.value = totalvolume;
-                                      });
-                                    }
-                                    setState(() {
-                                      item.value = value;
-                                    });
-                                  },
-                                ),
-                              ),
-                            if (item.inputType == 'boolean')
-                              Expanded(
-                                  flex: 0,
-                                  child: Checkbox(
-                                    activeColor: Colors.white54,
-                                    checkColor: Colors.green,
-                                    value: item.value == 'OK' ? true : false,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        item.value = value! ? 'OK' : '';
-                                      });
-                                    },
-                                  )),
-                            if (item.description!.toLowerCase().contains(
-                                'ugpl location')) // yeh Conditon aage development pareshan  bhut karega
-                              Expanded(
-                                flex: 0,
-                                child: Row(
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        GetPDFbyPath(
-                                            getAppbarName('below30ha'));
-                                        base64ToPdf(pdfString!,
-                                            getAppbarName('below30ha'));
-                                      },
-                                      icon: Icon(Icons.picture_as_pdf),
-                                    ),
-                                    IconButton(
-                                        onPressed: () {
-                                          openMap(coordinate);
-                                        },
-                                        icon: Icon(Icons.pin_drop))
-                                  ],
-                                ),
-                              ),
-                            if (item.inputType == 'bool')
-                              Expanded(
-                                  flex: 0,
-                                  child: DropdownButton<String>(
-                                    value: item.value == 'OK' ? 'YES' : 'NO',
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        item.value = value == 'YES' ? 'OK' : '';
-                                      });
-                                    },
-                                    items: <String>['NO', 'YES']
-                                        .map<DropdownMenuItem<String>>(
-                                            (String? value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value!),
-                                      );
-                                    }).toList(),
-                                  )),
-                          ],
-                        ),
-                      )
-                  ])),
-            )
-        ],
-      );
-    } else {
-      widget = const Center(child: CircularProgressIndicator());
-    }
-    return widget;
-  }
-*/
   getDescription(String value) {
     try {
       if (value.toLowerCase().contains('width')) {
@@ -2263,8 +2128,139 @@ class _NodeDetails30HaState extends State<NodeDetails30Ha> {
       return false;
     }
   }
-
   Future<bool> insertCheckListDataWithSiteTeamEngineer(
+      List<ECM_Checklist_Model> _checkList) async {
+    bool flag = false;
+    var respflag;
+    try {
+      if (_checkList != null) {
+        int approveStatus = 0;
+        int checkCount = _checkList
+            .where((e) =>
+                (e.value == null || e.value!.isEmpty) && e.inputType != "image")
+            .length;
+        int imageCount = _checkList
+            .where((e) =>
+                ((e.value == null || e.value!.isEmpty) || e.image != null) &&
+                e.inputType == "image")
+            .length;
+        int imagewithvalue = imageList!
+            .where((e) =>
+                ((e.value == null || e.value!.isEmpty) || e.image != null) &&
+                e.inputType == "image")
+            .length;
+        bool isPartialProcess =
+            selectedProcess!.toLowerCase().contains("dry") ||
+                selectedProcess!.toLowerCase().contains('auto');
+
+        var _imglistdataWithoutNullValue = imageList!
+            .where((item) =>
+                item.inputType!.contains("image") && item.image != null)
+            .toList();
+
+        if (checkCount !=
+                _checkList.where((e) => e.inputText != "image").length ||
+            imageCount != 0) {
+          if (checkCount == 0 && _imglistdataWithoutNullValue.length < 3) {
+            await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Message"),
+                  content: Text("Minimum 3 Images are required to proceed"),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("OK"),
+                    ),
+                  ],
+                );
+              },
+            );
+            return false;
+          } else if (imageCount >= 3 && checkCount == 0) {
+            approveStatus = isPartialProcess ? 1 : 2;
+          } else if (!isPartialProcess) {
+            approveStatus = 1;
+          } else {
+            if (imageCount < 3)
+              await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Message"),
+                    content: Text("Minimum 3 Images are required to proceed"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text("OK"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            if (checkCount != 0)
+              await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Message"),
+                    content:
+                        Text("Partially done is not allow in this process"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text("OK"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            // print("Partially done is not allow in this process");
+            return false;
+          }
+        } else {
+          return false;
+        }
+
+        int flagCounter = 0;
+        for (var subpro in subProcessName!) {
+          var list = _checkList
+              .where((element) =>
+                  element.subProcessName!.toLowerCase() == subpro.toLowerCase())
+              .toList();
+          respflag = await insertCheckListDataWithSiteTeamEngineer_func(
+              list, list.first.subProcessId!,
+              apporvedStatus: approveStatus);
+          if (respflag) {
+            flagCounter++;
+          }
+        }
+        if (flagCounter == subProcessName!.length) {
+          getECMData(selectedProcess!);
+          setState(() {
+            isSubmited = true;
+          });
+          setState(() {
+            Source = widget.Source;
+          });
+          flag = true;
+        } else
+          throw new Exception();
+      }
+    } catch (_, ex) {
+      flag = false;
+    }
+    return flag;
+  }
+
+  /*Future<bool> insertCheckListDataWithSiteTeamEngineer(
       List<ECM_Checklist_Model> _checkList) async {
     bool flag = false;
     var respflag;
@@ -2328,7 +2324,7 @@ class _NodeDetails30HaState extends State<NodeDetails30Ha> {
     }
     return flag;
   }
-
+*/
   Future<bool> insertCheckListDataWithSiteTeamEngineer_func(
       List<ECM_Checklist_Model> imageList, int subprocessId,
       {int apporvedStatus = 0}) async {

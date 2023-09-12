@@ -6,6 +6,7 @@ import 'dart:convert';
 // import 'package:ecm_application/Model/Project/Damage/DamageReportInsert.dart';
 import 'package:ecm_application/Model/Project/Damage/DamageCommanModel.dart';
 import 'package:ecm_application/Model/Project/Damage/DamageHistory.dart';
+import 'package:ecm_application/Model/Project/Damage/DamageInformation.dart';
 import 'package:ecm_application/Model/Project/Damage/Information.dart';
 import 'package:ecm_application/Model/Project/Damage/IssuesMasterModel.dart';
 import 'package:ecm_application/Model/Project/Damage/MaterialConsumption.dart';
@@ -229,6 +230,32 @@ Future<List<DamageIssuesMasterModel>> Issues(
       json['data']['Response']
           .forEach((v) => result.add(DamageIssuesMasterModel.fromJson(v)));
 
+      return result;
+    } else {
+      throw Exception("API Consumed Failed");
+    }
+  } on Exception catch (e) {
+    print(e.toString());
+    throw Exception("API Consumed Failed");
+  }
+}
+
+Future<List<DamageInformationmodel>> getDamageInformationCommon(
+    int deviceId, String source) async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  String? conString = preferences.getString('ConString');
+
+  try {
+    final response = await http.get(Uri.parse(
+        'http://wmsservices.seprojects.in/api/infoReport/GetInformationReport_HistoryNew?DeviceId=$deviceId&Source=$source&InfoTypeName=information&conString=$conString'));
+    print(
+        'http://wmsservices.seprojects.in/api/infoReport/GetInformationReport_HistoryNew?DeviceId=$deviceId&Source=$source&InfoTypeName=information&conString=$conString');
+
+    if (response.statusCode == 200) {
+      List<DamageInformationmodel> result = <DamageInformationmodel>[];
+      var json = jsonDecode(response.body);
+      json['data']
+          .forEach((v) => result.add(DamageInformationmodel.fromJson(v)));
       return result;
     } else {
       throw Exception("API Consumed Failed");

@@ -1,8 +1,8 @@
 // ignore_for_file: use_key_in_widget_constructors, file_names, library_private_types_in_public_api, non_constant_identifier_names, unused_local_variable, prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_catch_stack, unrelated_type_equality_checks, unused_field, camel_case_types, unnecessary_null_comparison, use_build_context_synchronously, prefer_typing_uninitialized_variables, prefer_interpolation_to_compose_strings, avoid_print, prefer_collection_literals
 
 import 'dart:convert';
-import 'package:ecm_application/Model/Project/Damage/SelectedMaterialDamageModel.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/DamageMaterialCunsumption/MaterialComsumption/MaterialConsumptionHistory.dart';
+import 'package:ecm_application/Model/Project/Damage/SelectedInformationDamageModel.dart';
+import 'package:ecm_application/Screens/Home/DamageRectification/DamageInformation/SelectedInformation/InformationListScreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:ecm_application/Model/Project/ECMTool/PMSChackListModel.dart';
 import 'package:ecm_application/Model/Project/Login/AreaModel.dart';
@@ -43,8 +43,7 @@ class SelectedOmsDamageInformationScreen extends StatefulWidget {
 
 class _SelectedOmsDamageInformationScreenState
     extends State<SelectedOmsDamageInformationScreen> {
-  List<SelectedMaterialDamageModel>? _DisplayList =
-      <SelectedMaterialDamageModel>[];
+  List<SelectedInformationModel>? _DisplayList = <SelectedInformationModel>[];
 
   @override
   void initState() {
@@ -54,7 +53,7 @@ class _SelectedOmsDamageInformationScreenState
     });
     _firstLoad();
     getDropDownAsync();
-    _controller = ScrollController()..addListener(_loadMore);
+    // _controller = ScrollController()..addListener(_loadMore);
   }
 
   @override
@@ -62,12 +61,12 @@ class _SelectedOmsDamageInformationScreenState
     super.didChangeDependencies();
     _firstLoad();
   }
-
+/*
   @override
   void dispose() {
     _controller.removeListener(_loadMore);
     super.dispose();
-  }
+  }*/
 
   var area = 'All';
   var distibutory = 'All';
@@ -131,7 +130,7 @@ class _SelectedOmsDamageInformationScreenState
               _hasNextPage = true;
               _isFirstLoadRunning = false;
               _isLoadMoreRunning = false;
-              _DisplayList = <SelectedMaterialDamageModel>[];
+              _DisplayList = <SelectedInformationModel>[];
 
               selectedDistributory = textvalue as DistibutroryModel;
               distibutory = selectedDistributory!.id == 0
@@ -188,7 +187,7 @@ class _SelectedOmsDamageInformationScreenState
             _hasNextPage = true;
             _isFirstLoadRunning = false;
             _isLoadMoreRunning = false;
-            _DisplayList = <SelectedMaterialDamageModel>[];
+            _DisplayList = <SelectedInformationModel>[];
 
             selectedArea = data;
             futureDistributory = distriFuture;
@@ -275,7 +274,7 @@ class _SelectedOmsDamageInformationScreenState
                                               _isFirstLoadRunning = false;
                                               _isLoadMoreRunning = false;
                                               _DisplayList =
-                                                  <SelectedMaterialDamageModel>[];
+                                                  <SelectedInformationModel>[];
                                             });
                                             _firstLoad();
 
@@ -399,34 +398,6 @@ class _SelectedOmsDamageInformationScreenState
                                       ),
                                     ),
                                   ),
-                                  /* if (Source!.toLowerCase() != 'lora')
-                                    SizedBox(
-                                      height: 50,
-                                      child: Center(
-                                        child: Text(
-                                          'Mechanical',
-                                          textScaleFactor: 1,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w900),
-                                        ),
-                                      ),
-                                    ),
-                                  if (Source!.toLowerCase() == 'oms')
-                                    SizedBox(
-                                      child: Center(
-                                        child: Text(
-                                          'Tubing',
-                                          textScaleFactor: 1,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w900),
-                                        ),
-                                      ),
-                                    ),
-                               */
                                 ],
                               ),
                             ),
@@ -483,64 +454,55 @@ class _SelectedOmsDamageInformationScreenState
       } else if (source.toLowerCase() == 'rms') {
         return _DisplayList![index].rmsNo;
       } else {
-        return _DisplayList![index].gateWayNo;
+        return _DisplayList![index].chakNo;
       }
     } catch (_, ex) {}
   }
 
   getOmsList(BuildContext context) {
     return Expanded(
-      child: Scrollbar(
-        controller: _controller,
-        interactive: true,
-        thickness: 12,
-        radius: Radius.circular(30),
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          scrollDirection: Axis.vertical,
-          controller: _controller,
-          child: Container(
-            margin: EdgeInsets.only(left: 8.0, right: 8.0, bottom: 13.0),
-            decoration: BoxDecoration(
-              color: ColorConstant.whiteA700,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(30), // Increase the circular radius
-                bottomRight:
-                    Radius.circular(30), // Increase the circular radius
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: ColorConstant.black90026,
-                  spreadRadius: 2.0,
-                  blurRadius: 2.0,
-                  offset: Offset(0, 2),
-                ),
-              ],
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        scrollDirection: Axis.vertical,
+        child: Container(
+          margin: EdgeInsets.only(left: 8.0, right: 8.0, bottom: 13.0),
+          decoration: BoxDecoration(
+            color: ColorConstant.whiteA700,
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(30), // Increase the circular radius
+              bottomRight: Radius.circular(30), // Increase the circular radius
             ),
-            width: size.width,
-            child: _isFirstLoadRunning
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : Column(
-                    children: [
-                      getBody(),
-                      // when the _loadMore function is running
-                      _isLoadMoreRunning
-                          ? Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 10, bottom: 40),
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            )
-                          : SizedBox(),
-
-                      // When nothing else to load
-                      !_hasNextPage ? SizedBox(height: 10) : SizedBox(),
-                    ],
-                  ),
+            boxShadow: [
+              BoxShadow(
+                color: ColorConstant.black90026,
+                spreadRadius: 2.0,
+                blurRadius: 2.0,
+                offset: Offset(0, 2),
+              ),
+            ],
           ),
+          width: size.width,
+          child: _isFirstLoadRunning
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Column(
+                  children: [
+                    getBody(),
+                    // when the _loadMore function is running
+                    _isLoadMoreRunning
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 10, bottom: 40),
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          )
+                        : SizedBox(),
+
+                    // When nothing else to load
+                    !_hasNextPage ? SizedBox(height: 10) : SizedBox(),
+                  ],
+                ),
         ),
       ),
     );
@@ -575,7 +537,7 @@ class _SelectedOmsDamageInformationScreenState
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => MaterialConsumptionHistory(
+                        builder: (context) => SelectedInformationList(
                               _DisplayList![index],
                               projectName,
                               Source!,
@@ -605,8 +567,7 @@ class _SelectedOmsDamageInformationScreenState
                                         color: Colors.black)),
                               ),
                             ),
-                            if ((_DisplayList![index].areaName ?? '')
-                                    .isNotEmpty &&
+                            if ((_DisplayList![index].area ?? '').isNotEmpty &&
                                 (_DisplayList![index].description ?? '')
                                     .isNotEmpty)
                               Expanded(
@@ -614,8 +575,7 @@ class _SelectedOmsDamageInformationScreenState
                                   child: FittedBox(
                                     child: Text(
                                         '( ' +
-                                            (_DisplayList![index].areaName ??
-                                                    '')
+                                            (_DisplayList![index].area ?? '')
                                                 .toString() +
                                             "-" +
                                             (_DisplayList![index].description ??
@@ -642,13 +602,13 @@ class _SelectedOmsDamageInformationScreenState
                             width: 30,
                             height: 30,
                             decoration: BoxDecoration(
-                                color: _DisplayList![index].electrical != 0
+                                color: _DisplayList![index].totalCount != 0
                                     ? Colors.red
                                     : Colors.green, //colorchngerEle(index),
                                 borderRadius: BorderRadius.circular(80)),
                             child: Center(
                               child: Text(
-                                _DisplayList![index].electrical.toString(),
+                                _DisplayList![index].totalCount.toString(),
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.white,
@@ -657,55 +617,6 @@ class _SelectedOmsDamageInformationScreenState
                             ),
                           ),
                         )),
-                    /*if (Source!.toLowerCase() != 'lora')
-                      SizedBox(
-                          height: 50,
-                          // width: 90,
-                          child: Center(
-                            child: Container(
-                              width: 30,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                  color: _DisplayList![index].mechanical != 0
-                                      ? Colors.red
-                                      : Colors.green, //colorchngerEle(index),
-                                  borderRadius: BorderRadius.circular(80)),
-                              child: Center(
-                                child: Text(
-                                  _DisplayList![index].mechanical.toString(),
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )),
-                    if (Source!.toLowerCase() == 'oms')
-                      SizedBox(
-                          height: 50,
-                          // width: 90,
-                          child: Center(
-                            child: Container(
-                              width: 30,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                  color: (_DisplayList![index].tubing ?? 0) != 0
-                                      ? Colors.red
-                                      : Colors.green,
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: Center(
-                                child: Text(
-                                  (_DisplayList![index].tubing ?? 0).toString(),
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )),
-                  */
                   ],
                 )),
           );
@@ -761,15 +672,14 @@ class _SelectedOmsDamageInformationScreenState
 
       String? conString = preferences.getString('ConString');
       final res = await http.get(Uri.parse(
-          'http://wmsservices.seprojects.in/api/Rectify/RectifyReportStatus_DateFilter?Search=$_search&areaId=$area&DistributoryId=$distibutory&source=$Source&isFilter=$ListStatus&conString=$conString'));
+          'http://wmsservices.seprojects.in/api/infoReport/GetInformationReportStatus_DateFilter?AreaId=$area&DistributoryId=$distibutory&Source=$Source&isFilter=$ListStatus&InfoTypeName=information&conString=$conString'));
       print(
-          'http://wmsservices.seprojects.in/api/Rectify/RectifyReportStatus_DateFilter?Search=$_search&areaId=$area&DistributoryId=$distibutory&source=$Source&isFilter=$ListStatus&conString=$conString');
+          'http://wmsservices.seprojects.in/api/infoReport/GetInformationReportStatus_DateFilter?AreaId=$area&DistributoryId=$distibutory&Source=$Source&isFilter=$ListStatus&InfoTypeName=information&conString=$conString');
 
       var json = jsonDecode(res.body);
-      List<SelectedMaterialDamageModel> fetchedData =
-          <SelectedMaterialDamageModel>[];
+      List<SelectedInformationModel> fetchedData = <SelectedInformationModel>[];
       json['data']['Response'].forEach(
-          (e) => fetchedData.add(SelectedMaterialDamageModel.fromJson(e)));
+          (e) => fetchedData.add(SelectedInformationModel.fromJson(e)));
       _DisplayList = [];
       if (fetchedData.isNotEmpty) {
         setState(() {
@@ -786,7 +696,7 @@ class _SelectedOmsDamageInformationScreenState
     });
   }
 
-  void _loadMore() async {
+  /*void _loadMore() async {
     if (_hasNextPage == true &&
         _isFirstLoadRunning == false &&
         _isLoadMoreRunning == false &&
@@ -803,10 +713,10 @@ class _SelectedOmsDamageInformationScreenState
         final res = await http.get(Uri.parse(
             'http://wmsservices.seprojects.in/api/DamageReport/GetDamageCountWithDateFilter_New?DamageId=$ListStatus&areaId=$area&DistributoryId=$distibutory&Source=$Source&conString=$conString'));
         var json = jsonDecode(res.body);
-        List<SelectedMaterialDamageModel> fetchedData =
-            <SelectedMaterialDamageModel>[];
+        List<SelectedInformationModel> fetchedData =
+            <SelectedInformationModel>[];
         json['data']['Response'].forEach(
-            (e) => fetchedData.add(SelectedMaterialDamageModel.fromJson(e)));
+            (e) => fetchedData.add(SelectedInformationModel.fromJson(e)));
         if (fetchedData.isNotEmpty) {
           setState(() {
             _DisplayList!.addAll(fetchedData);
@@ -825,4 +735,5 @@ class _SelectedOmsDamageInformationScreenState
       });
     }
   }
+*/
 }

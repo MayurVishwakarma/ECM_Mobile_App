@@ -375,7 +375,10 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
                       //if user click this button, user can upload image from gallery
                       onPressed: () {
                         setState(() {
-                          imageList[index].imageByteArray = imagebytearray;
+                          imageList[index].image = null;
+                          imageList[index].imageByteArray = null;
+                          imageList[index].value = null;
+                          // imageList[index].imageByteArray = imagebytearray;
                           Navigator.pop(context);
                         });
                       },
@@ -1775,7 +1778,7 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
         } else {
           approveStatus = 2;
         }
-        
+
         int flagCounter = 0;
         for (var subpro in subProcessName!) {
           var list = _checkList
@@ -1969,6 +1972,138 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
                 ((e.value == null || e.value!.isEmpty) || e.image != null) &&
                 e.inputType == "image")
             .length;
+        int imagewithvalue = imageList!
+            .where((e) =>
+                ((e.value == null || e.value!.isEmpty) || e.image != null) &&
+                e.inputType == "image")
+            .length;
+        bool isPartialProcess =
+            selectedProcess!.toLowerCase().contains("dry") ||
+                selectedProcess!.toLowerCase().contains('auto');
+
+        var _imglistdataWithoutNullValue = imageList!
+            .where((item) =>
+                item.inputType!.contains("image") && item.image != null)
+            .toList();
+
+        if (checkCount !=
+                _checkList.where((e) => e.inputText != "image").length ||
+            imageCount != 0) {
+          if (checkCount == 0 && _imglistdataWithoutNullValue.length < 3) {
+            await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Message"),
+                  content: Text("Minimum 3 Images are required to proceed"),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("OK"),
+                    ),
+                  ],
+                );
+              },
+            );
+            return false;
+          } else if (imageCount >= 3 && checkCount == 0) {
+            approveStatus = isPartialProcess ? 1 : 2;
+          } else if (!isPartialProcess) {
+            approveStatus = 1;
+          } else {
+            if (imageCount < 3)
+              await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Message"),
+                    content: Text("Minimum 3 Images are required to proceed"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text("OK"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            if (checkCount != 0)
+              await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Message"),
+                    content:
+                        Text("Partially done is not allow in this process"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text("OK"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            // print("Partially done is not allow in this process");
+            return false;
+          }
+        } else {
+          return false;
+        }
+
+        int flagCounter = 0;
+        for (var subpro in subProcessName!) {
+          var list = _checkList
+              .where((element) =>
+                  element.subProcessName!.toLowerCase() == subpro.toLowerCase())
+              .toList();
+          respflag = await insertCheckListDataWithSiteTeamEngineer_func(
+              list, list.first.subProcessId!,
+              apporvedStatus: approveStatus);
+          if (respflag) {
+            flagCounter++;
+          }
+        }
+        if (flagCounter == subProcessName!.length) {
+          getECMData(selectedProcess!);
+          setState(() {
+            isSubmited = true;
+          });
+          setState(() {
+            Source = widget.Source;
+          });
+          flag = true;
+        } else
+          throw new Exception();
+      }
+    } catch (_, ex) {
+      flag = false;
+    }
+    return flag;
+  }
+
+  /*Future<bool> insertCheckListDataWithSiteTeamEngineer(
+      List<ECM_Checklist_Model> _checkList) async {
+    bool flag = false;
+    var respflag;
+    try {
+      if (_checkList != null) {
+        int approveStatus = 0;
+        int checkCount = _checkList
+            .where((e) =>
+                (e.value == null || e.value!.isEmpty) && e.inputType != "image")
+            .length;
+        int imageCount = _checkList
+            .where((e) =>
+                ((e.value == null || e.value!.isEmpty) || e.image != null) &&
+                e.inputType == "image")
+            .length;
         bool isPartialProcess =
             selectedProcess!.toLowerCase().contains("dry") ||
                 selectedProcess!.toLowerCase().contains('auto');
@@ -2018,7 +2153,7 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
     }
     return flag;
   }
-
+*/
   Future<bool> insertCheckListDataWithSiteTeamEngineer_func(
       List<ECM_Checklist_Model> imageList, int subprocessId,
       {int apporvedStatus = 0}) async {
@@ -2083,11 +2218,8 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
           } else
             throw new Exception();
         } else {}
-      } else {
-       
-      }
+      } else {}
       throw new Exception();
-      
     } catch (_, ex) {
       throw new Exception();
     }

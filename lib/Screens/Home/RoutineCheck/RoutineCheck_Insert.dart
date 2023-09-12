@@ -29,15 +29,17 @@ class RoutineCheck_Insert extends StatefulWidget {
   String? Areaname;
   String? Description;
   bool? Mode;
+  String? Source;
 
   RoutineCheck_Insert(int omsid, String chakno, String areaname,
-      String descripton, String project, bool mode) {
+      String descripton, String project, bool mode, String source) {
     OmsId = omsid;
     Chakno = chakno;
     Areaname = areaname;
     Description = descripton;
     ProjectName = project;
     Mode = mode;
+    Source = source;
   }
 
   @override
@@ -444,7 +446,9 @@ class _RoutineCheck_InsertState extends State<RoutineCheck_Insert> {
   }
 
   firstLoad() async {
-    await getRoutineCheckList(widget.OmsId.toString()).then((value) {
+    await getRoutineCheckList(
+            widget.OmsId.toString(), widget.Source!.toString())
+        .then((value) {
       if (value.isNotEmpty) {
         setState(() {
           listProcess = value;
@@ -789,7 +793,8 @@ class _RoutineCheck_InsertState extends State<RoutineCheck_Insert> {
     imageList = [];
     subProcessName = Set();
     try {
-      getRoutineCheckList(widget.OmsId.toString()).then((value) {
+      getRoutineCheckList(widget.OmsId.toString(), widget.Source!.toString())
+          .then((value) {
         for (var element in value) {
           if (element.inputType != 'image' &&
               element.routineTestType == selectedProcess) {

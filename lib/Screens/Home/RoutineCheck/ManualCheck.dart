@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, sort_child_properties_last, unused_element, prefer_typing_uninitialized_variables, unused_field, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_collection_literals, duplicate_ignore, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, no_leading_underscores_for_local_identifiers, unnecessary_null_in_if_null_operators, must_be_immutable, avoid_function_literals_in_foreach_calls, unused_local_variable, use_build_context_synchronously, curly_braces_in_flow_control_structures, unused_catch_stack, unnecessary_null_comparison, camel_case_types, prefer_const_declarations
 import 'dart:convert';
 import 'dart:math';
-
 import 'package:ecm_application/Model/Project/RoutineCheck/RoutineCheckListModel.dart';
 import 'package:ecm_application/Model/Project/RoutineCheck/RoutineCheckModel.dart';
+import 'package:ecm_application/Widget/SignalTestingForm.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ecm_application/Model/Common/EngineerModel.dart';
 import 'package:ecm_application/Model/project/Constants.dart';
@@ -29,15 +29,26 @@ class RoutineManual_CheckList extends StatefulWidget {
   String? Areaname;
   String? Description;
   bool? Mode;
+  String? Source;
+  String? Coordinate;
 
-  RoutineManual_CheckList(int omsid, String chakno, String areaname,
-      String descripton, String project, bool mode) {
+  RoutineManual_CheckList(
+      int omsid,
+      String chakno,
+      String areaname,
+      String descripton,
+      String project,
+      bool mode,
+      String source,
+      String coordinate) {
     OmsId = omsid;
     Chakno = chakno;
     Areaname = areaname;
     Description = descripton;
     ProjectName = project;
     Mode = mode;
+    Source = source;
+    Coordinate = coordinate;
   }
 
   @override
@@ -47,6 +58,7 @@ class RoutineManual_CheckList extends StatefulWidget {
 
 class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
   String? userType = '';
+
   @override
   void initState() {
     fToast = FToast();
@@ -77,7 +89,6 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
   var userTypr = '';
   var approvedStatus;
   DateTime? currDate;
-
   XFile? image;
   bool? isFetchingData = true;
   bool? isSubmited = false;
@@ -428,7 +439,9 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
     _ChecklistModel = [];
     imageList = [];
     subProcessName = Set();
-    await getRoutineCheckList(widget.OmsId.toString()).then((value) {
+    await getRoutineCheckList(
+            widget.OmsId.toString(), widget.Source!.toString())
+        .then((value) {
       for (var element in value) {
         if (element.inputType != 'image' &&
             element.routineTestType == 'MANUAL CHECK') {
@@ -459,7 +472,6 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
   List<RoutineCheckListModel>? _ChecklistModel;
   List<RoutineCheckListModel>? listProcess;
   Set<String>? subProcessName;
-  // Set<String>? listdistinctProcess;
 
   @override
   Widget build(BuildContext context) {
@@ -479,18 +491,32 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         // if (selectedProcess == 'MANUAL CHECK')
+                        // if (widget.Source == 'oms')
                         Padding(
                           padding: EdgeInsets.all(8),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Distibutory : ' + widget.Areaname! ?? ''),
-                              Text('Sub Area : ' + widget.Description! ?? '')
+                              Text('Distibutory : ${widget.Areaname!}'),
+                              Text('Sub Area : ${widget.Description!}')
                             ],
                           ),
                         ),
+                        /*
+                        if (widget.Source == 'lora')
+                          Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text('GateWay No. : ${widget.Areaname ?? ''}'),
+                              ],
+                            ),
+                          ),*/
+
                         //Expandable Tile
-                        getECMFeed(),
+                        getECMFeed(
+                            pos: widget.Coordinate!.trim().replaceAll('°', '')),
                         //Image Selection Tile
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -711,7 +737,7 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
         ));
   }
 
-  getECMFeed() {
+  getECMFeed({String? pos}) {
     Widget? widget = const Center(child: CircularProgressIndicator());
     if (subProcessName!.isNotEmpty && _ChecklistModel!.isNotEmpty) {
       widget = Column(
@@ -733,7 +759,7 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Expanded(
@@ -744,6 +770,60 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
                             const SizedBox(
                               width: 20,
                             ),
+                            if (item.inputType == 'text' ||
+                                item.inputType == 'float')
+                              Expanded(
+                                flex: 0,
+                                child: Row(
+                                  children: [
+                                    getSignalDetails(item.value ?? ''),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    ElevatedButton(
+                                        child: Text('Get'),
+                                        onPressed: () async {
+                                          final result = await showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return Expanded(
+                                                  child: SingleChildScrollView(
+                                                child:
+                                                    UserDetailPopup(pos ?? ""),
+                                              ));
+                                            },
+                                          );
+
+                                          if (result != null &&
+                                              result is String) {
+                                            item.value = result;
+                                            // Process the user details here, which are stored in the `result` variable.
+                                            // print("User Details: $result");
+                                          }
+                                        }),
+                                  ],
+                                ),
+                              ),
+
+                            /*Expanded(
+                                flex: 1,
+                                child: TextFormField(
+                                  initialValue: item.value,
+                                  decoration: InputDecoration(
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          width: 1,
+                                          color: Colors.blue), //<-- SEE HERE
+                                    ),
+                                  ),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      item.value = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                            */
                             if (item.inputType == 'boolean')
                               Expanded(
                                   flex: 0,
@@ -770,6 +850,62 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
     return widget;
   }
 
+  Widget getSignalDetails(String details) {
+    try {
+      List<dynamic> signalDetails = ['', '', '', '', '', ''];
+      signalDetails = details.split(' ');
+      var lat = signalDetails.elementAt(0) ?? '';
+      var lon = signalDetails.elementAt(1) ?? '';
+      var distance = signalDetails.elementAt(2) ?? '';
+      var rssi = signalDetails.elementAt(3) ?? '';
+      var snr = signalDetails.elementAt(4) ?? '';
+      return Container(
+        height: 100,
+        width: 160,
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(5)),
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Latitude: $lat"),
+              Text("Longitude: $lon"),
+              Text("Distance: $distance KM"),
+              Text("RSSI: $rssi dB"),
+              Text("SNR: $snr dB"),
+            ],
+          ),
+        ),
+      );
+    } catch (ex, _) {
+      return Container(
+        height: 35,
+        width: 160,
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(5)),
+        child: Center(child: Text('N/A')),
+      );
+    }
+  }
+
+  /*void _showUserDetailPopup(BuildContext context) async {
+    final result = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return UserDetailPopup();
+      },
+    );
+
+    if (result != null && result is String) {
+      // Process the user details here, which are stored in the `result` variable.
+      // print("User Details: $result");
+    }
+  }
+*/
   getWorkedByNAme(String userid) async {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();

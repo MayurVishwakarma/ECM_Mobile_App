@@ -324,7 +324,9 @@ class _NodeDetailsState extends State<NodeDetails> {
                       //if user click this button, user can upload image from gallery
                       onPressed: () {
                         setState(() {
-                          imageList![index].imageByteArray = imagebytearray;
+                          imageList![index].image = null;
+                          imageList![index].imageByteArray = null;
+                          imageList![index].value = null;
                           Navigator.pop(context);
                         });
                       },
@@ -1878,15 +1880,45 @@ class _NodeDetailsState extends State<NodeDetails> {
                 ((e.value == null || e.value!.isEmpty) || e.image != null) &&
                 e.inputType == "image")
             .length;
+        int imagewithvalue = imageList!
+            .where((e) =>
+                ((e.value == null || e.value!.isEmpty) || e.image != null) &&
+                e.inputType == "image")
+            .length;
         bool isPartialProcess =
             selectedProcess!.toLowerCase().contains("dry") ||
                 selectedProcess!.toLowerCase().contains('auto');
+
+        var _imglistdataWithoutNullValue = imageList!
+            .where((item) =>
+                item.inputType!.contains("image") && item.image != null)
+            .toList();
+
         if (checkCount !=
                 _checkList.where((e) => e.inputText != "image").length ||
             imageCount != 0) {
-          if (imageCount >= 3 && checkCount == 0)
+          if (checkCount == 0 && _imglistdataWithoutNullValue.length < 3) {
+            await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Message"),
+                  content: Text("Minimum 3 Images are required to proceed"),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("OK"),
+                    ),
+                  ],
+                );
+              },
+            );
+            return false;
+          } else if (imageCount >= 3 && checkCount == 0) {
             approveStatus = isPartialProcess ? 1 : 2;
-          else if (!isPartialProcess) {
+          } else if (!isPartialProcess) {
             approveStatus = 1;
           } else {
             if (imageCount < 3)
@@ -1939,7 +1971,6 @@ class _NodeDetailsState extends State<NodeDetails> {
               .where((element) =>
                   element.subProcessName!.toLowerCase() == subpro.toLowerCase())
               .toList();
-
           respflag = await insertCheckListDataWithSiteTeamEngineer_func(
               list, list.first.subProcessId!,
               apporvedStatus: approveStatus);
@@ -2659,3 +2690,145 @@ class PreviewImageWidget extends StatelessWidget {
     );
   }
 }
+
+/*
+Future<int> submitData(String remark, {String teamMember = ""}) async {
+  try {
+    String approvedStatus = '';
+    var list = <CheckListItem>[]; // Define the CheckListItem class as needed
+    var listData = list.where((x) =>
+        x.inputType != "image" && x.isMultiValue != 1);
+    var listDataM = list.where((x) =>
+        x.inputType != "image" &&
+        x.value != null &&
+        x.isMultiValue != 1);
+    var listM = list.where((x) =>
+        x.inputType != "image" && x.isMultiValue == 1);
+    var listDataM2 = list.where((x) =>
+        x.inputType != "image" &&
+        x.value != null &&
+        x.isMultiValue == 1 &&
+        x.checkEmptyMultiValue);
+    var listDataBoolMulti = list.where((x) =>
+        x.inputType.contains("bool") &&
+        (x.boolValue1 != null ||
+            x.boolValue2 != null ||
+            x.boolValue3 != null ||
+            x.boolValue4 != null ||
+            x.boolValue5 != null ||
+            x.boolValue6 != null) &&
+        x.isMultiValue == 1);
+    var listDataTextMulti = list.where((x) =>
+        x.inputType.contains("text") &&
+        (x.textValue1 != null ||
+            x.textValue2 != null ||
+            x.textValue3 != null ||
+            x.textValue4 != null ||
+            x.textValue5 != null ||
+            x.textValue6 != null) &&
+        x.isMultiValue == 1);
+
+    var imgList = list.where((x) => x.inputType == "image");
+    var imgListData = list.where((x) =>
+        x.inputType == "image" &&
+        (x.mediaFile != null || x.isOfflineImage));
+
+    var userId = int.parse(Application.current.properties["WebUserId"]);
+    String dirPath = '';
+
+    String checklistData, valueData;
+    int subprocessId;
+    int flag = 0;
+    int booleanCount =
+        listData.where((x) => x.inputType == "boolean" && x.isMultiValue != 1).length;
+    int notOKCount = listData.where((x) => x.inputType == "boolean" && x.value == "NotOK" && x.isMultiValue != 1).length;
+    bool isOK = notOKCount < (booleanCount / 2);
+    if (list.length == listData.length &&
+        listM.length == listDataM.length &&
+        list.first.processName.toLowerCase().contains("dry comm") &&
+        isOK) {
+      approvedStatus = "1";
+    } else if (list.length == listData.length &&
+        listM.length == listDataM.length &&
+        !list.first.processName.toLowerCase().contains("dry comm") &&
+        isOK) {
+      approvedStatus = "2";
+    } else {
+      var countData = listData.length +
+          imgListData.length +
+          listDataBoolMulti.length +
+          listDataTextMulti.length;
+      if (countData != 0 && !list.first.processName.toLowerCase().contains("dry comm")) {
+        approvedStatus = "1";
+      }
+    }
+
+    if (approvedStatus == "1" || approvedStatus == "2") {
+      var imgDataCount = list.where((x) =>
+          x.inputType == "image" && (x.mediaFile != null || x.value != null)).length;
+      if (list.first.processName.toLowerCase().contains("dry comm") &&
+          approvedStatus == "1" &&
+          imgDataCount < 3) {
+        return 4;
+      } else if (!list.first.processName.toLowerCase().contains("dry comm") &&
+          approvedStatus == "2" &&
+          imgDataCount < 3) {
+        return 4;
+      }
+
+      dirPath = "${Application.current.properties["ProjectName"]}/${_Source.toUpperCase()}/$deviceId/";
+
+      for (var img in imgListData) {
+        String path = '';
+        if (img.isOfflineImage) {
+          path = await ds.postImage(dirPath, img.imageByteArray, img.imagePath);
+        } else {
+          path = await ds.postImage(dirPath, img.mediaFile);
+        }
+        if (!path.toLowerCase().contains("fail") && path.isNotEmpty) {
+          img.value = path;
+        } else {
+          return 2;
+        }
+      }
+      int subprocessCount = 0;
+      for (var iterator in list.map((x) => x.subProcessId).toSet()) {
+        String msg = '';
+        subprocessId = iterator;
+        checklistData = list
+            .where((x) => x.subProcessId == iterator)
+            .map((x) => x.checkListId)
+            .join(",");
+        valueData = list
+            .where((x) => x.subProcessId == iterator)
+            .map((x) => x.value ?? '')
+            .join(",");
+        bool conStrFlag = conString.contains("User ID=dba");
+        if (conStrFlag) {
+          var insertData = InsertCheckListDataWithTeamMember(
+              processId, subprocessId, checklistData, deviceId, userId, valueData,
+              remark, _TempDT, approvedStatus, _Source, conString, true, teamMember);
+          msg = await ds.postCheckListItemAsync(insertData);
+        } else {
+          var insertData = InsertCheckListDataNew(
+              processId, subprocessId, checklistData, deviceId, userId, valueData,
+              remark, _TempDT, approvedStatus, _Source, conString);
+          msg = await ds.postCheckListItemAsync(insertData);
+        }
+        if (!msg.contains("FAIL") && msg.isNotEmpty) {
+          flag++;
+          subprocessCount++;
+        }
+      }
+      if (subprocessCount == list.map((x) => x.subProcessId).toSet().length) {
+        flag = 3;
+      } else {
+        flag = 1;
+      }
+    }
+    return flag;
+  } catch (ex) {
+    return 1;
+  }
+}
+*/

@@ -1022,7 +1022,9 @@ class _RoutineCheckScreenState extends State<RoutineCheckScreen> {
                       _DisplayList[index].areaName ?? '',
                       _DisplayList[index].description ?? '',
                       widget.ProjectName!,
-                      true)),
+                      true,
+                      'oms',
+                      _DisplayList[index]!.amsCoordinate ?? '')),
               (Route<dynamic> route) => true,
             );
           },
@@ -1215,10 +1217,10 @@ class _RoutineCheckScreenState extends State<RoutineCheckScreen> {
       String? conString = preferences.getString('ConString');
 
       final res = await http.get(Uri.parse(
-          'http://wmsservices.seprojects.in/api/Routine/RoutineStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&RoutineStatus=$process&DateSort=$isDateSort&StartDate=01-01-1900&EndDate=01-01-1900&NextSchedule=$nextschedule&pageIndex=$_page&pageSize=$_limit&conString=$conString'));
+          'http://wmsservices.seprojects.in/api/Routine/RoutineStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&RoutineStatus=$process&DateSort=$isDateSort&StartDate=01-01-1900&EndDate=01-01-1900&NextSchedule=$nextschedule&pageIndex=$_page&pageSize=$_limit&source=oms&conString=$conString'));
 
       print(
-          'http://wmsservices.seprojects.in/api/Routine/RoutineStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&RoutineStatus=$process&DateSort=$isDateSort&StartDate=01-01-1900&EndDate=01-01-1900&NextSchedule=$nextschedule&pageIndex=$_page&pageSize=$_limit&conString=$conString');
+          'http://wmsservices.seprojects.in/api/Routine/RoutineStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&RoutineStatus=$process&DateSort=$isDateSort&StartDate=01-01-1900&EndDate=01-01-1900&NextSchedule=$nextschedule&pageIndex=$_page&pageSize=$_limit&source=oms&conString=$conString');
 
       var json = jsonDecode(res.body);
       List<RoutineCheckMasterModel> fetchedData = <RoutineCheckMasterModel>[];
@@ -1334,9 +1336,9 @@ class _RoutineCheckScreenState extends State<RoutineCheckScreen> {
       String? conString = preferences.getString('ConString');
 
       final response = await http.get(Uri.parse(
-          'http://wmsservices.seprojects.in/api/Routine/RoutineStatusCount?Search=$_search&areaId=$area&DistributoryId=$distibutory&RoutineStatus=$process&StartDate=01-01-1900&EndDate=01-01-1900&NextSchedule=$nextschedule&conString=$conString'));
+          'http://wmsservices.seprojects.in/api/Routine/RoutineStatusCount?Search=$_search&areaId=$area&DistributoryId=$distibutory&RoutineStatus=$process&StartDate=01-01-1900&EndDate=01-01-1900&NextSchedule=$nextschedule&Source=oms&conString=$conString'));
       print(
-          'http://wmsservices.seprojects.in/api/Routine/RoutineStatusCount?Search=$_search&areaId=$area&DistributoryId=$distibutory&RoutineStatus=$process&StartDate=01-01-1900&EndDate=01-01-1900&NextSchedule=$nextschedule&conString=$conString');
+          'http://wmsservices.seprojects.in/api/Routine/RoutineStatusCount?Search=$_search&areaId=$area&DistributoryId=$distibutory&RoutineStatus=$process&StartDate=01-01-1900&EndDate=01-01-1900&NextSchedule=$nextschedule&Source=oms&conString=$conString');
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
 
