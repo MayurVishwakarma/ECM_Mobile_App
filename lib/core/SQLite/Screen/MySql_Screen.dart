@@ -876,7 +876,7 @@ class _MySql_ScreenState extends State<MySql_Screen> {
                                         // }
                                       }),
                                       style: ElevatedButton.styleFrom(
-                                          primary: Colors.blueGrey),
+                                          backgroundColor: Colors.blueGrey),
                                     ),
                                     // ElevatedButton(
                                     //   child: Text(

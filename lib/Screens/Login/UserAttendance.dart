@@ -278,11 +278,36 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ),
                               if (bntpresent!)
                                 ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
+                                  style: ButtonStyle(
+                                      foregroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.white),
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                        btnName == 'Start Session'
+                                            ? Colors.green
+                                            : Colors.red,
+                                      ),
+                                      minimumSize: MaterialStateProperty.all(
+                                        Size(
+                                            MediaQuery.of(context).size.width *
+                                                0.35,
+                                            40), // Change the width and height as needed
+                                      ),
+                                      shape: MaterialStatePropertyAll(
+                                        RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+
+                                          // Adjust the border radius as needed
+                                          // Adjust the width and color
+                                        ),
+                                      )),
+                                  /*style: ElevatedButton.styleFrom(
                                     backgroundColor: btnName == 'Start Session'
                                         ? Colors.green
                                         : Colors.red,
-                                  ),
+                                  ),*/
                                   onPressed: () async {
                                     bool serviceEnabled;
                                     LocationPermission permission;

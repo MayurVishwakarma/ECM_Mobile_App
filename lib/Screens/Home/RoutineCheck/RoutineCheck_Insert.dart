@@ -609,7 +609,9 @@ class _RoutineCheck_InsertState extends State<RoutineCheck_Insert> {
                                     // _showAlert(context);
                                   }),
                                   style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green),
+                                      backgroundColor: Colors.green,
+                                      foregroundColor: Colors.white
+                                      ),
                                 ),
                               ],
                             ),

@@ -4,22 +4,11 @@ import 'package:ecm_application/Model/Project/ECMTool/ECMCountMasterModel.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageInformation/InformationList/AmsInformation.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageInformation/InformationList/LoraInformation.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageInformation/InformationList/OmsInfromation.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/DamageMaterialCunsumption/ListFOrMaterialConsumption/Ams.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/DamageMaterialCunsumption/ListFOrMaterialConsumption/Lora.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/DamageMaterialCunsumption/ListFOrMaterialConsumption/Oms.dart';
+import 'package:ecm_application/Screens/Home/DamageRectification/DamageInformation/InformationList/RmsInformation.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageMaterialCunsumption/ListFOrMaterialConsumption/Rms.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/DamageReportStatus/DamageReportList/Oms.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/RectificationForm/DamageList/DamageAMSList.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/RectificationForm/DamageList/DamageLoraList.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/RectificationForm/DamageList/DamageOmsList.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/RectificationForm/DamageList/DamageRMSList.dart';
 import 'package:ecm_application/Model/Project/Login/AreaModel.dart';
 import 'package:ecm_application/Model/Project/Login/DistibutoryModel.dart';
 import 'package:ecm_application/Operations/StatelistOperation.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/DamageReportStatus/DamageReportList/Ams.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/DamageReportStatus/DamageReportList/Lora.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/DamageReportStatus/DamageReportList/Rms.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/DamageReportStatus/SelectDamageListScreen.dart';
 import 'package:ecm_application/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -85,13 +74,13 @@ class _DamageInformation_ScreenState extends State<DamageInformation_Screen> {
       if (dcString![1] == '1')
         Ams_information(ProjectName: projectName, Source: source),
       if (dcString![2] == '1')
-        Rms_MaterialConsumption(ProjectName: projectName, Source: source),
+        Rms_information(ProjectName: projectName, Source: source),
       if (dcString![3] == '1')
         Lora_information(ProjectName: projectName, Source: source),
     ];
 
     return Scaffold(
-        backgroundColor: ColorConstant.whiteA700,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text('Damage Information'),
         ),

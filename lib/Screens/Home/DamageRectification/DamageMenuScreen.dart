@@ -2,12 +2,12 @@
 
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageHistory/DamageNodeHistoryList.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageInformation/DamageInformationCommon.dart';
+import 'package:ecm_application/Screens/Home/DamageRectification/DamageIssues/DamageIssuesCommon.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageMaterialCunsumption/MaterialConsumptionCommon.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageReportStatus/DamageReport_Screen.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/RectificationForm/DamageReportList.dart';
-import 'package:ecm_application/Model/Project/Login/State_list_Model.dart';
 import 'package:flutter/material.dart';
-import 'package:ecm_application/core/app_export.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DamageMenuScreen extends StatefulWidget {
   @override
@@ -18,19 +18,23 @@ class _DamageMenuScreenState extends State<DamageMenuScreen> {
   @override
   void initState() {
     super.initState();
+    getProjectName();
   }
 
-  Set<String>? stateList;
-  String? selectState;
-  List<ProjectModel>? projectList;
-  ProjectModel? selectProject;
-  Future<List<ProjectModel>>? futureProjectList;
+  String? projectName;
+
+  getProjectName() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      projectName = preferences.getString('ProjectName');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: ColorConstant.whiteA700,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text(
             ('damage/rectification').toUpperCase(),
@@ -46,8 +50,8 @@ class _DamageMenuScreenState extends State<DamageMenuScreen> {
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
             child: SizedBox(
-              height: size.height,
-              width: size.width,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ListView(
@@ -76,7 +80,7 @@ class _DamageMenuScreenState extends State<DamageMenuScreen> {
                                     blurRadius: 6.0,
                                   ),
                                 ],
-                                color: ColorConstant.whiteA700,
+                                color: Colors.white,
                                 borderRadius: BorderRadius.circular(10)),
                             child: Row(
                               children: [
@@ -92,7 +96,7 @@ class _DamageMenuScreenState extends State<DamageMenuScreen> {
                                     'Damage/Rectification Form',
                                     textScaleFactor: 1,
                                     style: TextStyle(
-                                        color: ColorConstant.black900,
+                                        color: Colors.black,
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -102,15 +106,17 @@ class _DamageMenuScreenState extends State<DamageMenuScreen> {
                           ),
                         ),
                       ),
-                      InkWell(
-                        onTap: () async {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DamageReport_Screen()),
-                            (Route<dynamic> route) => true,
-                          );
-                          /*showDialog(
+                      if (!(projectName!.toLowerCase() == 'cluster-x') &&
+                          !(projectName!.toLowerCase() == 'cluster-xiii'))
+                        InkWell(
+                          onTap: () async {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DamageReport_Screen()),
+                              (Route<dynamic> route) => true,
+                            );
+                            /*showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
@@ -127,45 +133,45 @@ class _DamageMenuScreenState extends State<DamageMenuScreen> {
                               );
                             },
                           );*/
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            width: double.infinity,
-                            height: 80,
-                            decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    offset: Offset(3.0, 3.0), //(x,y)
-                                    blurRadius: 6.0,
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              width: double.infinity,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey,
+                                      offset: Offset(3.0, 3.0), //(x,y)
+                                      blurRadius: 6.0,
+                                    ),
+                                  ],
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Image(
+                                      image: AssetImage(
+                                          'assets/images/ShieldForm.png'),
+                                      height: 60,
+                                      width: 45,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Damage Status Report',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
-                                color: ColorConstant.whiteA700,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Image(
-                                    image: AssetImage(
-                                        'assets/images/ShieldForm.png'),
-                                    height: 60,
-                                    width: 45,
-                                  ),
-                                ),
-                                Text(
-                                  'Damage Status Report',
-                                  style: TextStyle(
-                                      color: ColorConstant.black900,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: InkWell(
@@ -205,7 +211,7 @@ class _DamageMenuScreenState extends State<DamageMenuScreen> {
                                     blurRadius: 6.0,
                                   ),
                                 ],
-                                color: ColorConstant.whiteA700,
+                                color: Colors.white,
                                 borderRadius: BorderRadius.circular(10)),
                             child: Row(
                               children: [
@@ -221,7 +227,7 @@ class _DamageMenuScreenState extends State<DamageMenuScreen> {
                                 Text(
                                   'Damage History',
                                   style: TextStyle(
-                                      color: ColorConstant.black900,
+                                      color: Colors.black,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -230,66 +236,70 @@ class _DamageMenuScreenState extends State<DamageMenuScreen> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      MaterialConsumption_Screen()),
-                              (Route<dynamic> route) => true,
-                            );
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            height: 80,
-                            decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    offset: Offset(3.0, 3.0), //(x,y)
-                                    blurRadius: 6.0,
+                      if (!(projectName!.toLowerCase() == 'cluster-x') &&
+                          !(projectName!.toLowerCase() == 'cluster-xiii'))
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        MaterialConsumption_Screen()),
+                                (Route<dynamic> route) => true,
+                              );
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey,
+                                      offset: Offset(3.0, 3.0), //(x,y)
+                                      blurRadius: 6.0,
+                                    ),
+                                  ],
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Image(
+                                      image: AssetImage(
+                                          'assets/images/ShieldForm.png'),
+                                      height: 60,
+                                      width: 45,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Material Consumption',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
-                                color: ColorConstant.whiteA700,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Image(
-                                    image: AssetImage(
-                                        'assets/images/ShieldForm.png'),
-                                    height: 60,
-                                    width: 45,
-                                  ),
-                                ),
-                                Text(
-                                  'Material Consumption',
-                                  style: TextStyle(
-                                      color: ColorConstant.black900,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      DamageInformation_Screen()),
-                              (Route<dynamic> route) => true,
-                            );
-                            /*showDialog(
+                      if (!(projectName!.toLowerCase() == 'cluster-x') &&
+                          !(projectName!.toLowerCase() == 'cluster-xiii'))
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        DamageInformation_Screen()),
+                                (Route<dynamic> route) => true,
+                              );
+                              /*showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
@@ -307,48 +317,57 @@ class _DamageMenuScreenState extends State<DamageMenuScreen> {
                               },
                             );
                           */
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            height: 80,
-                            decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    offset: Offset(3.0, 3.0), //(x,y)
-                                    blurRadius: 6.0,
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey,
+                                      offset: Offset(3.0, 3.0), //(x,y)
+                                      blurRadius: 6.0,
+                                    ),
+                                  ],
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Image(
+                                      image: AssetImage(
+                                          'assets/images/ShieldForm.png'),
+                                      height: 60,
+                                      width: 45,
+                                    ),
+                                  ),
+                                  Text(
+                                    'information Report',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
-                                color: ColorConstant.whiteA700,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Image(
-                                    image: AssetImage(
-                                        'assets/images/ShieldForm.png'),
-                                    height: 60,
-                                    width: 45,
-                                  ),
-                                ),
-                                Text(
-                                  'information Report',
-                                  style: TextStyle(
-                                      color: ColorConstant.black900,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: InkWell(
-                          onTap: () {
-                            showDialog(
+                      if (!(projectName!.toLowerCase() == 'cluster-x') &&
+                          !(projectName!.toLowerCase() == 'cluster-xiii'))
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        DamageIssues_Screen()),
+                                (Route<dynamic> route) => true,
+                              );
+                              /*showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
@@ -365,43 +384,44 @@ class _DamageMenuScreenState extends State<DamageMenuScreen> {
                                 );
                               },
                             );
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            height: 80,
-                            decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    offset: Offset(3.0, 3.0), //(x,y)
-                                    blurRadius: 6.0,
+                          */
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey,
+                                      offset: Offset(3.0, 3.0), //(x,y)
+                                      blurRadius: 6.0,
+                                    ),
+                                  ],
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Image(
+                                      image: AssetImage(
+                                          'assets/images/ShieldForm.png'),
+                                      height: 60,
+                                      width: 45,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Issue Counter Report',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
-                                color: ColorConstant.whiteA700,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Image(
-                                    image: AssetImage(
-                                        'assets/images/ShieldForm.png'),
-                                    height: 60,
-                                    width: 45,
-                                  ),
-                                ),
-                                Text(
-                                  'Issue Counter Report',
-                                  style: TextStyle(
-                                      color: ColorConstant.black900,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
                     ],
                   )),
             ),

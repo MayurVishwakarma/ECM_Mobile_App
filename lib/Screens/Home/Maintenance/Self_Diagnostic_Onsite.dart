@@ -1,11 +1,8 @@
-// ignore_for_file: prefer_const_constructors, sort_child_properties_last, must_be_immutable, camel_case_types, use_key_in_widget_constructors, avoid_unnecessary_containers, prefer_interpolation_to_compose_strings, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, sort_child_properties_last, must_be_immutable, camel_case_types, use_key_in_widget_constructors, avoid_unnecessary_containers, prefer_interpolation_to_compose_strings, prefer_const_literals_to_create_immutables, file_names, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../../Model/Project/HOSupportTeam.dart';
-import '../../../core/utils/color_constant.dart';
 
 class Self_Diagnostic extends StatefulWidget {
   String? issue;
@@ -48,7 +45,7 @@ class _Self_DiagnosticState extends State<Self_Diagnostic> {
                     Text(
                       widget.issue!,
                       style: TextStyle(
-                        color: ColorConstant.black900,
+                        color: Colors.black,
                         fontFamily: 'Cinzel',
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -75,9 +72,9 @@ class _Self_DiagnosticState extends State<Self_Diagnostic> {
                           builder: (BuildContext context) {
                             return Dialog(
                               child: Container(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(25.0),
                                 width: 320,
-                                height: 150,
+                                height: 190,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -99,7 +96,7 @@ class _Self_DiagnosticState extends State<Self_Diagnostic> {
                                       child: RichText(
                                         text: TextSpan(
                                           style: TextStyle(
-                                            color: ColorConstant.black900,
+                                            color: Colors.black,
                                             fontFamily: 'Lato',
                                             fontSize: 14,
                                           ),
@@ -132,7 +129,7 @@ class _Self_DiagnosticState extends State<Self_Diagnostic> {
                                       child: RichText(
                                         text: TextSpan(
                                           style: TextStyle(
-                                            color: ColorConstant.black900,
+                                            color: Colors.black,
                                             fontFamily: 'Lato',
                                             fontSize: 14,
                                           ),
@@ -168,7 +165,7 @@ class _Self_DiagnosticState extends State<Self_Diagnostic> {
                           text: TextSpan(
                             text: 'For additional help, ',
                             style: TextStyle(
-                              color: ColorConstant.black900,
+                              color: Colors.black,
                               fontFamily: 'Lato',
                               fontSize: 14,
                             ),
@@ -199,156 +196,7 @@ class _Self_DiagnosticState extends State<Self_Diagnostic> {
     );
   }
 
-  /*Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Self Diagnostic Onsite")),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Card(
-            elevation: 8,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    widget.issue!,
-                    style: TextStyle(
-                      color: ColorConstant.black900,
-                      fontFamily: 'Cinzel',
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    widget.desc!,
-                    style: TextStyle(
-                      fontFamily: 'Lato',
-                      fontSize: 16,
-                    ),
-                  ),
-                  SizedBox(height: 80),
-                  Divider(
-                    thickness: 1,
-                    color: Colors.black,
-                  ),
-                  InkWell(
-                    onTap: () async {
-                      connect(widget.hoSupportId!);
-                      await showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Dialog(
-                            child: Container(
-                              padding: const EdgeInsets.all(8.0),
-                              width: 320,
-                              height: 150,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Name: ${filteredContacts.first.Name!}',
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      fontSize: 16,
-                                    ),
-                                    textAlign: TextAlign.start,
-                                  ),
-                                  SizedBox(height: 12),
-                                  GestureDetector(
-                                    onTap: () {
-                                      _launchCaller(
-                                          filteredContacts.first.Mobile!);
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(
-                                      'Call: ${filteredContacts.first.Mobile!}',
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontSize: 16,
-                                      ),
-                                      textAlign: TextAlign.start,
-                                    ),
-                                  ),
-                                  SizedBox(height: 12),
-                                  GestureDetector(
-                                    onTap: () {
-                                      _launchEmail(
-                                          filteredContacts.first.Email!);
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(
-                                      'Email: ${filteredContacts.first.Email!}',
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontSize: 16,
-                                      ),
-                                      // textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              'For additional help, ',
-                              style: TextStyle(
-                                color: ColorConstant.black900,
-                                fontFamily: 'Lato',
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              'Click here ',
-                              style: TextStyle(
-                                color: ColorConstant.blue100,
-                                fontFamily: 'Lato',
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              'to get in touch with a specialist',
-                              style: TextStyle(
-                                color: ColorConstant.black900,
-                                fontFamily: 'Lato',
-                                fontSize: 16,
-                              ),
-                            )
-                          ],
-                        )
-                        // Text(
-                        //   "For additional help, click here to get in touch with a specialist",
-                        // style: TextStyle(
-                        //   color: ColorConstant.black900,
-                        //   fontFamily: 'Lato',
-                        //   fontSize: 16,
-                        // ),
-                        // ),
-                        ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-*/
-  List<HOSupportTeam> filteredContacts = [];
+List<HOSupportTeam> filteredContacts = [];
   void connect(List<int> hoSupportId) async {
     if (hoSupportId.length == 2) {
       filteredContacts = supportTeam
@@ -366,7 +214,7 @@ class _Self_DiagnosticState extends State<Self_Diagnostic> {
 
   void _launchCaller(String contect) async {
     Uri call = Uri(scheme: 'tel', path: contect);
-   
+
     if (await launchUrl(call)) {
       await launchUrl(call);
     } else {
@@ -377,7 +225,7 @@ class _Self_DiagnosticState extends State<Self_Diagnostic> {
   var emailAddress =
       'example@example.com'; // Replace with your desired email address
 
-  void _launchEmail(String Email) async {
+  void _launchEmail(String? Email) async {
     Uri mail = Uri(scheme: 'mailto', path: Email, query: "");
     if (await launchUrl(mail)) {
       await launchUrl(mail);
@@ -405,20 +253,20 @@ class _Self_DiagnosticState extends State<Self_Diagnostic> {
       Mobile: '8169924467',
       Email: 'snehal.m@saisanket.in',
     ),
+    // HOSupportTeam(
+    //   Id: 4,
+    //   Name: 'Bhakti Kothekar',
+    //   Mobile: '8308202571',
+    //   Email: 'bhakti.kothekar@saisanket.in',
+    // ),
     HOSupportTeam(
       Id: 4,
-      Name: 'Bhakti Kothekar',
-      Mobile: '8308202571',
-      Email: 'bhakti.kothekar@saisanket.in',
-    ),
-    HOSupportTeam(
-      Id: 5,
       Name: 'Nitin Naykwadi',
       Mobile: '9623281858',
       Email: 'nitinnkwd14@gmail.com',
     ),
     HOSupportTeam(
-      Id: 6,
+      Id: 5,
       Name: 'Mandar Dhanawde(Nimrani)',
       Mobile: '7387646323',
       Email: 'mandar@saisanket.in',

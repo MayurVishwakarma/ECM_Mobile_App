@@ -92,7 +92,7 @@ class _MaterialConsumption_ScreenState
     ];
 
     return Scaffold(
-        backgroundColor: ColorConstant.whiteA700,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text('Material Consumption'),
         ),

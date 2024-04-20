@@ -34,8 +34,8 @@ class _MyDrawerScreenState extends State<MyDrawerScreen> {
                         borderRadius: BorderRadius.all(Radius.circular(150.0)),
                         child: Image.asset(
                           'assets/images/SeLogo.png',
-                          height: 120,
-                          width: 120,
+                          height: 100,
+                          width: 100,
                         )),
                     Text(
                       MyApp.username.toString(),
@@ -68,7 +68,7 @@ class _MyDrawerScreenState extends State<MyDrawerScreen> {
               ),
               Padding(
                 padding: EdgeInsets.fromLTRB(10.0, 3.0, 0.0, 10.0),
-                child: Text('App Version-v0.7',
+                child: Text('App Version-v1.6',
                     textScaleFactor: 1,
                     style: TextStyle(
                       fontSize: 10,

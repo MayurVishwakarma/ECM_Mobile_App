@@ -241,15 +241,15 @@ Future<List<DamageIssuesMasterModel>> Issues(
 }
 
 Future<List<DamageInformationmodel>> getDamageInformationCommon(
-    int deviceId, String source) async {
+    int deviceId, String source, String infotype) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
   String? conString = preferences.getString('ConString');
 
   try {
     final response = await http.get(Uri.parse(
-        'http://wmsservices.seprojects.in/api/infoReport/GetInformationReport_HistoryNew?DeviceId=$deviceId&Source=$source&InfoTypeName=information&conString=$conString'));
+        'http://wmsservices.seprojects.in/api/infoReport/GetInformationReport_HistoryNew?DeviceId=$deviceId&Source=$source&InfoTypeName=$infotype&conString=$conString'));
     print(
-        'http://wmsservices.seprojects.in/api/infoReport/GetInformationReport_HistoryNew?DeviceId=$deviceId&Source=$source&InfoTypeName=information&conString=$conString');
+        'http://wmsservices.seprojects.in/api/infoReport/GetInformationReport_HistoryNew?DeviceId=$deviceId&Source=$source&InfoTypeName=$infotype&conString=$conString');
 
     if (response.statusCode == 200) {
       List<DamageInformationmodel> result = <DamageInformationmodel>[];
@@ -264,26 +264,4 @@ Future<List<DamageInformationmodel>> getDamageInformationCommon(
     print(e.toString());
     throw Exception("API Consumed Failed");
   }
-}
-
-Future<String?> GetImagebyPath(String imgPath) async {
-  String? img64base;
-  try {
-    var request = http.Request(
-        'GET',
-        Uri.parse(
-            'http://wmsservices.seprojects.in/api/Image/GetImage?imgPath=$imgPath'));
-    print(
-        'http://wmsservices.seprojects.in/api/Image/GetImage?imgPath=$imgPath');
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      img64base = await response.stream.bytesToString();
-    } else {
-      print(response.reasonPhrase);
-    }
-  } catch (_, ex) {}
-
-  return img64base!.replaceAll('"', '');
 }

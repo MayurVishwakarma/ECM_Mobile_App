@@ -1,11 +1,11 @@
-// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, sort_child_properties_last, import_of_legacy_library_into_null_safe, use_key_in_widget_constructors, library_private_types_in_public_api, unused_import, unused_element, prefer_interpolation_to_compose_strings, avoid_print, prefer_is_empty, use_build_context_synchronously, prefer_typing_uninitialized_variables, curly_braces_in_flow_control_structures, avoid_unnecessary_containers, must_be_immutable, non_constant_identifier_names, unused_local_variable, unused_catch_stack, unrelated_type_equality_checks, unnecessary_null_comparison, no_leading_underscores_for_local_identifiers, prefer_collection_literals
-// import 'package:custom_switch/custom_switch.dart';
+// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, sort_child_properties_last, import_of_legacy_library_into_null_safe, use_key_in_widget_constructors, library_private_types_in_public_api, unused_import, unused_element, prefer_interpolation_to_compose_strings, avoid_print, prefer_is_empty, unused_field, prefer_final_fields, non_constant_identifier_names, prefer_collection_literals, use_build_context_synchronously, unnecessary_null_comparison, unused_local_variable, must_be_immutable, unused_catch_stack, prefer_typing_uninitialized_variables, no_leading_underscores_for_local_identifiers
+
 import 'dart:convert';
 import 'package:ecm_application/Model/Project/ECMTool/PMSChackListModel.dart';
 import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/ECMToolScreen.dart';
 import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/NodeDetails_SQL.dart';
 import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/NodeDetails_new.dart';
-import 'package:floor/floor.dart';
+import 'package:ecm_application/core/SQLite/DbHepherSQL.dart';
 import 'package:http/http.dart' as http;
 import 'package:ecm_application/Model/Project/Login/AreaModel.dart';
 import 'package:ecm_application/Model/Project/Login/DistibutoryModel.dart';
@@ -14,23 +14,33 @@ import 'package:ecm_application/Operations/StatelistOperation.dart';
 import 'package:ecm_application/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:toggle_switch/toggle_switch.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:ecm_application/Model/Project/Login/State_list_Model.dart';
-import '../../../core/SQLite/DbHepherSQL.dart';
 
-class OmsPage extends StatefulWidget {
+class AmsPage extends StatefulWidget {
   String? ProjectName;
   String? Source;
-  OmsPage({this.ProjectName, this.Source});
-
+  AmsPage({
+    required,
+    this.ProjectName,
+    this.Source,
+  });
   @override
-  State<OmsPage> createState() => _OmsPageState();
+  State<AmsPage> createState() => _AmsPageState();
 }
 
-class _OmsPageState extends State<OmsPage> {
+class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
   List<PMSListViewModel>? _DisplayList = <PMSListViewModel>[];
+
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+  var viewdata;
+  var listdatas;
+
+  List<PMSListViewModel> listview = [];
+  Future ListcolorChanger() async {
+    listview = await ListViewModel.instance
+        .fatchcommonlist(widget.Source!.toLowerCase(), widget.ProjectName!);
+  }
 
   @override
   void initState() {
@@ -39,22 +49,22 @@ class _OmsPageState extends State<OmsPage> {
       _DisplayList = [];
       ProcessStatusList = [];
     });
-
     _firstLoad();
     getDropDownAsync();
     _controller = ScrollController()..addListener(_loadMore);
+    _animationController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 3))
+          ..repeat(reverse: true);
+    _animation = Tween<double>(begin: 1, end: 2).animate(_animationController);
   }
 
   @override
   void dispose() {
+    _animationController.dispose();
     _controller.removeListener(_loadMore);
     super.dispose();
   }
 
-  List<PMSListViewModel> Listdata = [];
-  var conString;
-  PMSListViewModel? viewdata;
-  var listdatas;
   // Initial Selected Value
   var area = 'All';
   var distibutory = 'ALL';
@@ -74,18 +84,10 @@ class _OmsPageState extends State<OmsPage> {
   List<PMSChaklistModel>? ProcessList;
   List<DistibutroryModel>? DistriList;
 
-  List<PMSListViewModel> listview = [];
-  // List<ECM_Checklist_Model> datas = [];
-  Future ListcolorChanger() async {
-    listview = await ListViewModel.instance
-        .fatchcommonlist(widget.Source!.toLowerCase(), widget.ProjectName!);
-    // datas = await DBSQL.instance.fatchdataSQL(deviceids);
-  }
-
   Color colorchnger(int index) {
     try {
       for (var item in listview) {
-        if (item.omsId == _DisplayList![index].omsId) {
+        if (item.amsId == _DisplayList![index].amsId) {
           return Color.fromRGBO(108, 211, 180, 1);
         }
       }
@@ -98,9 +100,9 @@ class _OmsPageState extends State<OmsPage> {
   getDropDownAsync() async {
     setState(() {
       futureArea = getAreaid();
-      futureDistributory = getDistibutoryid();
+      futureDistributory = getDistibutoryid(devType: 'AMS');
     });
-    await getProcessid().then((values) {
+    await getProcessid(source: 'AMS').then((values) {
       ProcessList = [];
       ProcessStatusList = [];
       var processList = Set();
@@ -249,7 +251,7 @@ class _OmsPageState extends State<OmsPage> {
             child: Center(
               child: FittedBox(
                 child: Text(
-                  areaModel.areaName ?? "",
+                  areaModel.areaName ?? '',
                   textScaleFactor: 1,
                   style: TextStyle(fontSize: 13),
                 ),
@@ -261,6 +263,7 @@ class _OmsPageState extends State<OmsPage> {
           //onAreaChange(textvalue);
           var data = textvalue as AreaModel;
           var distriFuture = getDistibutoryid(
+              devType: "AMS",
               areaId: data.areaid == 0 ? 'All' : data.areaid.toString());
           await distriFuture.then((value) => setState(() {
                 selectedDistributory = value.first;
@@ -323,9 +326,16 @@ class _OmsPageState extends State<OmsPage> {
           );
         }).toList(),
         onChanged: (textvalue) async {
+          //onAreaChange(textvalue);
           var data = textvalue as PMSChaklistModel;
+          // var distriFuture = getProcessid();
+          // await distriFuture.then((value) => setState(() {
+          //       selectedProcess = value.first;
+          //       process = "All";
+          //     }));
           setState(() {
             selectedProcess = data;
+            // futureProcess = distriFuture;
 
             process = selectedProcess!.processId == 0
                 ? "All"
@@ -348,9 +358,10 @@ class _OmsPageState extends State<OmsPage> {
         child: DropdownButton(
           underline: Container(color: Colors.transparent),
           value: selectedProcessStatus == null ||
-                  (values.where((element) => element == selectedProcessStatus))
-                      .isEmpty
-              ? values.first
+                  (values
+                      .where((element) => element == selectedProcessStatus)
+                      .isEmpty)
+              ? values.firstWhere((element) => element.processStatusId == 'All')
               : selectedProcessStatus,
           isExpanded: true,
           items: values.map((ProcessModel processModel) {
@@ -401,226 +412,246 @@ class _OmsPageState extends State<OmsPage> {
         });
         _DisplayList = [];
         _firstLoad();
+        // getpop(context);
+        // Future.delayed(Duration(seconds: 1), () {
+        //   Navigator.pop(context); //pop dialog
+        // });
       },
       child: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
         child: SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
           child: Container(
-            height: size.height,
-            width: size.width,
-            decoration: BoxDecoration(color: Colors.grey.shade200),
-            child: _DisplayList! != null
-                ? Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                        //search
-                        Stack(
-                          children: [
-                            Positioned(
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.black),
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextField(
-                                          onChanged: (value) async {
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(color: Colors.grey.shade200),
+              child: _DisplayList! != null &&
+                      (ProcessStatusList != null && process != 'All')
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                          //search
+                          Stack(
+                            children: [
+                              Positioned(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.black),
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.white,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: TextField(
+                                            onChanged: (value) async {
+                                              // if (value.isEmpty) {
+                                              //   getScount();
+                                              //   GetOmsOverviewModel();
+                                              // } else
+                                              setState(() {
+                                                _search = value;
+                                              });
+                                            },
+                                            cursorColor: Colors.black,
+                                            keyboardType: TextInputType.text,
+                                            textInputAction: TextInputAction.go,
+                                            decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 15),
+                                                hintText: "Search"),
+                                          ),
+                                        ),
+                                        IconButton(
+                                          splashColor: Colors.blue,
+                                          icon: Icon(Icons.search),
+                                          onPressed: () {
+                                            getpop(context);
+
                                             setState(() {
-                                              _search = value;
+                                              _page = 0;
+                                              _hasNextPage = true;
+                                              _isFirstLoadRunning = false;
+                                              _isLoadMoreRunning = false;
+                                              _DisplayList =
+                                                  <PMSListViewModel>[];
+                                            });
+                                            _firstLoad();
+
+                                            Future.delayed(Duration(seconds: 1),
+                                                () {
+                                              Navigator.pop(
+                                                  context); //pop dialog
                                             });
                                           },
-                                          cursorColor: Colors.black,
-                                          keyboardType: TextInputType.text,
-                                          textInputAction: TextInputAction.go,
-                                          decoration: InputDecoration(
-                                              border: InputBorder.none,
-                                              contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                      horizontal: 15),
-                                              hintText: "Search"),
                                         ),
-                                      ),
-                                      IconButton(
-                                        splashColor: Colors.blue,
-                                        icon: Icon(Icons.search),
-                                        onPressed: () {
-                                          getpop(context);
-
-                                          setState(() {
-                                            _page = 0;
-                                            _hasNextPage = true;
-                                            _isFirstLoadRunning = false;
-                                            _isLoadMoreRunning = false;
-                                            _DisplayList = <PMSListViewModel>[];
-                                          });
-                                          _firstLoad();
-
-                                          Future.delayed(Duration(seconds: 1),
-                                              () {
-                                            Navigator.pop(context); //pop dialog
-                                          });
-                                        },
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
 
-                        //dropdown
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              /// This Future Builder is Used for Area DropDown list
-                              FutureBuilder(
-                                future: futureArea,
-                                builder: (BuildContext context,
-                                    AsyncSnapshot snapshot) {
-                                  if (snapshot.hasData) {
-                                    return Expanded(
-                                        child:
-                                            getArea(context, snapshot.data!));
-                                  } else if (snapshot.hasError) {
-                                    return Text(
-                                      "Something Went Wrong: " +
-                                          snapshot.error.toString(),
-                                      textScaleFactor: 1,
-                                    );
-                                  } else {
-                                    return Center(child: Container());
-                                  }
-                                },
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
+                          //dropdown
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                /// This Future Builder is Used for Area DropDown list
+                                FutureBuilder(
+                                  future: futureArea,
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot snapshot) {
+                                    if (snapshot.hasData) {
+                                      return Expanded(
+                                          child:
+                                              getArea(context, snapshot.data!));
+                                    } else if (snapshot.hasError) {
+                                      return Text(
+                                        "Something Went Wrong: " +
+                                            snapshot.error.toString(),
+                                        textScaleFactor: 1,
+                                      );
+                                    } else {
+                                      return Center(child: Container());
+                                    }
+                                  },
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
 
-                              ///This Future Builder is Used for Distibutory DropDown List
-                              FutureBuilder(
-                                future: futureDistributory,
-                                builder: (BuildContext context,
-                                    AsyncSnapshot snapshot) {
-                                  if (snapshot.hasData) {
-                                    return Expanded(
-                                        child:
-                                            getDist(context, snapshot.data!));
-                                  } else if (snapshot.hasError) {
-                                    return Container() /*Text(
+                                ///This Future Builder is Used for Distibutory DropDown List
+                                FutureBuilder(
+                                  future: futureDistributory,
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot snapshot) {
+                                    if (snapshot.hasData) {
+                                      return Expanded(
+                                          child:
+                                              getDist(context, snapshot.data!));
+                                    } else if (snapshot.hasError) {
+                                      return Container() /*Text(
                                   "Something Went Wrong: " /*+
                                       snapshot.error.toString()*/
                                   ,
                                   textScaleFactor: 1,
                                 )*/
-                                        ;
-                                  } else {
-                                    return Center(child: Container());
-                                  }
-                                },
-                              ),
-                            ],
+                                          ;
+                                    } else {
+                                      return Center(child: Container());
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
 
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              if (ProcessList != null)
-                                Expanded(
-                                    child: getProcess(context, ProcessList!)),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              if (ProcessStatusList != null && process != 'All')
-                                Expanded(
-                                    child: getProcessStatus(
-                                        context,
-                                        ProcessStatusList!
-                                            .where((element) =>
-                                                element.processId ==
-                                                int.tryParse(process))
-                                            .toList())),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                if (ProcessList != null)
+                                  Expanded(
+                                      child: getProcess(context, ProcessList!)),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                if (ProcessStatusList != null &&
+                                    process != 'All')
+                                  Expanded(
+                                      child: getProcessStatus(
+                                          context,
+                                          ProcessStatusList!
+                                              .where((element) =>
+                                                  element.processId ==
+                                                  int.tryParse(process))
+                                              .toList())),
+                              ],
+                            ),
                           ),
-                        ),
 
-                        //listview
-                        Expanded(
-                          child: Scrollbar(
-                            controller: _controller,
-                            interactive: true,
-                            thickness: 10,
-                            radius: Radius.circular(15),
-                            thumbVisibility: true,
-                            child: SingleChildScrollView(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              scrollDirection: Axis.vertical,
+                          //listview
+                          Expanded(
+                            child: Scrollbar(
                               controller: _controller,
-                              child: SizedBox(
-                                width: size.width,
-                                child: _isFirstLoadRunning
-                                    ? Center(
-                                        child: CircularProgressIndicator(),
-                                      )
-                                    : Column(children: [
-                                        getBody(),
-                                        SizedBox(height: 150),
-                                        // when the _loadMore function is running
-                                        if (_isLoadMoreRunning == true)
-                                          Container(),
-                                        // Center(
-                                        //   child: CircularProgressIndicator(),
-                                        // ),
-
-                                        // When nothing else to load
-                                        if (_hasNextPage == false) Container(),
-                                      ]),
+                              interactive: true,
+                              thickness: 10,
+                              radius: Radius.circular(15),
+                              thumbVisibility: true,
+                              child: SingleChildScrollView(
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                scrollDirection: Axis.vertical,
+                                controller: _controller,
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: _isFirstLoadRunning
+                                      ? Center(
+                                          child: CircularProgressIndicator(),
+                                        )
+                                      : Column(children: [
+                                          getBody(),
+                                          // when the _loadMore function is running
+                                          if (_isLoadMoreRunning == true)
+                                            Container(),
+                                          // When nothing else to load
+                                          if (_hasNextPage == false)
+                                            Container(
+                                              width: double.infinity,
+                                              height: 150,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.red),
+                                            ),
+                                        ]),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ])
-                : Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/images/soon.gif',
-                          width: 200,
-                          height: 200,
-                        ),
-                        SizedBox(height: 20.0),
-                        Text(
-                          'Page under construction',
-                          style: TextStyle(
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.bold,
+                        ])
+                  : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/soon.gif',
+                            width: 200,
+                            height: 200,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-          ),
+                          SizedBox(height: 20.0),
+                          Text(
+                            'Page under construction',
+                            style: TextStyle(
+                              fontSize: 24.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )),
         ),
       ),
     );
   }
 
+  var conString;
   getBody() {
     try {
+      List projectNameArr = [
+        'Cluster - I',
+        'Cluster - II',
+        'Cluster - IX',
+        'Cluster - XII'
+      ];
       var _processlist =
           ProcessList!.where((element) => element.processId != 0).toList();
       return ListView.builder(
@@ -630,12 +661,10 @@ class _OmsPageState extends State<OmsPage> {
           itemBuilder: (BuildContext context, int index) {
             return InkWell(
               onTap: () async {
-                var source = 'oms';
+                var source = 'ams';
                 var projectName;
-                var conString;
                 SharedPreferences preferences =
                     await SharedPreferences.getInstance();
-
                 preferences.setString(
                     'Mechanical', _DisplayList![index].mechanical.toString());
                 preferences.setString(
@@ -646,46 +675,94 @@ class _OmsPageState extends State<OmsPage> {
                     _DisplayList![index].autoDryCommissioning.toString());
                 conString = preferences.getString('ConString');
                 projectName = preferences.getString('ProjectName')!;
-
-                conString!.toString().contains('ID=sa')
-                    ? Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => NodeDetails_SQL(
-                                _DisplayList![index],
-                                projectName,
-                                source,
-                                listdatas)),
-                        (Route<dynamic> route) => true,
-                      ).whenComplete(() => {
-                          _firstLoad(),
-                          getDropDownAsync(),
-                          _controller = ScrollController()
-                            ..addListener(_loadMore),
-                        })
-                    : Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => NodeDetails(
-                                _DisplayList![index],
-                                projectName,
-                                source,
-                                viewdata!,
-                                listdatas)),
-                        (Route<dynamic> route) => true,
-                      ).whenComplete(() => {
-                          _firstLoad(),
-                          getDropDownAsync(),
-                          _controller = ScrollController()
-                            ..addListener(_loadMore),
-                        });
-
+                /* projectNameArr.contains(projectName)
+                    ? showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Page under development"),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                AnimatedBuilder(
+                                  animation: _animationController,
+                                  builder:
+                                      (BuildContext context, Widget? child) {
+                                    return Transform.scale(
+                                      scale: _animation.value,
+                                      child: Icon(Icons.warning_amber_outlined,
+                                          size: 50.0, color: Colors.yellow),
+                                    );
+                                  },
+                                ),
+                                const SizedBox(height: 20.0),
+                                const Text("Please check back later!"),
+                              ],
+                            ),
+                            // actions: [
+                            //   ElevatedButton(
+                            //     onPressed: () {
+                            //       Navigator.pop(context);
+                            //     },
+                            //     child: const Text("OK"),
+                            //   ),
+                            // ],
+                          );
+                        },
+                      )
+                    :*/
+                (conString!.toString().contains('ID=sa')
+                        ? Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NodeDetails_SQL(
+                                    _DisplayList![index],
+                                    projectName,
+                                    source,
+                                    listdatas)),
+                            (Route<dynamic> route) => true,
+                          ).whenComplete(() {
+                            _firstLoad();
+                            getDropDownAsync();
+                            _controller = ScrollController()
+                              ..addListener(_loadMore);
+                            _animationController = AnimationController(
+                                vsync: this,
+                                duration: const Duration(seconds: 3))
+                              ..repeat(reverse: true);
+                            _animation = Tween<double>(begin: 1, end: 2)
+                                .animate(_animationController);
+                          })
+                        : Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NodeDetails(
+                                    _DisplayList![index],
+                                    projectName,
+                                    source,
+                                    viewdata!,
+                                    listdatas)),
+                            (Route<dynamic> route) => true,
+                          ))
+                    .whenComplete(() {
+                  _firstLoad();
+                  getDropDownAsync();
+                  _controller = ScrollController()..addListener(_loadMore);
+                  _animationController = AnimationController(
+                      vsync: this, duration: const Duration(seconds: 3))
+                    ..repeat(reverse: true);
+                  _animation = Tween<double>(begin: 1, end: 2)
+                      .animate(_animationController);
+                });
                 setState(() {
                   viewdata = _DisplayList![index];
-                  listdatas = _DisplayList![index].omsId;
+                  listdatas = _DisplayList![index].amsId;
                 });
-                // await fatchdataSQL();
+                // setState(() {
+                //   viewdata = _DisplayList![index];
+                // });
                 // await addDataPMS();
+                // await addlist();
               },
               child: Card(
                 elevation: 4,
@@ -702,23 +779,23 @@ class _OmsPageState extends State<OmsPage> {
                         width: double.infinity,
                         decoration: BoxDecoration(
                             color: colorchnger(index),
+                            //color: Colors.blue.shade400,
                             borderRadius: BorderRadius.circular(5)),
                         child: Center(
                             child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              _DisplayList![index].chakNo.toString(),
+                              _DisplayList![index].amsNo.toString(),
                               style:
                                   TextStyle(fontSize: 14, color: Colors.white),
                             ),
                             Text(
                               '( ' +
-                                  ((_DisplayList![index].areaName ?? '').trim())
+                                  (_DisplayList![index].areaName!.trim())
                                       .toString() +
                                   ' - ' +
                                   (_DisplayList![index].description ?? '')
-                                      .trim()
                                       .toString() +
                                   ' )',
                               softWrap: true,
@@ -731,7 +808,7 @@ class _OmsPageState extends State<OmsPage> {
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                             width: double.infinity,
-                            decoration: BoxDecoration(color: Colors.white70),
+                            decoration: BoxDecoration(color: Colors.white),
                             child: SafeArea(
                               child: GridView.builder(
                                 physics: NeverScrollableScrollPhysics(),
@@ -797,7 +874,7 @@ class _OmsPageState extends State<OmsPage> {
               ),
             );
           });
-    } catch (ex, _) {
+    } catch (_, ex) {
       return Container();
     }
   }
@@ -805,17 +882,7 @@ class _OmsPageState extends State<OmsPage> {
   getprocessstatus(String pro, int proStatus) {
     String imagepath = 'assets/images/pending.png';
     try {
-      if (pro.toLowerCase().contains('auto')) {
-        if (proStatus == 1) {
-          imagepath = 'assets/images/Completed.png';
-        } else if (proStatus == 2) {
-          imagepath = 'assets/images/fullydone.png';
-        } else if (proStatus == 3) {
-          imagepath = 'assets/images/Commented.png';
-        } else {
-          imagepath = 'assets/images/notcompletted.png';
-        }
-      } else if (pro.toLowerCase().contains('dry comm')) {
+      if (pro.toLowerCase().contains('dry comm')) {
         if (proStatus == 1) {
           imagepath = 'assets/images/Completed.png';
         } else if (proStatus == 2) {
@@ -847,11 +914,13 @@ class _OmsPageState extends State<OmsPage> {
   String ConvertLongtoShortString(String str) {
     var list = str.split(' ');
     var tempStr = '';
-    for (var i in list)
-      if (i.length > 3)
+    for (var i in list) {
+      if (i.length > 3) {
         tempStr += i.substring(0, 4).toUpperCase() + " ";
-      else
+      } else {
         tempStr += i.toUpperCase() + " ";
+      }
+    }
 
     return tempStr;
   }
@@ -860,14 +929,10 @@ class _OmsPageState extends State<OmsPage> {
     int? status = 0;
     try {
       proStatus = proStatus.toLowerCase();
-      if (proStatus.contains('mechan'))
+      if (proStatus.contains('mechan')) {
         status = int.tryParse(model.mechanical!);
-      else if (proStatus.contains('erect'))
+      } else if (proStatus.contains('erect'))
         status = int.tryParse(model.erection!);
-      else if (proStatus.contains('auto dry'))
-        status = int.tryParse(model.autoDryCommissioning);
-      else if (proStatus.contains('auto wet'))
-        status = int.tryParse(model.autoWetCommissioning);
       else if (proStatus.contains('dry comm'))
         status = int.tryParse(model.dryCommissioning!);
       else if (proStatus.contains('wet comm'))
@@ -890,7 +955,7 @@ class _OmsPageState extends State<OmsPage> {
   }
 
   int _page = 0;
-  final int _limit = 20;
+  int _limit = 20;
 
   // There is next page or not
   bool _hasNextPage = true;
@@ -915,13 +980,13 @@ class _OmsPageState extends State<OmsPage> {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
 
-      String? conString = preferences.getString('ConString');
+      conString = preferences.getString('ConString');
 
       final res = await http.get(Uri.parse(
-          'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=OMS&conString=$conString'));
+          'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=AMS&conString=$conString'));
 
       print(
-          'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=OMS&conString=$conString');
+          'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=AMS&conString=$conString');
 
       var json = jsonDecode(res.body);
       List<PMSListViewModel> fetchedData = <PMSListViewModel>[];
@@ -931,7 +996,6 @@ class _OmsPageState extends State<OmsPage> {
       if (fetchedData.length > 0) {
         setState(() {
           _DisplayList!.addAll(fetchedData);
-          // viewdata = _DisplayList;
         });
       }
     } catch (err) {
@@ -957,11 +1021,11 @@ class _OmsPageState extends State<OmsPage> {
       try {
         SharedPreferences preferences = await SharedPreferences.getInstance();
         //int? userid = preferences.getInt('userid');
-        String? conString = preferences.getString('ConString');
+        conString = preferences.getString('ConString');
         //String? project = preferences.getString('project');
 
         final res = await http.get(Uri.parse(
-            'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=OMS&conString=$conString'));
+            'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=AMS&conString=$conString'));
         var json = jsonDecode(res.body);
         List<PMSListViewModel> fetchedData = <PMSListViewModel>[];
         json['data']['Response']
@@ -969,6 +1033,7 @@ class _OmsPageState extends State<OmsPage> {
         if (fetchedData.length > 0) {
           setState(() {
             _DisplayList!.addAll(fetchedData);
+            // viewdata = _DisplayList;
           });
         } else {
           // This means there is no more data
@@ -985,27 +1050,13 @@ class _OmsPageState extends State<OmsPage> {
         _isLoadMoreRunning = false;
       });
     }
+    // await addDataPMS();
   }
 
   Future addlist() async {
     for (int i = 0; i <= ProcessList!.length; i++) {
-      // ProcessList[i].source
       final data = ProcessList![i];
       ListModel.instance.insert(data.toJson());
     }
   }
-
-  // Future addDataPMS() async {
-  //   //  if (listdatas == null) {
-  //   //   final data = listdatas!;
-  //   //   ListViewModel.instance.insert(data.toJson());
-  //   // } else {
-  //   //   final data = listdatas!;
-  //   //   ListViewModel.instance.NewUpdatedata(data);
-  //   // }
-  //   for (int i = 0; i <= viewdata!.length; i++) {
-  //     final data = viewdata![i];
-  //     ListViewModel.instance.insert(data.toJson());
-  //   }
-  // }
 }

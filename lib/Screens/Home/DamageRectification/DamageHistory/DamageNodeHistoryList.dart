@@ -5,7 +5,6 @@ import 'package:ecm_application/Screens/Home/DamageRectification/DamageHistory/D
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageHistory/DamageList/Lora.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageHistory/DamageList/Oms.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageHistory/DamageList/Rms.dart';
-import 'package:ecm_application/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -66,7 +65,7 @@ class _DamageHistory_ScreenState extends State<DamageHistory_Screen> {
     ];
 
     return Scaffold(
-        backgroundColor: ColorConstant.whiteA700,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text('Damage History'),
         ),

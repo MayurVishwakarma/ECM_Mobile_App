@@ -321,9 +321,7 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                     height: 100,
                                     width: 80,
                                     margin: EdgeInsets.only(
-                                      bottom: getVerticalSize(
-                                        12.58,
-                                      ),
+                                      bottom: 12.58,
                                     ),
                                     decoration: BoxDecoration(
                                       color: selectedDamageType!
@@ -334,13 +332,9 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                       borderRadius: BorderRadius.circular(5.0),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: ColorConstant.black90026,
-                                          spreadRadius: getHorizontalSize(
-                                            2.00,
-                                          ),
-                                          blurRadius: getHorizontalSize(
-                                            2.00,
-                                          ),
+                                          color: Colors.black26,
+                                          spreadRadius: 2.00,
+                                          blurRadius: 2.00,
                                           offset: Offset(
                                             0,
                                             2,
@@ -363,10 +357,8 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                             textScaleFactor: 1,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: ColorConstant.black900,
-                                              fontSize: getFontSize(
-                                                9,
-                                              ),
+                                              color: Colors.black,
+                                              fontSize: 9,
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -385,9 +377,7 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                                         .contains('total')
                                                     ? Colors.white
                                                     : Colors.black,
-                                                fontSize: getFontSize(
-                                                  14,
-                                                ),
+                                                fontSize: 14,
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.w400,
                                               ),
@@ -437,9 +427,7 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                     height: 100,
                                     width: 80,
                                     margin: EdgeInsets.only(
-                                      bottom: getVerticalSize(
-                                        12.58,
-                                      ),
+                                      bottom: 12.58,
                                     ),
                                     decoration: BoxDecoration(
                                       color: selectedDamageType!
@@ -450,13 +438,9 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                       borderRadius: BorderRadius.circular(5.0),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: ColorConstant.black90026,
-                                          spreadRadius: getHorizontalSize(
-                                            2.00,
-                                          ),
-                                          blurRadius: getHorizontalSize(
-                                            2.00,
-                                          ),
+                                          color: Colors.black26,
+                                          spreadRadius: 2.00,
+                                          blurRadius: 2.00,
                                           offset: Offset(
                                             0,
                                             2,
@@ -479,10 +463,8 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                             textScaleFactor: 1,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: ColorConstant.black900,
-                                              fontSize: getFontSize(
-                                                9,
-                                              ),
+                                              color: Colors.black,
+                                              fontSize: 9,
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -501,9 +483,7 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                                         .contains('electri')
                                                     ? Colors.white
                                                     : Colors.black,
-                                                fontSize: getFontSize(
-                                                  14,
-                                                ),
+                                                fontSize: 14,
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.w400,
                                               ),
@@ -555,9 +535,7 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                       height: 100,
                                       width: 80,
                                       margin: EdgeInsets.only(
-                                        bottom: getVerticalSize(
-                                          12.58,
-                                        ),
+                                        bottom: 12.58,
                                       ),
                                       decoration: BoxDecoration(
                                         color: selectedDamageType!
@@ -569,13 +547,9 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                             BorderRadius.circular(5.0),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: ColorConstant.black90026,
-                                            spreadRadius: getHorizontalSize(
-                                              2.00,
-                                            ),
-                                            blurRadius: getHorizontalSize(
-                                              2.00,
-                                            ),
+                                            color: Colors.black26,
+                                            spreadRadius: 2.00,
+                                            blurRadius: 2.00,
                                             offset: Offset(
                                               0,
                                               2,
@@ -598,10 +572,8 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                               textScaleFactor: 1,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                color: ColorConstant.black900,
-                                                fontSize: getFontSize(
-                                                  9,
-                                                ),
+                                                color: Colors.black,
+                                                fontSize: 9,
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -621,9 +593,7 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                                           .contains('tubing')
                                                       ? Colors.white
                                                       : Colors.black,
-                                                  fontSize: getFontSize(
-                                                    14,
-                                                  ),
+                                                  fontSize: 14,
                                                   fontFamily: 'Inter',
                                                   fontWeight: FontWeight.w400,
                                                 ),
@@ -674,9 +644,7 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                     height: 100,
                                     width: 80,
                                     margin: EdgeInsets.only(
-                                      bottom: getVerticalSize(
-                                        12.58,
-                                      ),
+                                      bottom: 12.58,
                                     ),
                                     decoration: BoxDecoration(
                                       color: selectedDamageType!
@@ -687,13 +655,9 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                       borderRadius: BorderRadius.circular(5.0),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: ColorConstant.black90026,
-                                          spreadRadius: getHorizontalSize(
-                                            2.00,
-                                          ),
-                                          blurRadius: getHorizontalSize(
-                                            2.00,
-                                          ),
+                                          color: Colors.black26,
+                                          spreadRadius: 2.00,
+                                          blurRadius: 2.00,
                                           offset: Offset(
                                             0,
                                             2,
@@ -716,10 +680,8 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                             textScaleFactor: 1,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: ColorConstant.black900,
-                                              fontSize: getFontSize(
-                                                9,
-                                              ),
+                                              color: Colors.black,
+                                              fontSize: 9,
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -738,9 +700,7 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                                         .contains('mechanical')
                                                     ? Colors.white
                                                     : Colors.black,
-                                                fontSize: getFontSize(
-                                                  14,
-                                                ),
+                                                fontSize: 14,
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.w400,
                                               ),
@@ -829,8 +789,8 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                               textScaleFactor: 1,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                color: ColorConstant.black900,
-                                                fontSize: getFontSize(10),
+                                                color: Colors.black,
+                                                fontSize: 10,
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -847,7 +807,7 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: Colors.red,
-                                                  fontSize: getFontSize(14),
+                                                  fontSize: 14,
                                                   fontFamily: 'Inter',
                                                   fontWeight: FontWeight.w400,
                                                 ),
@@ -952,8 +912,8 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                               textScaleFactor: 1,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                color: ColorConstant.black900,
-                                                fontSize: getFontSize(10),
+                                                color: Colors.black,
+                                                fontSize: 10,
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -968,7 +928,7 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: Colors.red,
-                                                  fontSize: getFontSize(14),
+                                                  fontSize: 14,
                                                   fontFamily: 'Inter',
                                                   fontWeight: FontWeight.w400,
                                                 ),
@@ -1076,8 +1036,8 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                               textScaleFactor: 1,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                color: ColorConstant.black900,
-                                                fontSize: getFontSize(10),
+                                                color: Colors.black,
+                                                fontSize: 10,
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -1094,7 +1054,7 @@ class _Oms_MaterialConsumptionState extends State<Oms_MaterialConsumption> {
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: Colors.red,
-                                                  fontSize: getFontSize(14),
+                                                  fontSize: 14,
                                                   fontFamily: 'Inter',
                                                   fontWeight: FontWeight.w400,
                                                 ),

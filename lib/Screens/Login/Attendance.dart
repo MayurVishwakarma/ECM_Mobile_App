@@ -20,7 +20,7 @@ class _UserAttendanceState extends State<UserAttendance> {
 
   Future<bool> getLocationPermission() async {
     bool flag = false;
-    int deniedCount = 0;
+    // int deniedCount = 0;
     try {
       var status = await Permission.locationWhenInUse.status;
 

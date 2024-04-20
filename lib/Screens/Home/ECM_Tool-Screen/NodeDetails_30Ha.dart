@@ -921,6 +921,7 @@ class _NodeDetails30HaState extends State<NodeDetails30Ha> {
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(5.0)),
                   child: TabBar(
+                    indicatorSize: TabBarIndicatorSize.tab,
                     indicator: BoxDecoration(
                         color: Colors.blue[300],
                         borderRadius: BorderRadius.circular(5.0)),
@@ -1112,7 +1113,13 @@ class _NodeDetails30HaState extends State<NodeDetails30Ha> {
                                         // _showAlert(context);
                                       }),
                                       style: ElevatedButton.styleFrom(
-                                          primary: Colors.green),
+                                        backgroundColor: Colors.green,
+                                        foregroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5.0),
+                                        ),
+                                      ),
                                     ),
                                   ElevatedButton(
                                     child: Text(
@@ -1146,7 +1153,13 @@ class _NodeDetails30HaState extends State<NodeDetails30Ha> {
                                       );
                                     }),
                                     style: ElevatedButton.styleFrom(
-                                        primary: Colors.blueGrey),
+                                      backgroundColor: Colors.blueGrey,
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                      ),
+                                    ),
                                   ),
                                   if (datasoff.isNotEmpty)
                                     ElevatedButton(
@@ -1160,7 +1173,7 @@ class _NodeDetails30HaState extends State<NodeDetails30Ha> {
                                         }
                                       }),
                                       style: ElevatedButton.styleFrom(
-                                          primary: Colors.green),
+                                          backgroundColor: Colors.green),
                                     ),
                                 ],
                               ),
@@ -2128,6 +2141,7 @@ class _NodeDetails30HaState extends State<NodeDetails30Ha> {
       return false;
     }
   }
+
   Future<bool> insertCheckListDataWithSiteTeamEngineer(
       List<ECM_Checklist_Model> _checkList) async {
     bool flag = false;

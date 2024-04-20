@@ -1,11 +1,11 @@
-// ignore_for_file: unnecessary_import, must_be_immutable, non_constant_identifier_names, prefer_const_constructors, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, unnecessary_null_in_if_null_operators, no_leading_underscores_for_local_identifiers, unused_field, sort_child_properties_last, prefer_const_literals_to_create_immutables, camel_case_types, avoid_print, unused_catch_stack, use_build_context_synchronously
+// ignore_for_file: unnecessary_import, must_be_immutable, non_constant_identifier_names, prefer_const_constructors, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, unnecessary_null_in_if_null_operators, no_leading_underscores_for_local_identifiers, unused_field, sort_child_properties_last, prefer_const_literals_to_create_immutables, camel_case_types, avoid_print, unused_catch_stack, use_build_context_synchronously, unnecessary_null_comparison
 
 import 'dart:convert';
 
 import 'package:ecm_application/Model/Project/Damage/DamageCommanModel.dart';
 import 'package:ecm_application/Model/Project/Damage/DamageHistory.dart';
 import 'package:ecm_application/Model/Project/Damage/DamageReportDetails._Model.dart';
-import 'package:ecm_application/Services/RestDamage.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../ECM_Tool-Screen/NodeDetails_new.dart';
@@ -17,43 +17,79 @@ List<DamageInsertModel>? Electrical = <DamageInsertModel>[];
 List<DamageInsertModel>? Mechanical = <DamageInsertModel>[];
 List<DamageDetailsCommon>? ChakNo = <DamageDetailsCommon>[];
 
-class History_DetailsScreen extends StatelessWidget {
+class History_DetailsScreen extends StatefulWidget {
   String? ProjectName;
   String? Source;
-  // @override
+
   History_DetailsScreen(
       DamageHistory? _modelData, String project, String source) {
     modelData = _modelData ?? null;
     ProjectName = project;
     Source = source;
   }
-  // void initState() {
-  //   super.initState();
-  //   getImagePathlist();
-  // }
 
-  List<String> imagePathList = [];
-  List<String> imagebytearrayList = [];
+  @override
+  State<History_DetailsScreen> createState() => _History_DetailsScreenState();
+}
+
+class _History_DetailsScreenState extends State<History_DetailsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    getImagePathlist();
+  }
+
   String? electrical;
+
   String? machanical;
 
-  getImagePathlist() async {
+  List<String> imagebytearrayList = [];
+  Future<void> getImagePathlist() async {
     try {
-      imagePathList = modelData!.imagePath;
       electrical = modelData!.electDamageList;
       machanical = modelData!.mechDamageList;
-      for (int i = 0; i < imagePathList.length; i++) {
-        final temp = await GetImagebyPath(imagePathList[i]);
+
+      final imagePathList = modelData!.imagePath;
+      imagebytearrayList = await Future.wait(imagePathList.map((path) async {
+        final temp = await GetImagebyPath(path);
+        // if ((temp ?? "").isNotEmpty) {
+        //   return temp!;
+        // }
+        return temp!;
+      }));
+    } catch (_, ex) {}
+  }
+
+/*for (int i = 0; i < modelData!.imagePath.length; i++) {
+        final temp = await GetImagebyPath(modelData!.imagePath[i]);
         if ((temp ?? "").isNotEmpty) {
           imagebytearrayList.add(temp!);
         }
+      }*/
+  Future<String?> GetImagebyPath(String imgPath) async {
+    String? img64base;
+    try {
+      var request = http.Request(
+          'GET',
+          Uri.parse(
+              'http://wmsservices.seprojects.in/api/Image/GetImage?imgPath=$imgPath'));
+      print(
+          'http://wmsservices.seprojects.in/api/Image/GetImage?imgPath=$imgPath');
+
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        img64base = await response.stream.bytesToString();
+      } else {
+        print(response.reasonPhrase);
       }
     } catch (_, ex) {}
+
+    return img64base!.replaceAll('"', '');
   }
 
   @override
   Widget build(BuildContext context) {
-    getImagePathlist();
     return Scaffold(
       appBar: AppBar(title: Text(modelData!.chakNo ?? "")),
       body: SingleChildScrollView(
@@ -125,11 +161,12 @@ class History_DetailsScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-              if (imagePathList.isNotEmpty)
-                Center(
+              if (modelData!.imagePath.isNotEmpty)
+                /*Center(
                   child: InkWell(
                     onTap: () {
                       imageListpopup(context);
+                      imagePath2.addAll(imagePathList);
                     },
                     child: Image(
                       image: AssetImage('assets/images/imagepreview.png'),
@@ -139,14 +176,17 @@ class History_DetailsScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-              /*Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: ListView.builder(
+              */
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 100,
+                    child: ListView.separated(
                       physics: NeverScrollableScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
-                      itemCount: imagebytearrayList.length,
+                      itemCount: modelData!.imagePath.length,
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: () {
@@ -159,17 +199,28 @@ class History_DetailsScreen extends StatelessWidget {
                               ),
                             );
                           },
-                          child: Image.memory(
-                            base64Decode(imagebytearrayList[index]),
-                            width: 80,
-                            height: 100,
+                          child: Card(
+                            child: Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: FadeInImage(
+                                  placeholder: AssetImage(
+                                      'assets/images/no-pictures.png'),
+                                  image: MemoryImage(
+                                      base64Decode(imagebytearrayList[index])),
+                                  width: 80,
+                                  height: 100,
+                                )),
                           ),
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return SizedBox(
+                          width: 10,
                         );
                       },
                     ),
                   ),
-                ),*/
-
+                ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Column(
@@ -250,11 +301,10 @@ class History_DetailsScreen extends StatelessWidget {
       ),
     );
   }
-
+/*
   Widget _buildImageList(BuildContext context) {
     return ListView.builder(
       shrinkWrap: true,
-      itemCount: imagePathList.length,
       itemBuilder: (BuildContext context, int index) {
         return _buildImageListItem(index, context);
       },
@@ -304,19 +354,5 @@ class History_DetailsScreen extends StatelessWidget {
       },
     );
   }
+*/
 }
-
-// class PreviewImageWidget extends StatelessWidget {
-//   Uint8List? bytearray;
-//   PreviewImageWidget(this.bytearray) {
-//     super.key;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text('Preview Image')),
-//       body: PhotoView(imageProvider: MemoryImage(bytearray!)),
-//     );
-//   }
-// }

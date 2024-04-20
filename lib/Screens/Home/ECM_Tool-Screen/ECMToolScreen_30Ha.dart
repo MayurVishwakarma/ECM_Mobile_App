@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:ecm_application/Model/Project/ECMTool/ECMCountMasterModel.dart';
 import 'package:ecm_application/Model/Project/ECMTool/PMSChackListModel.dart';
 import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/Oms30Ha_Ecm_Page.dart';
-import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/Oms_Ecm_Page.dart';
+import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/ECM-Tool/Oms_Ecm_Page.dart';
 import 'package:ecm_application/core/SQLite/Screen/Offline_List30Ha.dart';
 import 'package:http/http.dart' as http;
 import 'package:ecm_application/Model/Project/Login/AreaModel.dart';
@@ -74,7 +74,7 @@ class _EcmToolScreen30HaState extends State<EcmToolScreen30Ha> {
     ];
 
     return Scaffold(
-        backgroundColor: ColorConstant.whiteA700,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text('ECM TOOL'),
           actions: [
@@ -335,7 +335,7 @@ class _EcmToolScreen30HaState extends State<EcmToolScreen30Ha> {
                               width: double.infinity,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
-                                  color: ColorConstant.whiteA700),
+                                  color: Colors.white),
                               child: Column(children: [
                                 //Heading Part
                                 Padding(
@@ -353,7 +353,7 @@ class _EcmToolScreen30HaState extends State<EcmToolScreen30Ha> {
                                             padding: const EdgeInsets.all(5.0),
                                             child: Icon(
                                               Icons.info,
-                                              color: ColorConstant.whiteA700,
+                                              color: Colors.white,
                                             ),
                                           ),
                                           Padding(
@@ -361,8 +361,7 @@ class _EcmToolScreen30HaState extends State<EcmToolScreen30Ha> {
                                             child: Text(
                                               projectName.toString(),
                                               style: TextStyle(
-                                                  color:
-                                                      ColorConstant.whiteA700,
+                                                  color: Colors.white,
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold),
                                             ),
@@ -375,8 +374,7 @@ class _EcmToolScreen30HaState extends State<EcmToolScreen30Ha> {
                                                 }),
                                                 child: Icon(
                                                   Icons.clear,
-                                                  color:
-                                                      ColorConstant.whiteA700,
+                                                  color: Colors.white,
                                                 )),
                                           )
                                         ]),

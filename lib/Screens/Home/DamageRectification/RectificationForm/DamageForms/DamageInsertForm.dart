@@ -58,6 +58,7 @@ class _DamageInsertState extends State<DamageInsert> {
   var workdoneby = '';
   var remarkval = '';
   var userName = '';
+  var deviceids;
   XFile? image;
   bool? isFetchingData = true;
   bool? isSubmited = false;
@@ -922,33 +923,39 @@ class _DamageInsertState extends State<DamageInsert> {
                     ],
                   ),
                 ),
-                Container(
-                  height: 45,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(5.0)),
-                  child: TabBar(
-                    indicator: BoxDecoration(
-                        color: Colors.blue,
+                if (!(widget.ProjectName!.toLowerCase() == 'cluster-x') &&
+                    !(widget.ProjectName!.toLowerCase() == 'cluster-xiii'))
+                  Container(
+                    height: 45,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        color: Colors.grey[300],
                         borderRadius: BorderRadius.circular(5.0)),
-                    labelColor: Colors.white,
-                    unselectedLabelColor: Colors.black,
-                    tabs: listdistinctProcess
-                        .map((e) => Text(
-                              e.replaceAll(' ', '\n'),
-                              softWrap: true,
-                              style: TextStyle(fontSize: 10),
-                            ))
-                        .toList(),
-                    onTap: (value) async {
-                      setState(() {
-                        selectedProcess = listdistinctProcess.elementAt(value);
-                      });
-                      getECMData(selectedProcess!);
-                    },
+                    child: TabBar(
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      indicator: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(5.0)),
+                      labelColor: Colors.white,
+                      unselectedLabelColor: Colors.black,
+                      tabs: listdistinctProcess
+                          .map((e) => FittedBox(
+                            child: Text(
+                                  e.replaceAll(' ', '\n'),
+                                  softWrap: true,
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                          ))
+                          .toList(),
+                      onTap: (value) async {
+                        setState(() {
+                          selectedProcess =
+                              listdistinctProcess.elementAt(value);
+                        });
+                        getECMData(selectedProcess!);
+                      },
+                    ),
                   ),
-                ),
                 // if (selectedProcess == "Damage Form" ||
                 //     selectedProcess == "Material Consumption" ||
                 //     selectedProcess == "Info" ||
@@ -1565,8 +1572,7 @@ class _DamageInsertState extends State<DamageInsert> {
               getWorkedByNAme((value.first.userId ?? '').toString());
               _ChecklistModel = value;
               imageList.addAll(value.where((element) =>
-                  element.type == 'Image' &&
-                  element.omsId == modelData!.omsId));
+                  element.type == 'Image'));
               for (var element in _ChecklistModel!) {
                 processList!.add(element.type!);
               }
@@ -1821,7 +1827,6 @@ class _DamageInsertState extends State<DamageInsert> {
                               const SizedBox(
                                 width: 10,
                               ),
-                              // if (item.rectification == 'text')
                               Expanded(
                                 flex: 1,
                                 child: TextFormField(
@@ -1830,13 +1835,8 @@ class _DamageInsertState extends State<DamageInsert> {
                                     decoration: InputDecoration(
                                       enabledBorder: UnderlineInputBorder(
                                         borderSide: BorderSide(
-                                            // inline-size: 1,
                                             color: Colors.blue), //<-- SEE HERE
                                       ),
-                                      // suffixText: (item.rectification != null &&
-                                      //         item.value!.isNotEmpty)
-                                      //     ? item.value!
-                                      //     : '',
                                     ),
                                     onChanged: (value) {
                                       setState(() {
@@ -1849,20 +1849,6 @@ class _DamageInsertState extends State<DamageInsert> {
                                 flex: 2,
                                 child: Text(""),
                               ),
-                              // Expanded(
-                              //     flex: 0,
-                              //     child: Checkbox(
-                              //       activeColor: Colors.white54,
-                              //       checkColor: Color.fromARGB(255, 251, 3, 3),
-                              //       value: item.value == '1' ? true : false,
-                              //       onChanged: isEdit!
-                              //           ? (value) {
-                              //               setState(() {
-                              //                 item.value = value! ? '1' : '';
-                              //               });
-                              //             }
-                              //           : null,
-                              //     ))
                             ],
                           ),
                         )
@@ -2021,6 +2007,29 @@ class _DamageInsertState extends State<DamageInsert> {
       widget = const Center(child: CircularProgressIndicator());
     }
     return widget;
+  }
+
+  getDeviceid(String source) {
+    var deviceId;
+    try {
+      if (source == 'oms') {
+        deviceId = modelData!.omsId;
+      } else if (source == 'ams') {
+        deviceId = modelData!.amsId;
+      } else if (source == 'rms') {
+        deviceId = modelData!.rmsId;
+      } else if (source == 'lora') {
+        deviceId = modelData!.gateWayId;
+      } else {
+        deviceId = '1';
+      }
+    } catch (_, ex) {
+      deviceId = '1';
+    }
+    setState(() {
+      deviceids = deviceId;
+    });
+    return deviceId;
   }
   // insertInformation
 
@@ -2190,7 +2199,7 @@ class _DamageInsertState extends State<DamageInsert> {
       var projectName =
           preferences.getString('ProjectName')!.replaceAll(' ', '_');
       var proUserId = preferences.getInt('ProUserId');
-      int omsId = modelData!.omsId!;
+      int omsId = getDeviceid(source);
       var imagePath = "$projectName/$source/$Id/";
       int countflag = 0;
       int uploadflag = 0;
@@ -2208,7 +2217,15 @@ class _DamageInsertState extends State<DamageInsert> {
       var checkListId = imageList.map((e) => e.id).toList().join(",");
       var valueData = imageList.map((e) => e.value ?? '').toList().join(",");
       var Insertobj = Map<String, dynamic>();
-      Insertobj["omsid"] = Id;
+      if (source == 'oms') {
+        Insertobj["omsid"] = Id;
+      } else if (source == 'ams') {
+        Insertobj["amsid"] = Id;
+      } else if (source == 'rms') {
+        Insertobj["rmsid"] = Id;
+      } else if (source == 'lora') {
+        Insertobj["gatewayid"] = Id;
+      }
       Insertobj["userid"] = proUserId.toString();
       Insertobj["Damagedata"] = checkListId;
       Insertobj["Valuedata"] = valueData;
@@ -2216,14 +2233,24 @@ class _DamageInsertState extends State<DamageInsert> {
       Insertobj["status"] = "ok";
       Insertobj["remark"] = _remarkController!;
 
+      String? url;
+      if (source == 'oms') {
+        url = 'http://wmsservices.seprojects.in/api/OMS/InsertOmsDamageReport';
+      } else if (source == 'ams') {
+        url = 'http://wmsservices.seprojects.in/api/AMS/InsertAmsDamageReport';
+      } else if (source == 'rms') {
+        url = 'http://wmsservices.seprojects.in/api/RMS/InsertRmsDamageReport';
+      } else if (source == 'lora') {
+        url =
+            'http://wmsservices.seprojects.in/api/LoRa/InsertLoRaDamageReport';
+      }
+
       if (countflag == uploadflag) {
         var headers = {'Content-Type': 'application/json'};
-        final request = http.Request(
-            "POST",
-            Uri.parse(
-                'http://wmsservices.seprojects.in/api/OMS/InsertOmsDamageReport'));
+        final request = http.Request("POST", Uri.parse(url ?? ''));
         request.headers.addAll(headers);
         request.body = json.encode(Insertobj);
+        print(request.body);
         http.StreamedResponse response = await request.send();
         if (response.statusCode == 200) {
           dynamic json = jsonDecode(await response.stream.bytesToString());
@@ -2240,7 +2267,7 @@ class _DamageInsertState extends State<DamageInsert> {
     }
   }
 
-//Rectification insertion
+//Material insertion
   Future<bool> insertRectifyCommon(List<MaterialConsumptionModel> checklist,
       String Remark, int Id, String source) async {
     try {
@@ -2333,6 +2360,7 @@ class _DamageInsertState extends State<DamageInsert> {
                 'http://wmsservices.seprojects.in/api/infoReport/InsertInfoReport'));
         request.headers.addAll(headers);
         request.body = json.encode(Insertobj);
+        print(request.body);
         http.StreamedResponse response = await request.send();
         if (response.statusCode == 200) {
           dynamic json = jsonDecode(await response.stream.bytesToString());

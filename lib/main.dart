@@ -76,8 +76,14 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        // useMaterial3: true,
+        buttonTheme: ButtonThemeData(splashColor: Colors.white),
+        appBarTheme: AppBarTheme(
+            backgroundColor: Colors.blue, foregroundColor: Colors.white),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.blue,
+            primary: Colors.blue,
+            secondary: Colors.blue),
+        useMaterial3: true,
       ),
       title: 'ecm_application',
       home: isFirstLoad ? SplashScreen() : showFirstScreen,

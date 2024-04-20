@@ -6,7 +6,6 @@ import 'package:ecm_application/Operations/StatelistOperation.dart';
 import 'package:ecm_application/Screens/Login/ProjectMenuScreen.dart';
 import 'package:ecm_application/Screens/Login/MyDrawerScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:ecm_application/core/app_export.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -54,9 +53,10 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: ColorConstant.whiteA700,
+        backgroundColor: Colors.white,
         drawer: MyDrawerScreen(),
         appBar: AppBar(
+          backgroundColor: Colors.blue,
           title: Text(
             'ECM Application'.toUpperCase(),
             textScaleFactor: 1,
@@ -72,8 +72,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
           child: GestureDetector(
             onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
             child: SizedBox(
-              height: size.height,
-              width: size.width,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               child: Column(
                 children: [
                   Padding(
@@ -84,7 +84,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
-                                color: ColorConstant.gray400,
+                                color: Colors.grey.shade400,
                                 borderRadius: BorderRadius.circular(10)),
                             child: Center(
                                 child: DropdownButton(
@@ -119,7 +119,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                           child: Container(
                             // width: size.width * 0.45,
                             decoration: BoxDecoration(
-                                color: ColorConstant.gray400,
+                                color: Colors.grey.shade400,
                                 borderRadius: BorderRadius.circular(10)),
                             child: Center(
                               child: DropdownButton(
@@ -337,8 +337,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                   .toString(),
                                               softWrap: true,
                                               style: TextStyle(
-                                                  color:
-                                                      ColorConstant.whiteA700,
+                                                  color: Colors.white,
                                                   fontSize: 18,
                                                   fontWeight: FontWeight.bold),
                                             ),
@@ -371,15 +370,16 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                             .center,
                                                                     children: [
                                                                       Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.all(20.0),
+                                                                        padding: const EdgeInsets
+                                                                            .all(
+                                                                            20.0),
                                                                         child:
                                                                             Container(
                                                                           width:
                                                                               double.infinity,
                                                                           decoration: BoxDecoration(
                                                                               borderRadius: BorderRadius.circular(5),
-                                                                              color: ColorConstant.whiteA700),
+                                                                              color: Colors.white),
                                                                           child:
                                                                               Column(children: [
                                                                             Padding(
@@ -393,14 +393,14 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                     padding: const EdgeInsets.all(5.0),
                                                                                     child: Icon(
                                                                                       Icons.info,
-                                                                                      color: ColorConstant.whiteA700,
+                                                                                      color: Colors.white,
                                                                                     ),
                                                                                   ),
                                                                                   Padding(
                                                                                     padding: EdgeInsets.all(5),
                                                                                     child: Text(
                                                                                       data[index].projectName!.toString(),
-                                                                                      style: TextStyle(color: ColorConstant.whiteA700, fontSize: 20, fontWeight: FontWeight.bold),
+                                                                                      style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
                                                                                     ),
                                                                                   ),
                                                                                   Padding(
@@ -411,7 +411,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                         }),
                                                                                         child: Icon(
                                                                                           Icons.clear,
-                                                                                          color: ColorConstant.whiteA700,
+                                                                                          color: Colors.white,
                                                                                         )),
                                                                                   )
                                                                                 ]),
@@ -420,7 +420,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                             Padding(
                                                                               padding: const EdgeInsets.only(top: 20.0, left: 10, right: 10, bottom: 20),
                                                                               child: Container(
-                                                                                color: ColorConstant.whiteA700,
+                                                                                color: Colors.white,
                                                                                 width: double.infinity,
                                                                                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                                                                   //OMS
@@ -432,7 +432,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                       children: [
                                                                                         Text(
                                                                                           "OMS",
-                                                                                          style: TextStyle(color: ColorConstant.black900, fontSize: 18, fontWeight: FontWeight.bold),
+                                                                                          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
                                                                                         ),
                                                                                         Row(
                                                                                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -441,22 +441,14 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                             //Total
                                                                                             Padding(
                                                                                               padding: EdgeInsets.only(
-                                                                                                top: getVerticalSize(
-                                                                                                  8.00,
-                                                                                                ),
-                                                                                                right: getHorizontalSize(
-                                                                                                  10.00,
-                                                                                                ),
+                                                                                                top: 8.00,
+                                                                                                right: 10.00,
                                                                                               ),
                                                                                               child: Container(
                                                                                                 alignment: Alignment.center,
-                                                                                                height: getVerticalSize(
-                                                                                                  30.00,
-                                                                                                ),
-                                                                                                width: getHorizontalSize(
-                                                                                                  56.00,
-                                                                                                ),
-                                                                                                decoration: BoxDecoration(color: ColorConstant.cyan300, borderRadius: BorderRadius.circular(5)),
+                                                                                                height: 30.00,
+                                                                                                width: 56.00,
+                                                                                                decoration: BoxDecoration(color: Colors.cyan.shade300, borderRadius: BorderRadius.circular(5)),
                                                                                                 child: Padding(
                                                                                                   padding: const EdgeInsets.all(4.0),
                                                                                                   child: Text(
@@ -464,10 +456,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     textScaleFactor: 1,
                                                                                                     textAlign: TextAlign.center,
                                                                                                     style: TextStyle(
-                                                                                                      color: ColorConstant.black900,
-                                                                                                      fontSize: getFontSize(
-                                                                                                        16,
-                                                                                                      ),
+                                                                                                      color: Colors.black,
+                                                                                                      fontSize: 16,
                                                                                                       fontFamily: 'Inter',
                                                                                                       fontWeight: FontWeight.w500,
                                                                                                     ),
@@ -478,21 +468,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                             //Online
                                                                                             Padding(
                                                                                               padding: EdgeInsets.only(
-                                                                                                top: getVerticalSize(
-                                                                                                  8.00,
-                                                                                                ),
-                                                                                                right: getHorizontalSize(
-                                                                                                  10.00,
-                                                                                                ),
+                                                                                                top: 8.00,
+                                                                                                right: 10.00,
                                                                                               ),
                                                                                               child: Container(
                                                                                                 alignment: Alignment.center,
-                                                                                                height: getVerticalSize(
-                                                                                                  30.00,
-                                                                                                ),
-                                                                                                width: getHorizontalSize(
-                                                                                                  56.00,
-                                                                                                ),
+                                                                                                height: 30.00,
+                                                                                                width: 56.00,
                                                                                                 decoration: BoxDecoration(
                                                                                                   borderRadius: BorderRadius.circular(5),
                                                                                                   color: Colors.lightGreen,
@@ -502,10 +484,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                   textScaleFactor: 1,
                                                                                                   textAlign: TextAlign.center,
                                                                                                   style: TextStyle(
-                                                                                                    color: ColorConstant.black900,
-                                                                                                    fontSize: getFontSize(
-                                                                                                      16,
-                                                                                                    ),
+                                                                                                    color: Colors.black,
+                                                                                                    fontSize: 16,
                                                                                                     fontFamily: 'Inter',
                                                                                                     fontWeight: FontWeight.w500,
                                                                                                   ),
@@ -515,31 +495,21 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                             //Offline
                                                                                             Padding(
                                                                                               padding: EdgeInsets.only(
-                                                                                                top: getVerticalSize(
-                                                                                                  8.00,
-                                                                                                ),
-                                                                                                right: getHorizontalSize(
-                                                                                                  10.00,
-                                                                                                ),
+                                                                                                top: 8.00,
+                                                                                                right: 10.00,
                                                                                               ),
                                                                                               child: Container(
                                                                                                 alignment: Alignment.center,
-                                                                                                height: getVerticalSize(
-                                                                                                  30.00,
-                                                                                                ),
-                                                                                                width: getHorizontalSize(
-                                                                                                  56.00,
-                                                                                                ),
+                                                                                                height: 30.00,
+                                                                                                width: 56.00,
                                                                                                 decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(5)),
                                                                                                 child: Text(
                                                                                                   listData.offlineOms.toString(),
                                                                                                   textScaleFactor: 1,
                                                                                                   textAlign: TextAlign.center,
                                                                                                   style: TextStyle(
-                                                                                                    color: ColorConstant.black900,
-                                                                                                    fontSize: getFontSize(
-                                                                                                      16,
-                                                                                                    ),
+                                                                                                    color: Colors.black,
+                                                                                                    fontSize: 16,
                                                                                                     fontFamily: 'Inter',
                                                                                                     fontWeight: FontWeight.w500,
                                                                                                   ),
@@ -549,31 +519,21 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                             //Damage
                                                                                             Padding(
                                                                                               padding: EdgeInsets.only(
-                                                                                                top: getVerticalSize(
-                                                                                                  8.00,
-                                                                                                ),
-                                                                                                right: getHorizontalSize(
-                                                                                                  10.00,
-                                                                                                ),
+                                                                                                top: 8.00,
+                                                                                                right: 10.00,
                                                                                               ),
                                                                                               child: Container(
                                                                                                 alignment: Alignment.center,
-                                                                                                height: getVerticalSize(
-                                                                                                  30.00,
-                                                                                                ),
-                                                                                                width: getHorizontalSize(
-                                                                                                  56.00,
-                                                                                                ),
+                                                                                                height: 30.00,
+                                                                                                width: 56.00,
                                                                                                 decoration: BoxDecoration(color: Colors.yellow, borderRadius: BorderRadius.circular(5)),
                                                                                                 child: Text(
                                                                                                   listData.damageOms.toString(),
                                                                                                   textScaleFactor: 1,
                                                                                                   textAlign: TextAlign.center,
                                                                                                   style: TextStyle(
-                                                                                                    color: ColorConstant.black900,
-                                                                                                    fontSize: getFontSize(
-                                                                                                      16,
-                                                                                                    ),
+                                                                                                    color: Colors.black,
+                                                                                                    fontSize: 16,
                                                                                                     fontFamily: 'Inter',
                                                                                                     fontWeight: FontWeight.w500,
                                                                                                   ),
@@ -594,7 +554,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                         children: [
                                                                                           Text(
                                                                                             "AMS",
-                                                                                            style: TextStyle(color: ColorConstant.black900, fontSize: 18, fontWeight: FontWeight.bold),
+                                                                                            style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
                                                                                           ),
                                                                                           Row(
                                                                                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -603,24 +563,16 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                               //Total
                                                                                               Padding(
                                                                                                 padding: EdgeInsets.only(
-                                                                                                  top: getVerticalSize(
-                                                                                                    8.00,
-                                                                                                  ),
-                                                                                                  right: getHorizontalSize(
-                                                                                                    10.00,
-                                                                                                  ),
+                                                                                                  top: 8.00,
+                                                                                                  right: 10.00,
                                                                                                 ),
                                                                                                 child: Container(
                                                                                                   alignment: Alignment.center,
-                                                                                                  height: getVerticalSize(
-                                                                                                    30.00,
-                                                                                                  ),
-                                                                                                  width: getHorizontalSize(
-                                                                                                    56.00,
-                                                                                                  ),
+                                                                                                  height: 30.00,
+                                                                                                  width: 56.00,
                                                                                                   decoration: BoxDecoration(
                                                                                                     borderRadius: BorderRadius.circular(5),
-                                                                                                    color: ColorConstant.cyan300,
+                                                                                                    color: Colors.cyan.shade300,
                                                                                                   ),
                                                                                                   child: Padding(
                                                                                                     padding: const EdgeInsets.all(4.0),
@@ -629,10 +581,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                       textScaleFactor: 1,
                                                                                                       textAlign: TextAlign.center,
                                                                                                       style: TextStyle(
-                                                                                                        color: ColorConstant.black900,
-                                                                                                        fontSize: getFontSize(
-                                                                                                          16,
-                                                                                                        ),
+                                                                                                        color: Colors.black,
+                                                                                                        fontSize: 16,
                                                                                                         fontFamily: 'Inter',
                                                                                                         fontWeight: FontWeight.w500,
                                                                                                       ),
@@ -643,21 +593,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                               //Online
                                                                                               Padding(
                                                                                                 padding: EdgeInsets.only(
-                                                                                                  top: getVerticalSize(
-                                                                                                    8.00,
-                                                                                                  ),
-                                                                                                  right: getHorizontalSize(
-                                                                                                    10.00,
-                                                                                                  ),
+                                                                                                  top: 8.00,
+                                                                                                  right: 10.00,
                                                                                                 ),
                                                                                                 child: Container(
                                                                                                   alignment: Alignment.center,
-                                                                                                  height: getVerticalSize(
-                                                                                                    30.00,
-                                                                                                  ),
-                                                                                                  width: getHorizontalSize(
-                                                                                                    56.00,
-                                                                                                  ),
+                                                                                                  height: 30.00,
+                                                                                                  width: 56.00,
                                                                                                   decoration: BoxDecoration(
                                                                                                     color: Colors.lightGreen,
                                                                                                     borderRadius: BorderRadius.circular(5),
@@ -667,10 +609,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     textScaleFactor: 1,
                                                                                                     textAlign: TextAlign.center,
                                                                                                     style: TextStyle(
-                                                                                                      color: ColorConstant.black900,
-                                                                                                      fontSize: getFontSize(
-                                                                                                        16,
-                                                                                                      ),
+                                                                                                      color: Colors.black,
+                                                                                                      fontSize: 16,
                                                                                                       fontFamily: 'Inter',
                                                                                                       fontWeight: FontWeight.w500,
                                                                                                     ),
@@ -680,21 +620,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                               //Offline
                                                                                               Padding(
                                                                                                 padding: EdgeInsets.only(
-                                                                                                  top: getVerticalSize(
-                                                                                                    8.00,
-                                                                                                  ),
-                                                                                                  right: getHorizontalSize(
-                                                                                                    10.00,
-                                                                                                  ),
+                                                                                                  top: 8.00,
+                                                                                                  right: 10.00,
                                                                                                 ),
                                                                                                 child: Container(
                                                                                                   alignment: Alignment.center,
-                                                                                                  height: getVerticalSize(
-                                                                                                    30.00,
-                                                                                                  ),
-                                                                                                  width: getHorizontalSize(
-                                                                                                    56.00,
-                                                                                                  ),
+                                                                                                  height: 30.00,
+                                                                                                  width: 56.00,
                                                                                                   decoration: BoxDecoration(
                                                                                                     color: Colors.red,
                                                                                                     borderRadius: BorderRadius.circular(5),
@@ -704,10 +636,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     textScaleFactor: 1,
                                                                                                     textAlign: TextAlign.center,
                                                                                                     style: TextStyle(
-                                                                                                      color: ColorConstant.black900,
-                                                                                                      fontSize: getFontSize(
-                                                                                                        16,
-                                                                                                      ),
+                                                                                                      color: Colors.black,
+                                                                                                      fontSize: 16,
                                                                                                       fontFamily: 'Inter',
                                                                                                       fontWeight: FontWeight.w500,
                                                                                                     ),
@@ -717,21 +647,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                               //Damage
                                                                                               Padding(
                                                                                                 padding: EdgeInsets.only(
-                                                                                                  top: getVerticalSize(
-                                                                                                    8.00,
-                                                                                                  ),
-                                                                                                  right: getHorizontalSize(
-                                                                                                    10.00,
-                                                                                                  ),
+                                                                                                  top: 8.00,
+                                                                                                  right: 10.00,
                                                                                                 ),
                                                                                                 child: Container(
                                                                                                   alignment: Alignment.center,
-                                                                                                  height: getVerticalSize(
-                                                                                                    30.00,
-                                                                                                  ),
-                                                                                                  width: getHorizontalSize(
-                                                                                                    56.00,
-                                                                                                  ),
+                                                                                                  height: 30.00,
+                                                                                                  width: 56.00,
                                                                                                   decoration: BoxDecoration(
                                                                                                     color: Colors.yellow,
                                                                                                     borderRadius: BorderRadius.circular(5),
@@ -743,10 +665,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                       textScaleFactor: 1,
                                                                                                       textAlign: TextAlign.center,
                                                                                                       style: TextStyle(
-                                                                                                        color: ColorConstant.black900,
-                                                                                                        fontSize: getFontSize(
-                                                                                                          16,
-                                                                                                        ),
+                                                                                                        color: Colors.black,
+                                                                                                        fontSize: 16,
                                                                                                         fontFamily: 'Inter',
                                                                                                         fontWeight: FontWeight.w500,
                                                                                                       ),
@@ -768,7 +688,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                         children: [
                                                                                           Text(
                                                                                             "RMS",
-                                                                                            style: TextStyle(color: ColorConstant.black900, fontSize: 18, fontWeight: FontWeight.bold),
+                                                                                            style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
                                                                                           ),
                                                                                           Row(
                                                                                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -777,24 +697,16 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                               //Total
                                                                                               Padding(
                                                                                                 padding: EdgeInsets.only(
-                                                                                                  top: getVerticalSize(
-                                                                                                    8.00,
-                                                                                                  ),
-                                                                                                  right: getHorizontalSize(
-                                                                                                    10.00,
-                                                                                                  ),
+                                                                                                  top: 8.00,
+                                                                                                  right: 10.00,
                                                                                                 ),
                                                                                                 child: Container(
                                                                                                   alignment: Alignment.center,
-                                                                                                  height: getVerticalSize(
-                                                                                                    30.00,
-                                                                                                  ),
-                                                                                                  width: getHorizontalSize(
-                                                                                                    56.00,
-                                                                                                  ),
+                                                                                                  height: 30.00,
+                                                                                                  width: 56.00,
                                                                                                   decoration: BoxDecoration(
                                                                                                     borderRadius: BorderRadius.circular(5),
-                                                                                                    color: ColorConstant.cyan300,
+                                                                                                    color: Colors.cyan.shade300,
                                                                                                   ),
                                                                                                   child: Padding(
                                                                                                     padding: const EdgeInsets.all(4.0),
@@ -803,10 +715,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                       textScaleFactor: 1,
                                                                                                       textAlign: TextAlign.center,
                                                                                                       style: TextStyle(
-                                                                                                        color: ColorConstant.black900,
-                                                                                                        fontSize: getFontSize(
-                                                                                                          16,
-                                                                                                        ),
+                                                                                                        color: Colors.black,
+                                                                                                        fontSize: 16,
                                                                                                         fontFamily: 'Inter',
                                                                                                         fontWeight: FontWeight.w500,
                                                                                                       ),
@@ -817,21 +727,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                               //Online
                                                                                               Padding(
                                                                                                 padding: EdgeInsets.only(
-                                                                                                  top: getVerticalSize(
-                                                                                                    8.00,
-                                                                                                  ),
-                                                                                                  right: getHorizontalSize(
-                                                                                                    10.00,
-                                                                                                  ),
+                                                                                                  top: 8.00,
+                                                                                                  right: 10.00,
                                                                                                 ),
                                                                                                 child: Container(
                                                                                                   alignment: Alignment.center,
-                                                                                                  height: getVerticalSize(
-                                                                                                    30.00,
-                                                                                                  ),
-                                                                                                  width: getHorizontalSize(
-                                                                                                    56.00,
-                                                                                                  ),
+                                                                                                  height: 30.00,
+                                                                                                  width: 56.00,
                                                                                                   decoration: BoxDecoration(
                                                                                                     color: Colors.lightGreen,
                                                                                                     borderRadius: BorderRadius.circular(5),
@@ -841,10 +743,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     textScaleFactor: 1,
                                                                                                     textAlign: TextAlign.center,
                                                                                                     style: TextStyle(
-                                                                                                      color: ColorConstant.black900,
-                                                                                                      fontSize: getFontSize(
-                                                                                                        16,
-                                                                                                      ),
+                                                                                                      color: Colors.black,
+                                                                                                      fontSize: 16,
                                                                                                       fontFamily: 'Inter',
                                                                                                       fontWeight: FontWeight.w500,
                                                                                                     ),
@@ -854,21 +754,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                               //Offline
                                                                                               Padding(
                                                                                                 padding: EdgeInsets.only(
-                                                                                                  top: getVerticalSize(
-                                                                                                    8.00,
-                                                                                                  ),
-                                                                                                  right: getHorizontalSize(
-                                                                                                    10.00,
-                                                                                                  ),
+                                                                                                  top: 8.00,
+                                                                                                  right: 10.00,
                                                                                                 ),
                                                                                                 child: Container(
                                                                                                   alignment: Alignment.center,
-                                                                                                  height: getVerticalSize(
-                                                                                                    30.00,
-                                                                                                  ),
-                                                                                                  width: getHorizontalSize(
-                                                                                                    56.00,
-                                                                                                  ),
+                                                                                                  height: 30.00,
+                                                                                                  width: 56.00,
                                                                                                   decoration: BoxDecoration(
                                                                                                     color: Colors.red,
                                                                                                     borderRadius: BorderRadius.circular(5),
@@ -878,10 +770,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     textScaleFactor: 1,
                                                                                                     textAlign: TextAlign.center,
                                                                                                     style: TextStyle(
-                                                                                                      color: ColorConstant.black900,
-                                                                                                      fontSize: getFontSize(
-                                                                                                        16,
-                                                                                                      ),
+                                                                                                      color: Colors.black,
+                                                                                                      fontSize: 16,
                                                                                                       fontFamily: 'Inter',
                                                                                                       fontWeight: FontWeight.w500,
                                                                                                     ),
@@ -891,21 +781,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                               //Damage
                                                                                               Padding(
                                                                                                 padding: EdgeInsets.only(
-                                                                                                  top: getVerticalSize(
-                                                                                                    8.00,
-                                                                                                  ),
-                                                                                                  right: getHorizontalSize(
-                                                                                                    10.00,
-                                                                                                  ),
+                                                                                                  top: 8.00,
+                                                                                                  right: 10.00,
                                                                                                 ),
                                                                                                 child: Container(
                                                                                                   alignment: Alignment.center,
-                                                                                                  height: getVerticalSize(
-                                                                                                    30.00,
-                                                                                                  ),
-                                                                                                  width: getHorizontalSize(
-                                                                                                    56.00,
-                                                                                                  ),
+                                                                                                  height: 30.00,
+                                                                                                  width: 56.00,
                                                                                                   decoration: BoxDecoration(
                                                                                                     color: Colors.yellow,
                                                                                                     borderRadius: BorderRadius.circular(5),
@@ -917,10 +799,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                       textScaleFactor: 1,
                                                                                                       textAlign: TextAlign.center,
                                                                                                       style: TextStyle(
-                                                                                                        color: ColorConstant.black900,
-                                                                                                        fontSize: getFontSize(
-                                                                                                          16,
-                                                                                                        ),
+                                                                                                        color: Colors.black,
+                                                                                                        fontSize: 16,
                                                                                                         fontFamily: 'Inter',
                                                                                                         fontWeight: FontWeight.w500,
                                                                                                       ),
@@ -942,7 +822,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                         children: [
                                                                                           Text(
                                                                                             "LoRa GateWay",
-                                                                                            style: TextStyle(color: ColorConstant.black900, fontSize: 18, fontWeight: FontWeight.bold),
+                                                                                            style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
                                                                                           ),
                                                                                           Row(
                                                                                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -951,24 +831,16 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                               //Total
                                                                                               Padding(
                                                                                                 padding: EdgeInsets.only(
-                                                                                                  top: getVerticalSize(
-                                                                                                    8.00,
-                                                                                                  ),
-                                                                                                  right: getHorizontalSize(
-                                                                                                    10.00,
-                                                                                                  ),
+                                                                                                  top: 8.00,
+                                                                                                  right: 10.00,
                                                                                                 ),
                                                                                                 child: Container(
                                                                                                   alignment: Alignment.center,
-                                                                                                  height: getVerticalSize(
-                                                                                                    30.00,
-                                                                                                  ),
-                                                                                                  width: getHorizontalSize(
-                                                                                                    56.00,
-                                                                                                  ),
+                                                                                                  height: 30.00,
+                                                                                                  width: 56.00,
                                                                                                   decoration: BoxDecoration(
                                                                                                     borderRadius: BorderRadius.circular(5),
-                                                                                                    color: ColorConstant.cyan300,
+                                                                                                    color: Colors.cyan.shade300,
                                                                                                   ),
                                                                                                   child: Padding(
                                                                                                     padding: const EdgeInsets.all(4.0),
@@ -977,10 +849,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                       textScaleFactor: 1,
                                                                                                       textAlign: TextAlign.center,
                                                                                                       style: TextStyle(
-                                                                                                        color: ColorConstant.black900,
-                                                                                                        fontSize: getFontSize(
-                                                                                                          16,
-                                                                                                        ),
+                                                                                                        color: Colors.black,
+                                                                                                        fontSize: 16,
                                                                                                         fontFamily: 'Inter',
                                                                                                         fontWeight: FontWeight.w500,
                                                                                                       ),
@@ -991,21 +861,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                               //Damage
                                                                                               Padding(
                                                                                                 padding: EdgeInsets.only(
-                                                                                                  top: getVerticalSize(
-                                                                                                    8.00,
-                                                                                                  ),
-                                                                                                  right: getHorizontalSize(
-                                                                                                    10.00,
-                                                                                                  ),
+                                                                                                  top: 8.00,
+                                                                                                  right: 10.00,
                                                                                                 ),
                                                                                                 child: Container(
                                                                                                   alignment: Alignment.center,
-                                                                                                  height: getVerticalSize(
-                                                                                                    30.00,
-                                                                                                  ),
-                                                                                                  width: getHorizontalSize(
-                                                                                                    56.00,
-                                                                                                  ),
+                                                                                                  height: 30.00,
+                                                                                                  width: 56.00,
                                                                                                   decoration: BoxDecoration(
                                                                                                     color: Colors.yellow,
                                                                                                     borderRadius: BorderRadius.circular(5),
@@ -1017,10 +879,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                       textScaleFactor: 1,
                                                                                                       textAlign: TextAlign.center,
                                                                                                       style: TextStyle(
-                                                                                                        color: ColorConstant.black900,
-                                                                                                        fontSize: getFontSize(
-                                                                                                          16,
-                                                                                                        ),
+                                                                                                        color: Colors.black,
+                                                                                                        fontSize: 16,
                                                                                                         fontFamily: 'Inter',
                                                                                                         fontWeight: FontWeight.w500,
                                                                                                       ),
@@ -1047,27 +907,19 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                               Text(
                                                                                                 "Pump Station",
                                                                                                 softWrap: true,
-                                                                                                style: TextStyle(color: ColorConstant.black900, fontSize: 18, fontWeight: FontWeight.bold),
+                                                                                                style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
                                                                                               ),
                                                                                               Padding(
                                                                                                 padding: EdgeInsets.only(
-                                                                                                  top: getVerticalSize(
-                                                                                                    8.00,
-                                                                                                  ),
-                                                                                                  right: getHorizontalSize(
-                                                                                                    10.00,
-                                                                                                  ),
+                                                                                                  top: 8.00,
+                                                                                                  right: 10.00,
                                                                                                 ),
                                                                                                 child: Container(
                                                                                                   alignment: Alignment.center,
-                                                                                                  height: getVerticalSize(
-                                                                                                    27.00,
-                                                                                                  ),
-                                                                                                  width: getHorizontalSize(
-                                                                                                    46.00,
-                                                                                                  ),
+                                                                                                  height: 27.00,
+                                                                                                  width: 46.00,
                                                                                                   decoration: BoxDecoration(
-                                                                                                    color: ColorConstant.cyan300,
+                                                                                                    color: Colors.cyan.shade300,
                                                                                                     borderRadius: BorderRadius.circular(5),
                                                                                                   ),
                                                                                                   child: Text(
@@ -1075,10 +927,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     textScaleFactor: 1,
                                                                                                     textAlign: TextAlign.center,
                                                                                                     style: TextStyle(
-                                                                                                      color: ColorConstant.black900,
-                                                                                                      fontSize: getFontSize(
-                                                                                                        16,
-                                                                                                      ),
+                                                                                                      color: Colors.black,
+                                                                                                      fontSize: 16,
                                                                                                       fontFamily: 'Inter',
                                                                                                       fontWeight: FontWeight.w500,
                                                                                                     ),
@@ -1104,21 +954,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                       if (listData.pS1Status != null)
                                                                                                         Padding(
                                                                                                           padding: EdgeInsets.only(
-                                                                                                            top: getVerticalSize(
-                                                                                                              8.00,
-                                                                                                            ),
-                                                                                                            right: getHorizontalSize(
-                                                                                                              10.00,
-                                                                                                            ),
+                                                                                                            top: 8.00,
+                                                                                                            right: 10.00,
                                                                                                           ),
                                                                                                           child: Container(
                                                                                                             alignment: Alignment.center,
-                                                                                                            height: getVerticalSize(
-                                                                                                              27.00,
-                                                                                                            ),
-                                                                                                            width: getHorizontalSize(
-                                                                                                              46.00,
-                                                                                                            ),
+                                                                                                            height: 27.00,
+                                                                                                            width: 46.00,
                                                                                                             decoration: BoxDecoration(
                                                                                                               color: (listData.pS1Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                               borderRadius: BorderRadius.circular(5),
@@ -1128,10 +970,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                               textScaleFactor: 1,
                                                                                                               textAlign: TextAlign.center,
                                                                                                               style: TextStyle(
-                                                                                                                color: ColorConstant.black900,
-                                                                                                                fontSize: getFontSize(
-                                                                                                                  16,
-                                                                                                                ),
+                                                                                                                color: Colors.black,
+                                                                                                                fontSize: 16,
                                                                                                                 fontFamily: 'Inter',
                                                                                                                 fontWeight: FontWeight.w500,
                                                                                                               ),
@@ -1141,21 +981,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                       if (listData.pS2Status != null)
                                                                                                         Padding(
                                                                                                           padding: EdgeInsets.only(
-                                                                                                            top: getVerticalSize(
-                                                                                                              8.00,
-                                                                                                            ),
-                                                                                                            right: getHorizontalSize(
-                                                                                                              10.00,
-                                                                                                            ),
+                                                                                                            top: 8.00,
+                                                                                                            right: 10.00,
                                                                                                           ),
                                                                                                           child: Container(
                                                                                                             alignment: Alignment.center,
-                                                                                                            height: getVerticalSize(
-                                                                                                              27.00,
-                                                                                                            ),
-                                                                                                            width: getHorizontalSize(
-                                                                                                              46.00,
-                                                                                                            ),
+                                                                                                            height: 27.00,
+                                                                                                            width: 46.00,
                                                                                                             decoration: BoxDecoration(
                                                                                                               color: (listData.pS2Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                               borderRadius: BorderRadius.circular(5),
@@ -1165,10 +997,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                               textScaleFactor: 1,
                                                                                                               textAlign: TextAlign.center,
                                                                                                               style: TextStyle(
-                                                                                                                color: ColorConstant.black900,
-                                                                                                                fontSize: getFontSize(
-                                                                                                                  16,
-                                                                                                                ),
+                                                                                                                color: Colors.black,
+                                                                                                                fontSize: 16,
                                                                                                                 fontFamily: 'Inter',
                                                                                                                 fontWeight: FontWeight.w500,
                                                                                                               ),
@@ -1178,21 +1008,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                       if (listData.pS3Status != null)
                                                                                                         Padding(
                                                                                                           padding: EdgeInsets.only(
-                                                                                                            top: getVerticalSize(
-                                                                                                              8.00,
-                                                                                                            ),
-                                                                                                            right: getHorizontalSize(
-                                                                                                              10.00,
-                                                                                                            ),
+                                                                                                            top: 8.00,
+                                                                                                            right: 10.00,
                                                                                                           ),
                                                                                                           child: Container(
                                                                                                             alignment: Alignment.center,
-                                                                                                            height: getVerticalSize(
-                                                                                                              27.00,
-                                                                                                            ),
-                                                                                                            width: getHorizontalSize(
-                                                                                                              46.00,
-                                                                                                            ),
+                                                                                                            height: 27.00,
+                                                                                                            width: 46.00,
                                                                                                             decoration: BoxDecoration(
                                                                                                               color: (listData.pS3Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                               borderRadius: BorderRadius.circular(5),
@@ -1202,10 +1024,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                               textScaleFactor: 1,
                                                                                                               textAlign: TextAlign.center,
                                                                                                               style: TextStyle(
-                                                                                                                color: ColorConstant.black900,
-                                                                                                                fontSize: getFontSize(
-                                                                                                                  16,
-                                                                                                                ),
+                                                                                                                color: Colors.black,
+                                                                                                                fontSize: 16,
                                                                                                                 fontFamily: 'Inter',
                                                                                                                 fontWeight: FontWeight.w500,
                                                                                                               ),
@@ -1215,21 +1035,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                       if (listData.pS4Status != null)
                                                                                                         Padding(
                                                                                                           padding: EdgeInsets.only(
-                                                                                                            top: getVerticalSize(
-                                                                                                              8.00,
-                                                                                                            ),
-                                                                                                            right: getHorizontalSize(
-                                                                                                              10.00,
-                                                                                                            ),
+                                                                                                            top: 8.00,
+                                                                                                            right: 10.00,
                                                                                                           ),
                                                                                                           child: Container(
                                                                                                             alignment: Alignment.center,
-                                                                                                            height: getVerticalSize(
-                                                                                                              27.00,
-                                                                                                            ),
-                                                                                                            width: getHorizontalSize(
-                                                                                                              46.00,
-                                                                                                            ),
+                                                                                                            height: 27.00,
+                                                                                                            width: 46.00,
                                                                                                             decoration: BoxDecoration(
                                                                                                               color: (listData.pS4Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                               borderRadius: BorderRadius.circular(5),
@@ -1239,10 +1051,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                               textScaleFactor: 1,
                                                                                                               textAlign: TextAlign.center,
                                                                                                               style: TextStyle(
-                                                                                                                color: ColorConstant.black900,
-                                                                                                                fontSize: getFontSize(
-                                                                                                                  16,
-                                                                                                                ),
+                                                                                                                color: Colors.black,
+                                                                                                                fontSize: 16,
                                                                                                                 fontFamily: 'Inter',
                                                                                                                 fontWeight: FontWeight.w500,
                                                                                                               ),
@@ -1255,21 +1065,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     if (listData.pS5Status != null)
                                                                                                       Padding(
                                                                                                         padding: EdgeInsets.only(
-                                                                                                          top: getVerticalSize(
-                                                                                                            8.00,
-                                                                                                          ),
-                                                                                                          right: getHorizontalSize(
-                                                                                                            10.00,
-                                                                                                          ),
+                                                                                                          top: 8.00,
+                                                                                                          right: 10.00,
                                                                                                         ),
                                                                                                         child: Container(
                                                                                                           alignment: Alignment.center,
-                                                                                                          height: getVerticalSize(
-                                                                                                            27.00,
-                                                                                                          ),
-                                                                                                          width: getHorizontalSize(
-                                                                                                            46.00,
-                                                                                                          ),
+                                                                                                          height: 27.00,
+                                                                                                          width: 46.00,
                                                                                                           decoration: BoxDecoration(
                                                                                                             color: (listData.pS5Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                             borderRadius: BorderRadius.circular(5),
@@ -1279,10 +1081,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                             textScaleFactor: 1,
                                                                                                             textAlign: TextAlign.center,
                                                                                                             style: TextStyle(
-                                                                                                              color: ColorConstant.black900,
-                                                                                                              fontSize: getFontSize(
-                                                                                                                16,
-                                                                                                              ),
+                                                                                                              color: Colors.black,
+                                                                                                              fontSize: 16,
                                                                                                               fontFamily: 'Inter',
                                                                                                               fontWeight: FontWeight.w500,
                                                                                                             ),
@@ -1292,21 +1092,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     if (listData.pS6Status != null)
                                                                                                       Padding(
                                                                                                         padding: EdgeInsets.only(
-                                                                                                          top: getVerticalSize(
-                                                                                                            8.00,
-                                                                                                          ),
-                                                                                                          right: getHorizontalSize(
-                                                                                                            10.00,
-                                                                                                          ),
+                                                                                                          top: 8.00,
+                                                                                                          right: 10.00,
                                                                                                         ),
                                                                                                         child: Container(
                                                                                                           alignment: Alignment.center,
-                                                                                                          height: getVerticalSize(
-                                                                                                            27.00,
-                                                                                                          ),
-                                                                                                          width: getHorizontalSize(
-                                                                                                            46.00,
-                                                                                                          ),
+                                                                                                          height: 27.00,
+                                                                                                          width: 46.00,
                                                                                                           decoration: BoxDecoration(
                                                                                                             color: (listData.pS6Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                             borderRadius: BorderRadius.circular(5),
@@ -1316,10 +1108,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                             textScaleFactor: 1,
                                                                                                             textAlign: TextAlign.center,
                                                                                                             style: TextStyle(
-                                                                                                              color: ColorConstant.black900,
-                                                                                                              fontSize: getFontSize(
-                                                                                                                16,
-                                                                                                              ),
+                                                                                                              color: Colors.black,
+                                                                                                              fontSize: 16,
                                                                                                               fontFamily: 'Inter',
                                                                                                               fontWeight: FontWeight.w500,
                                                                                                             ),
@@ -1329,21 +1119,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     if (listData.pS7Status != null)
                                                                                                       Padding(
                                                                                                         padding: EdgeInsets.only(
-                                                                                                          top: getVerticalSize(
-                                                                                                            8.00,
-                                                                                                          ),
-                                                                                                          right: getHorizontalSize(
-                                                                                                            10.00,
-                                                                                                          ),
+                                                                                                          top: 8.00,
+                                                                                                          right: 10.00,
                                                                                                         ),
                                                                                                         child: Container(
                                                                                                           alignment: Alignment.center,
-                                                                                                          height: getVerticalSize(
-                                                                                                            27.00,
-                                                                                                          ),
-                                                                                                          width: getHorizontalSize(
-                                                                                                            46.00,
-                                                                                                          ),
+                                                                                                          height: 27.00,
+                                                                                                          width: 46.00,
                                                                                                           decoration: BoxDecoration(
                                                                                                             color: (listData.pS7Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                             borderRadius: BorderRadius.circular(5),
@@ -1353,10 +1135,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                             textScaleFactor: 1,
                                                                                                             textAlign: TextAlign.center,
                                                                                                             style: TextStyle(
-                                                                                                              color: ColorConstant.black900,
-                                                                                                              fontSize: getFontSize(
-                                                                                                                16,
-                                                                                                              ),
+                                                                                                              color: Colors.black,
+                                                                                                              fontSize: 16,
                                                                                                               fontFamily: 'Inter',
                                                                                                               fontWeight: FontWeight.w500,
                                                                                                             ),
@@ -1366,21 +1146,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     if (listData.pS8Status != null)
                                                                                                       Padding(
                                                                                                         padding: EdgeInsets.only(
-                                                                                                          top: getVerticalSize(
-                                                                                                            8.00,
-                                                                                                          ),
-                                                                                                          right: getHorizontalSize(
-                                                                                                            10.00,
-                                                                                                          ),
+                                                                                                          top: 8.00,
+                                                                                                          right: 10.00,
                                                                                                         ),
                                                                                                         child: Container(
                                                                                                           alignment: Alignment.center,
-                                                                                                          height: getVerticalSize(
-                                                                                                            27.00,
-                                                                                                          ),
-                                                                                                          width: getHorizontalSize(
-                                                                                                            46.00,
-                                                                                                          ),
+                                                                                                          height: 27.00,
+                                                                                                          width: 46.00,
                                                                                                           decoration: BoxDecoration(
                                                                                                             color: (listData.pS8Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                             borderRadius: BorderRadius.circular(5),
@@ -1390,10 +1162,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                             textScaleFactor: 1,
                                                                                                             textAlign: TextAlign.center,
                                                                                                             style: TextStyle(
-                                                                                                              color: ColorConstant.black900,
-                                                                                                              fontSize: getFontSize(
-                                                                                                                16,
-                                                                                                              ),
+                                                                                                              color: Colors.black,
+                                                                                                              fontSize: 16,
                                                                                                               fontFamily: 'Inter',
                                                                                                               fontWeight: FontWeight.w500,
                                                                                                             ),
@@ -1405,21 +1175,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     if (listData.pS9Status != null)
                                                                                                       Padding(
                                                                                                         padding: EdgeInsets.only(
-                                                                                                          top: getVerticalSize(
-                                                                                                            8.00,
-                                                                                                          ),
-                                                                                                          right: getHorizontalSize(
-                                                                                                            10.00,
-                                                                                                          ),
+                                                                                                          top: 8.00,
+                                                                                                          right: 10.00,
                                                                                                         ),
                                                                                                         child: Container(
                                                                                                           alignment: Alignment.center,
-                                                                                                          height: getVerticalSize(
-                                                                                                            27.00,
-                                                                                                          ),
-                                                                                                          width: getHorizontalSize(
-                                                                                                            46.00,
-                                                                                                          ),
+                                                                                                          height: 27.00,
+                                                                                                          width: 46.00,
                                                                                                           decoration: BoxDecoration(
                                                                                                             color: (listData.pS9Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                             borderRadius: BorderRadius.circular(5),
@@ -1429,10 +1191,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                             textScaleFactor: 1,
                                                                                                             textAlign: TextAlign.center,
                                                                                                             style: TextStyle(
-                                                                                                              color: ColorConstant.black900,
-                                                                                                              fontSize: getFontSize(
-                                                                                                                16,
-                                                                                                              ),
+                                                                                                              color: Colors.black,
+                                                                                                              fontSize: 16,
                                                                                                               fontFamily: 'Inter',
                                                                                                               fontWeight: FontWeight.w500,
                                                                                                             ),
@@ -1442,21 +1202,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     if (listData.pS10Status != null)
                                                                                                       Padding(
                                                                                                         padding: EdgeInsets.only(
-                                                                                                          top: getVerticalSize(
-                                                                                                            8.00,
-                                                                                                          ),
-                                                                                                          right: getHorizontalSize(
-                                                                                                            10.00,
-                                                                                                          ),
+                                                                                                          top: 8.00,
+                                                                                                          right: 10.00,
                                                                                                         ),
                                                                                                         child: Container(
                                                                                                           alignment: Alignment.center,
-                                                                                                          height: getVerticalSize(
-                                                                                                            27.00,
-                                                                                                          ),
-                                                                                                          width: getHorizontalSize(
-                                                                                                            46.00,
-                                                                                                          ),
+                                                                                                          height: 27.00,
+                                                                                                          width: 46.00,
                                                                                                           decoration: BoxDecoration(
                                                                                                             color: (listData.pS10Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                             borderRadius: BorderRadius.circular(5),
@@ -1466,10 +1218,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                             textScaleFactor: 1,
                                                                                                             textAlign: TextAlign.center,
                                                                                                             style: TextStyle(
-                                                                                                              color: ColorConstant.black900,
-                                                                                                              fontSize: getFontSize(
-                                                                                                                16,
-                                                                                                              ),
+                                                                                                              color: Colors.black,
+                                                                                                              fontSize: 16,
                                                                                                               fontFamily: 'Inter',
                                                                                                               fontWeight: FontWeight.w500,
                                                                                                             ),
@@ -1479,21 +1229,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     if (listData.pS11Status != null)
                                                                                                       Padding(
                                                                                                         padding: EdgeInsets.only(
-                                                                                                          top: getVerticalSize(
-                                                                                                            8.00,
-                                                                                                          ),
-                                                                                                          right: getHorizontalSize(
-                                                                                                            10.00,
-                                                                                                          ),
+                                                                                                          top: 8.00,
+                                                                                                          right: 10.00,
                                                                                                         ),
                                                                                                         child: Container(
                                                                                                           alignment: Alignment.center,
-                                                                                                          height: getVerticalSize(
-                                                                                                            27.00,
-                                                                                                          ),
-                                                                                                          width: getHorizontalSize(
-                                                                                                            46.00,
-                                                                                                          ),
+                                                                                                          height: 27.00,
+                                                                                                          width: 46.00,
                                                                                                           decoration: BoxDecoration(
                                                                                                             color: (listData.pS11Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                             borderRadius: BorderRadius.circular(5),
@@ -1503,10 +1245,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                             textScaleFactor: 1,
                                                                                                             textAlign: TextAlign.center,
                                                                                                             style: TextStyle(
-                                                                                                              color: ColorConstant.black900,
-                                                                                                              fontSize: getFontSize(
-                                                                                                                16,
-                                                                                                              ),
+                                                                                                              color: Colors.black,
+                                                                                                              fontSize: 16,
                                                                                                               fontFamily: 'Inter',
                                                                                                               fontWeight: FontWeight.w500,
                                                                                                             ),
@@ -1516,21 +1256,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     if (listData.pS12Status != null)
                                                                                                       Padding(
                                                                                                         padding: EdgeInsets.only(
-                                                                                                          top: getVerticalSize(
-                                                                                                            8.00,
-                                                                                                          ),
-                                                                                                          right: getHorizontalSize(
-                                                                                                            10.00,
-                                                                                                          ),
+                                                                                                          top: 8.00,
+                                                                                                          right: 10.00,
                                                                                                         ),
                                                                                                         child: Container(
                                                                                                           alignment: Alignment.center,
-                                                                                                          height: getVerticalSize(
-                                                                                                            27.00,
-                                                                                                          ),
-                                                                                                          width: getHorizontalSize(
-                                                                                                            46.00,
-                                                                                                          ),
+                                                                                                          height: 27.00,
+                                                                                                          width: 46.00,
                                                                                                           decoration: BoxDecoration(
                                                                                                             color: (listData.pS12Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                             borderRadius: BorderRadius.circular(5),
@@ -1540,10 +1272,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                             textScaleFactor: 1,
                                                                                                             textAlign: TextAlign.center,
                                                                                                             style: TextStyle(
-                                                                                                              color: ColorConstant.black900,
-                                                                                                              fontSize: getFontSize(
-                                                                                                                16,
-                                                                                                              ),
+                                                                                                              color: Colors.black,
+                                                                                                              fontSize: 16,
                                                                                                               fontFamily: 'Inter',
                                                                                                               fontWeight: FontWeight.w500,
                                                                                                             ),
@@ -1555,21 +1285,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     if (listData.pS13Status != null)
                                                                                                       Padding(
                                                                                                         padding: EdgeInsets.only(
-                                                                                                          top: getVerticalSize(
-                                                                                                            8.00,
-                                                                                                          ),
-                                                                                                          right: getHorizontalSize(
-                                                                                                            10.00,
-                                                                                                          ),
+                                                                                                          top: 8.00,
+                                                                                                          right: 10.00,
                                                                                                         ),
                                                                                                         child: Container(
                                                                                                           alignment: Alignment.center,
-                                                                                                          height: getVerticalSize(
-                                                                                                            27.00,
-                                                                                                          ),
-                                                                                                          width: getHorizontalSize(
-                                                                                                            46.00,
-                                                                                                          ),
+                                                                                                          height: 27.00,
+                                                                                                          width: 46.00,
                                                                                                           decoration: BoxDecoration(
                                                                                                             color: (listData.pS13Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                             borderRadius: BorderRadius.circular(5),
@@ -1579,10 +1301,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                             textScaleFactor: 1,
                                                                                                             textAlign: TextAlign.center,
                                                                                                             style: TextStyle(
-                                                                                                              color: ColorConstant.black900,
-                                                                                                              fontSize: getFontSize(
-                                                                                                                16,
-                                                                                                              ),
+                                                                                                              color: Colors.black,
+                                                                                                              fontSize: 16,
                                                                                                               fontFamily: 'Inter',
                                                                                                               fontWeight: FontWeight.w500,
                                                                                                             ),
@@ -1592,21 +1312,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     if (listData.pS14Status != null)
                                                                                                       Padding(
                                                                                                         padding: EdgeInsets.only(
-                                                                                                          top: getVerticalSize(
-                                                                                                            8.00,
-                                                                                                          ),
-                                                                                                          right: getHorizontalSize(
-                                                                                                            10.00,
-                                                                                                          ),
+                                                                                                          top: 8.00,
+                                                                                                          right: 10.00,
                                                                                                         ),
                                                                                                         child: Container(
                                                                                                           alignment: Alignment.center,
-                                                                                                          height: getVerticalSize(
-                                                                                                            27.00,
-                                                                                                          ),
-                                                                                                          width: getHorizontalSize(
-                                                                                                            46.00,
-                                                                                                          ),
+                                                                                                          height: 27.00,
+                                                                                                          width: 46.00,
                                                                                                           decoration: BoxDecoration(
                                                                                                             color: (listData.pS14Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                             borderRadius: BorderRadius.circular(5),
@@ -1616,10 +1328,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                             textScaleFactor: 1,
                                                                                                             textAlign: TextAlign.center,
                                                                                                             style: TextStyle(
-                                                                                                              color: ColorConstant.black900,
-                                                                                                              fontSize: getFontSize(
-                                                                                                                16,
-                                                                                                              ),
+                                                                                                              color: Colors.black,
+                                                                                                              fontSize: 16,
                                                                                                               fontFamily: 'Inter',
                                                                                                               fontWeight: FontWeight.w500,
                                                                                                             ),
@@ -1629,21 +1339,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     if (listData.pS15Status != null)
                                                                                                       Padding(
                                                                                                         padding: EdgeInsets.only(
-                                                                                                          top: getVerticalSize(
-                                                                                                            8.00,
-                                                                                                          ),
-                                                                                                          right: getHorizontalSize(
-                                                                                                            10.00,
-                                                                                                          ),
+                                                                                                          top: 8.00,
+                                                                                                          right: 10.00,
                                                                                                         ),
                                                                                                         child: Container(
                                                                                                           alignment: Alignment.center,
-                                                                                                          height: getVerticalSize(
-                                                                                                            27.00,
-                                                                                                          ),
-                                                                                                          width: getHorizontalSize(
-                                                                                                            46.00,
-                                                                                                          ),
+                                                                                                          height: 27.00,
+                                                                                                          width: 46.00,
                                                                                                           decoration: BoxDecoration(
                                                                                                             color: (listData.pS15Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                             borderRadius: BorderRadius.circular(5),
@@ -1653,10 +1355,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                             textScaleFactor: 1,
                                                                                                             textAlign: TextAlign.center,
                                                                                                             style: TextStyle(
-                                                                                                              color: ColorConstant.black900,
-                                                                                                              fontSize: getFontSize(
-                                                                                                                16,
-                                                                                                              ),
+                                                                                                              color: Colors.black,
+                                                                                                              fontSize: 16,
                                                                                                               fontFamily: 'Inter',
                                                                                                               fontWeight: FontWeight.w500,
                                                                                                             ),
@@ -1666,21 +1366,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                     if (listData.pS16Status != null)
                                                                                                       Padding(
                                                                                                         padding: EdgeInsets.only(
-                                                                                                          top: getVerticalSize(
-                                                                                                            8.00,
-                                                                                                          ),
-                                                                                                          right: getHorizontalSize(
-                                                                                                            10.00,
-                                                                                                          ),
+                                                                                                          top: 8.00,
+                                                                                                          right: 10.00,
                                                                                                         ),
                                                                                                         child: Container(
                                                                                                           alignment: Alignment.center,
-                                                                                                          height: getVerticalSize(
-                                                                                                            27.00,
-                                                                                                          ),
-                                                                                                          width: getHorizontalSize(
-                                                                                                            46.00,
-                                                                                                          ),
+                                                                                                          height: 27.00,
+                                                                                                          width: 46.00,
                                                                                                           decoration: BoxDecoration(
                                                                                                             color: (listData.pS16Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                             borderRadius: BorderRadius.circular(5),
@@ -1690,10 +1382,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                             textScaleFactor: 1,
                                                                                                             textAlign: TextAlign.center,
                                                                                                             style: TextStyle(
-                                                                                                              color: ColorConstant.black900,
-                                                                                                              fontSize: getFontSize(
-                                                                                                                16,
-                                                                                                              ),
+                                                                                                              color: Colors.black,
+                                                                                                              fontSize: 16,
                                                                                                               fontFamily: 'Inter',
                                                                                                               fontWeight: FontWeight.w500,
                                                                                                             ),
@@ -1722,28 +1412,20 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                             children: [
                                                                                               Text(
                                                                                                 "BPT",
-                                                                                                style: TextStyle(color: ColorConstant.black900, fontSize: 18, fontWeight: FontWeight.bold),
+                                                                                                style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
                                                                                               ),
                                                                                               //Total
                                                                                               Padding(
                                                                                                 padding: EdgeInsets.only(
-                                                                                                  top: getVerticalSize(
-                                                                                                    8.00,
-                                                                                                  ),
-                                                                                                  right: getHorizontalSize(
-                                                                                                    10.00,
-                                                                                                  ),
+                                                                                                  top: 8.00,
+                                                                                                  right: 10.00,
                                                                                                 ),
                                                                                                 child: Container(
                                                                                                   alignment: Alignment.center,
-                                                                                                  height: getVerticalSize(
-                                                                                                    27.00,
-                                                                                                  ),
-                                                                                                  width: getHorizontalSize(
-                                                                                                    46.00,
-                                                                                                  ),
+                                                                                                  height: 27.00,
+                                                                                                  width: 46.00,
                                                                                                   decoration: BoxDecoration(
-                                                                                                    color: ColorConstant.cyan300,
+                                                                                                    color: Colors.cyan.shade300,
                                                                                                     borderRadius: BorderRadius.circular(5),
                                                                                                   ),
                                                                                                   child: Padding(
@@ -1753,10 +1435,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                       textScaleFactor: 1,
                                                                                                       textAlign: TextAlign.center,
                                                                                                       style: TextStyle(
-                                                                                                        color: ColorConstant.black900,
-                                                                                                        fontSize: getFontSize(
-                                                                                                          16,
-                                                                                                        ),
+                                                                                                        color: const Color.fromRGBO(0, 0, 0, 1),
+                                                                                                        fontSize: 16,
                                                                                                         fontFamily: 'Inter',
                                                                                                         fontWeight: FontWeight.w500,
                                                                                                       ),
@@ -1775,21 +1455,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                 if (listData.noOfDC! >= 1)
                                                                                                   Padding(
                                                                                                     padding: EdgeInsets.only(
-                                                                                                      top: getVerticalSize(
-                                                                                                        8.00,
-                                                                                                      ),
-                                                                                                      right: getHorizontalSize(
-                                                                                                        10.00,
-                                                                                                      ),
+                                                                                                      top: 8.00,
+                                                                                                      right: 10.00,
                                                                                                     ),
                                                                                                     child: Container(
                                                                                                       alignment: Alignment.center,
-                                                                                                      height: getVerticalSize(
-                                                                                                        27.00,
-                                                                                                      ),
-                                                                                                      width: getHorizontalSize(
-                                                                                                        46.00,
-                                                                                                      ),
+                                                                                                      height: 27.00,
+                                                                                                      width: 46.00,
                                                                                                       decoration: BoxDecoration(
                                                                                                         color: (listData.dC1Status != 0 || listData.dC1AStatus != 0 ? Colors.lightGreen : Colors.red),
                                                                                                         borderRadius: BorderRadius.circular(5),
@@ -1800,10 +1472,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                         textScaleFactor: 1,
                                                                                                         textAlign: TextAlign.center,
                                                                                                         style: TextStyle(
-                                                                                                          color: ColorConstant.black900,
-                                                                                                          fontSize: getFontSize(
-                                                                                                            16,
-                                                                                                          ),
+                                                                                                          color: Colors.black,
+                                                                                                          fontSize: 16,
                                                                                                           fontFamily: 'Inter',
                                                                                                           fontWeight: FontWeight.w500,
                                                                                                         ),
@@ -1813,21 +1483,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                 if (listData.noOfDC! >= 2)
                                                                                                   Padding(
                                                                                                     padding: EdgeInsets.only(
-                                                                                                      top: getVerticalSize(
-                                                                                                        8.00,
-                                                                                                      ),
-                                                                                                      right: getHorizontalSize(
-                                                                                                        10.00,
-                                                                                                      ),
+                                                                                                      top: 8.00,
+                                                                                                      right: 10.00,
                                                                                                     ),
                                                                                                     child: Container(
                                                                                                       alignment: Alignment.center,
-                                                                                                      height: getVerticalSize(
-                                                                                                        27.00,
-                                                                                                      ),
-                                                                                                      width: getHorizontalSize(
-                                                                                                        46.00,
-                                                                                                      ),
+                                                                                                      height: 27.00,
+                                                                                                      width: 46.00,
                                                                                                       decoration: BoxDecoration(
                                                                                                         color: (listData.dC2Status != 0 || listData.dC1Btatus != 0 ? Colors.lightGreen : Colors.red),
                                                                                                         borderRadius: BorderRadius.circular(5),
@@ -1838,10 +1500,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                         textScaleFactor: 1,
                                                                                                         textAlign: TextAlign.center,
                                                                                                         style: TextStyle(
-                                                                                                          color: ColorConstant.black900,
-                                                                                                          fontSize: getFontSize(
-                                                                                                            16,
-                                                                                                          ),
+                                                                                                          color: Colors.black,
+                                                                                                          fontSize: 16,
                                                                                                           fontFamily: 'Inter',
                                                                                                           fontWeight: FontWeight.w500,
                                                                                                         ),
@@ -1851,21 +1511,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                 if (listData.noOfDC! >= 3)
                                                                                                   Padding(
                                                                                                     padding: EdgeInsets.only(
-                                                                                                      top: getVerticalSize(
-                                                                                                        8.00,
-                                                                                                      ),
-                                                                                                      right: getHorizontalSize(
-                                                                                                        10.00,
-                                                                                                      ),
+                                                                                                      top: 8.00,
+                                                                                                      right: 10.00,
                                                                                                     ),
                                                                                                     child: Container(
                                                                                                       alignment: Alignment.center,
-                                                                                                      height: getVerticalSize(
-                                                                                                        27.00,
-                                                                                                      ),
-                                                                                                      width: getHorizontalSize(
-                                                                                                        46.00,
-                                                                                                      ),
+                                                                                                      height: 27.00,
+                                                                                                      width: 46.00,
                                                                                                       decoration: BoxDecoration(
                                                                                                         color: (listData.dc3Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                         borderRadius: BorderRadius.circular(5),
@@ -1876,10 +1528,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                         textScaleFactor: 1,
                                                                                                         textAlign: TextAlign.center,
                                                                                                         style: TextStyle(
-                                                                                                          color: ColorConstant.black900,
-                                                                                                          fontSize: getFontSize(
-                                                                                                            16,
-                                                                                                          ),
+                                                                                                          color: Colors.black,
+                                                                                                          fontSize: 16,
                                                                                                           fontFamily: 'Inter',
                                                                                                           fontWeight: FontWeight.w500,
                                                                                                         ),
@@ -1889,21 +1539,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                 if (listData.noOfDC! >= 4)
                                                                                                   Padding(
                                                                                                     padding: EdgeInsets.only(
-                                                                                                      top: getVerticalSize(
-                                                                                                        8.00,
-                                                                                                      ),
-                                                                                                      right: getHorizontalSize(
-                                                                                                        10.00,
-                                                                                                      ),
+                                                                                                      top: 8.00,
+                                                                                                      right: 10.00,
                                                                                                     ),
                                                                                                     child: Container(
                                                                                                       alignment: Alignment.center,
-                                                                                                      height: getVerticalSize(
-                                                                                                        27.00,
-                                                                                                      ),
-                                                                                                      width: getHorizontalSize(
-                                                                                                        46.00,
-                                                                                                      ),
+                                                                                                      height: 27.00,
+                                                                                                      width: 46.00,
                                                                                                       decoration: BoxDecoration(
                                                                                                         color: (listData.pS4Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                         borderRadius: BorderRadius.circular(5),
@@ -1914,10 +1556,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                         textScaleFactor: 1,
                                                                                                         textAlign: TextAlign.center,
                                                                                                         style: TextStyle(
-                                                                                                          color: ColorConstant.black900,
-                                                                                                          fontSize: getFontSize(
-                                                                                                            16,
-                                                                                                          ),
+                                                                                                          color: Colors.black,
+                                                                                                          fontSize: 16,
                                                                                                           fontFamily: 'Inter',
                                                                                                           fontWeight: FontWeight.w500,
                                                                                                         ),
@@ -1927,21 +1567,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                 if (listData.noOfDC! >= 5)
                                                                                                   Padding(
                                                                                                     padding: EdgeInsets.only(
-                                                                                                      top: getVerticalSize(
-                                                                                                        8.00,
-                                                                                                      ),
-                                                                                                      right: getHorizontalSize(
-                                                                                                        10.00,
-                                                                                                      ),
+                                                                                                      top: 8.00,
+                                                                                                      right: 10.00,
                                                                                                     ),
                                                                                                     child: Container(
                                                                                                       alignment: Alignment.center,
-                                                                                                      height: getVerticalSize(
-                                                                                                        27.00,
-                                                                                                      ),
-                                                                                                      width: getHorizontalSize(
-                                                                                                        46.00,
-                                                                                                      ),
+                                                                                                      height: 27.00,
+                                                                                                      width: 46.00,
                                                                                                       decoration: BoxDecoration(
                                                                                                         color: (listData.pS5Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                         borderRadius: BorderRadius.circular(5),
@@ -1952,10 +1584,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                         textScaleFactor: 1,
                                                                                                         textAlign: TextAlign.center,
                                                                                                         style: TextStyle(
-                                                                                                          color: ColorConstant.black900,
-                                                                                                          fontSize: getFontSize(
-                                                                                                            16,
-                                                                                                          ),
+                                                                                                          color: Colors.black,
+                                                                                                          fontSize: 16,
                                                                                                           fontFamily: 'Inter',
                                                                                                           fontWeight: FontWeight.w500,
                                                                                                         ),
@@ -1965,21 +1595,13 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                 if (listData.noOfDC! >= 6)
                                                                                                   Padding(
                                                                                                     padding: EdgeInsets.only(
-                                                                                                      top: getVerticalSize(
-                                                                                                        8.00,
-                                                                                                      ),
-                                                                                                      right: getHorizontalSize(
-                                                                                                        10.00,
-                                                                                                      ),
+                                                                                                      top: 8.00,
+                                                                                                      right: 10.00,
                                                                                                     ),
                                                                                                     child: Container(
                                                                                                       alignment: Alignment.center,
-                                                                                                      height: getVerticalSize(
-                                                                                                        27.00,
-                                                                                                      ),
-                                                                                                      width: getHorizontalSize(
-                                                                                                        46.00,
-                                                                                                      ),
+                                                                                                      height: 27.00,
+                                                                                                      width: 46.00,
                                                                                                       decoration: BoxDecoration(
                                                                                                         color: (listData.pS6Status != 0 ? Colors.lightGreen : Colors.red),
                                                                                                         borderRadius: BorderRadius.circular(5),
@@ -1990,10 +1612,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                         textScaleFactor: 1,
                                                                                                         textAlign: TextAlign.center,
                                                                                                         style: TextStyle(
-                                                                                                          color: ColorConstant.black900,
-                                                                                                          fontSize: getFontSize(
-                                                                                                            16,
-                                                                                                          ),
+                                                                                                          color: Colors.black,
+                                                                                                          fontSize: 16,
                                                                                                           fontFamily: 'Inter',
                                                                                                           fontWeight: FontWeight.w500,
                                                                                                         ),
@@ -2017,26 +1637,18 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                         children: [
                                                                                           Text(
                                                                                             "Active Alarm",
-                                                                                            style: TextStyle(color: ColorConstant.black900, fontSize: 18, fontWeight: FontWeight.bold),
+                                                                                            style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
                                                                                           ),
                                                                                           //Total
                                                                                           Padding(
                                                                                             padding: EdgeInsets.only(
-                                                                                              top: getVerticalSize(
-                                                                                                8.00,
-                                                                                              ),
-                                                                                              right: getHorizontalSize(
-                                                                                                10.00,
-                                                                                              ),
+                                                                                              top: 8.00,
+                                                                                              right: 10.00,
                                                                                             ),
                                                                                             child: Container(
                                                                                               alignment: Alignment.center,
-                                                                                              height: getVerticalSize(
-                                                                                                27.00,
-                                                                                              ),
-                                                                                              width: getHorizontalSize(
-                                                                                                46.00,
-                                                                                              ),
+                                                                                              height: 27.00,
+                                                                                              width: 46.00,
                                                                                               decoration: BoxDecoration(
                                                                                                 color: Colors.red,
                                                                                                 borderRadius: BorderRadius.circular(10),
@@ -2046,10 +1658,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                                                 textScaleFactor: 1,
                                                                                                 textAlign: TextAlign.center,
                                                                                                 style: TextStyle(
-                                                                                                  color: ColorConstant.black900,
-                                                                                                  fontSize: getFontSize(
-                                                                                                    16,
-                                                                                                  ),
+                                                                                                  color: Colors.black,
+                                                                                                  fontSize: 16,
                                                                                                   fontFamily: 'Inter',
                                                                                                   fontWeight: FontWeight.w500,
                                                                                                 ),
@@ -2074,7 +1684,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                 },
                                                 icon: Icon(
                                                   Icons.info,
-                                                  color: ColorConstant.black900,
+                                                  color: Colors.black,
                                                 ))
                                           ],
                                         ),
@@ -2091,7 +1701,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                   "State Name : ",
                                                   style: TextStyle(
                                                       color:
-                                                          ColorConstant.gray600,
+                                                          Colors.grey.shade600,
                                                       fontSize: 18,
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -2099,8 +1709,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                 Text(
                                                   data[index].state!.toString(),
                                                   style: TextStyle(
-                                                      color: ColorConstant
-                                                          .black900,
+                                                      color: Colors.black,
                                                       fontSize: 18,
                                                       fontWeight:
                                                           FontWeight.normal),
@@ -2119,7 +1728,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                             //     Text(
                                             //       "",
                                             //       style: TextStyle(
-                                            //           color: ColorConstant.black900,
+                                            //           color: Colors.black,
                                             //           fontSize: 18,
                                             //           fontWeight: FontWeight.normal),
                                             //     )
@@ -2164,8 +1773,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                       child: Text(
                                                         i.title!,
                                                         style: TextStyle(
-                                                            color: ColorConstant
-                                                                .black900,
+                                                            color: Colors.black,
                                                             fontSize: 18,
                                                             fontWeight:
                                                                 FontWeight
@@ -2190,8 +1798,8 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                         255,
                                                                         249),
                                                                 border: Border.all(
-                                                                    color: ColorConstant
-                                                                        .black900),
+                                                                    color: Colors
+                                                                        .black),
                                                                 borderRadius:
                                                                     BorderRadius
                                                                         .circular(
@@ -2210,10 +1818,10 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                         .spaceEvenly,
                                                                 children: [
                                                                   Container(
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                            color:
-                                                                                ColorConstant.lightBlue700),
+                                                                    decoration: BoxDecoration(
+                                                                        color: Colors
+                                                                            .lightBlue
+                                                                            .shade700),
                                                                     width: 150,
                                                                     child:
                                                                         Padding(
@@ -2230,7 +1838,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                             style: TextStyle(
                                                                                 fontWeight: FontWeight.bold,
                                                                                 fontSize: 14,
-                                                                                color: ColorConstant.whiteA700),
+                                                                                color: Colors.white),
                                                                           ),
                                                                           Text(
                                                                             (i.totalDevice ?? 0).toString(),
@@ -2239,7 +1847,7 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                             style: TextStyle(
                                                                                 fontWeight: FontWeight.w500,
                                                                                 fontSize: 14,
-                                                                                color: ColorConstant.black900),
+                                                                                color: Colors.black),
                                                                           )
                                                                         ],
                                                                       ),
@@ -2255,9 +1863,10 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                     Container(
                                                                       width:
                                                                           150,
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                              color: ColorConstant.lightGreen900),
+                                                                      decoration: BoxDecoration(
+                                                                          color: Colors
+                                                                              .lightGreen
+                                                                              .shade900),
                                                                       child:
                                                                           Padding(
                                                                         padding:
@@ -2269,11 +1878,11 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                           children: [
                                                                             Text(
                                                                               "Online ${i.title!}: ",
-                                                                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: ColorConstant.whiteA700),
+                                                                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white),
                                                                             ),
                                                                             Text(
                                                                               (i.onlineDevice ?? 0).toString(),
-                                                                              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: ColorConstant.black900),
+                                                                              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.black),
                                                                             )
                                                                           ],
                                                                         ),
@@ -2289,9 +1898,10 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                     Container(
                                                                       width:
                                                                           150,
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                              color: ColorConstant.redA700),
+                                                                      decoration: BoxDecoration(
+                                                                          color: Colors
+                                                                              .red
+                                                                              .shade700),
                                                                       child:
                                                                           Padding(
                                                                         padding:
@@ -2303,11 +1913,11 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                           children: [
                                                                             Text(
                                                                               "Offline ${i.title!}: ",
-                                                                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: ColorConstant.whiteA700),
+                                                                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white),
                                                                             ),
                                                                             Text(
                                                                               (i.offlineDevice ?? 0).toString(),
-                                                                              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: ColorConstant.black900),
+                                                                              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.black),
                                                                             )
                                                                           ],
                                                                         ),
@@ -2318,10 +1928,12 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                   ),
                                                                   Container(
                                                                     width: 150,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                            color:
-                                                                                ColorConstant.orangeGradientStart),
+                                                                    decoration: BoxDecoration(
+                                                                        color: Color.fromARGB(
+                                                                            255,
+                                                                            247,
+                                                                            183,
+                                                                            51)),
                                                                     child:
                                                                         Padding(
                                                                       padding:
@@ -2337,14 +1949,14 @@ class _ProjectsCategoryScreenState extends State<ProjectsCategoryScreen> {
                                                                             style: TextStyle(
                                                                                 fontWeight: FontWeight.bold,
                                                                                 fontSize: 14,
-                                                                                color: ColorConstant.whiteA700),
+                                                                                color: Colors.white),
                                                                           ),
                                                                           Text(
                                                                             (i.damageDevice ?? 0).toString(),
                                                                             style: TextStyle(
                                                                                 fontWeight: FontWeight.w500,
                                                                                 fontSize: 14,
-                                                                                color: ColorConstant.black900),
+                                                                                color: Colors.black),
                                                                           )
                                                                         ],
                                                                       ),

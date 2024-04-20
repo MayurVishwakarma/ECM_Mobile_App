@@ -1,11 +1,12 @@
-// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, sort_child_properties_last, import_of_legacy_library_into_null_safe, use_key_in_widget_constructors, library_private_types_in_public_api, unused_import, unused_element, prefer_interpolation_to_compose_strings, avoid_print, prefer_is_empty, unused_field, prefer_final_fields, non_constant_identifier_names, prefer_collection_literals, use_build_context_synchronously, unnecessary_null_comparison, unused_local_variable, must_be_immutable, unused_catch_stack
+// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, sort_child_properties_last, import_of_legacy_library_into_null_safe, use_key_in_widget_constructors, library_private_types_in_public_api, unused_import, unused_element, prefer_interpolation_to_compose_strings, avoid_print, prefer_is_empty, no_leading_underscores_for_local_identifiers, unused_catch_stack, duplicate_ignore, curly_braces_in_flow_control_structures, prefer_final_fields, non_constant_identifier_names, avoid_unnecessary_containers, unrelated_type_equality_checks, unused_local_variable, prefer_collection_literals, unnecessary_null_comparison, must_be_immutable, unused_field, prefer_typing_uninitialized_variables, use_build_context_synchronously
 // import 'package:custom_switch/custom_switch.dart';
-
 import 'dart:convert';
+
 import 'package:ecm_application/Model/Project/ECMTool/PMSChackListModel.dart';
 import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/ECMToolScreen.dart';
 import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/NodeDetails_SQL.dart';
 import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/NodeDetails_new.dart';
+import 'package:ecm_application/core/SQLite/DbHepherSQL.dart';
 import 'package:http/http.dart' as http;
 import 'package:ecm_application/Model/Project/Login/AreaModel.dart';
 import 'package:ecm_application/Model/Project/Login/DistibutoryModel.dart';
@@ -14,34 +15,32 @@ import 'package:ecm_application/Operations/StatelistOperation.dart';
 import 'package:ecm_application/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ecm_application/Model/Project/Login/State_list_Model.dart';
-import '../../../core/SQLite/DbHepherSQL.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
-class AmsPage extends StatefulWidget {
+import 'package:ecm_application/Model/Project/Login/State_list_Model.dart';
+
+class LoraPage extends StatefulWidget {
   String? ProjectName;
   String? Source;
-  AmsPage({
+  LoraPage({
     required,
     this.ProjectName,
     this.Source,
   });
+
   @override
-  State<AmsPage> createState() => _AmsPageState();
+  State<LoraPage> createState() => _LoraPageState();
 }
 
-class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
+class _LoraPageState extends State<LoraPage>
+    with SingleTickerProviderStateMixin {
   List<PMSListViewModel>? _DisplayList = <PMSListViewModel>[];
-
-  late AnimationController _animationController;
+  late AnimationController _acontroller;
   late Animation<double> _animation;
   var viewdata;
   var listdatas;
-
-  List<PMSListViewModel> listview = [];
-  Future ListcolorChanger() async {
-    listview = await ListViewModel.instance
-        .fatchcommonlist(widget.Source!.toLowerCase(), widget.ProjectName!);
-  }
+//  _DisplayList = [];
 
   @override
   void initState() {
@@ -53,15 +52,17 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
     _firstLoad();
     getDropDownAsync();
     _controller = ScrollController()..addListener(_loadMore);
-    _animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 3))
-          ..repeat(reverse: true);
-    _animation = Tween<double>(begin: 1, end: 2).animate(_animationController);
+    _controller = ScrollController()..addListener(_loadMore);
+    _acontroller = AnimationController(
+      duration: Duration(milliseconds: 1000),
+      vsync: this,
+    )..repeat(reverse: true);
+    _animation = Tween<double>(begin: 0.0, end: 10.0).animate(_acontroller);
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _acontroller.dispose();
     _controller.removeListener(_loadMore);
     super.dispose();
   }
@@ -85,10 +86,18 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
   List<PMSChaklistModel>? ProcessList;
   List<DistibutroryModel>? DistriList;
 
+  List<PMSListViewModel> listview = [];
+  // List<ECM_Checklist_Model> datas = [];
+  Future ListcolorChanger() async {
+    listview = await ListViewModel.instance
+        .fatchcommonlist(widget.Source!.toLowerCase(), widget.ProjectName!);
+    // datas = await DBSQL.instance.fatchdataSQL(deviceids);
+  }
+
   Color colorchnger(int index) {
     try {
       for (var item in listview) {
-        if (item.amsId == _DisplayList![index].amsId) {
+        if (item.gateWayId == _DisplayList![index].gateWayId) {
           return Color.fromRGBO(108, 211, 180, 1);
         }
       }
@@ -101,9 +110,9 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
   getDropDownAsync() async {
     setState(() {
       futureArea = getAreaid();
-      futureDistributory = getDistibutoryid(devType: 'AMS');
+      futureDistributory = getDistibutoryid();
     });
-    await getProcessid(source: 'AMS').then((values) {
+    await getProcessid(source: 'LORA').then((values) {
       ProcessList = [];
       ProcessStatusList = [];
       var processList = Set();
@@ -252,7 +261,7 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
             child: Center(
               child: FittedBox(
                 child: Text(
-                  areaModel.areaName ?? '',
+                  areaModel.areaName!,
                   textScaleFactor: 1,
                   style: TextStyle(fontSize: 13),
                 ),
@@ -264,7 +273,6 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
           //onAreaChange(textvalue);
           var data = textvalue as AreaModel;
           var distriFuture = getDistibutoryid(
-              devType: "AMS",
               areaId: data.areaid == 0 ? 'All' : data.areaid.toString());
           await distriFuture.then((value) => setState(() {
                 selectedDistributory = value.first;
@@ -359,10 +367,11 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
         child: DropdownButton(
           underline: Container(color: Colors.transparent),
           value: selectedProcessStatus == null ||
-                  (values
-                      .where((element) => element == selectedProcessStatus)
-                      .isEmpty)
-              ? values.firstWhere((element) => element.processStatusId == 'All')
+                  // ignore: prefer_is_empty
+                  (values.where((element) => element == selectedProcessStatus))
+                      .isEmpty
+              ? values
+                  .singleWhere((element) => element.processStatusId == 'All')
               : selectedProcessStatus,
           isExpanded: true,
           items: values.map((ProcessModel processModel) {
@@ -413,213 +422,196 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
         });
         _DisplayList = [];
         _firstLoad();
-        // getpop(context);
-        // Future.delayed(Duration(seconds: 1), () {
-        //   Navigator.pop(context); //pop dialog
-        // });
+        getpop(context);
+        Future.delayed(Duration(seconds: 1), () {
+          Navigator.pop(context); //pop dialog
+        });
       },
       child: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
         child: SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
           child: Container(
-              height: size.height,
-              width: size.width,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(color: Colors.grey.shade200),
-              child: _DisplayList! != null &&
-                      (ProcessStatusList != null && process != 'All')
-                  ? Column(
+              child: /*_DisplayList!.isNotEmpty
+                  ? */
+                  Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                          //search
-                          Stack(
-                            children: [
-                              Positioned(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.black),
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: TextField(
-                                            onChanged: (value) async {
-                                              // if (value.isEmpty) {
-                                              //   getScount();
-                                              //   GetOmsOverviewModel();
-                                              // } else
-                                              setState(() {
-                                                _search = value;
-                                              });
-                                            },
-                                            cursorColor: Colors.black,
-                                            keyboardType: TextInputType.text,
-                                            textInputAction: TextInputAction.go,
-                                            decoration: InputDecoration(
-                                                border: InputBorder.none,
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 15),
-                                                hintText: "Search"),
-                                          ),
-                                        ),
-                                        IconButton(
-                                          splashColor: Colors.blue,
-                                          icon: Icon(Icons.search),
-                                          onPressed: () {
-                                            getpop(context);
-
-                                            setState(() {
-                                              _page = 0;
-                                              _hasNextPage = true;
-                                              _isFirstLoadRunning = false;
-                                              _isLoadMoreRunning = false;
-                                              _DisplayList =
-                                                  <PMSListViewModel>[];
-                                            });
-                                            _firstLoad();
-
-                                            new Future.delayed(
-                                                new Duration(seconds: 1), () {
-                                              Navigator.pop(
-                                                  context); //pop dialog
-                                            });
-                                          },
-                                        ),
-                                      ],
+                    //search
+                    Stack(
+                      children: [
+                        Positioned(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white,
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      onChanged: (value) async {
+                                        setState(() {
+                                          _search = value;
+                                        });
+                                      },
+                                      cursorColor: Colors.black,
+                                      keyboardType: TextInputType.text,
+                                      textInputAction: TextInputAction.go,
+                                      decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 15),
+                                          hintText: "Search"),
                                     ),
                                   ),
-                                ),
+                                  IconButton(
+                                    splashColor: Colors.blue,
+                                    icon: Icon(Icons.search),
+                                    onPressed: () {
+                                      getpop(context);
+
+                                      setState(() {
+                                        _page = 0;
+                                        _hasNextPage = true;
+                                        _isFirstLoadRunning = false;
+                                        _isLoadMoreRunning = false;
+                                        _DisplayList = <PMSListViewModel>[];
+                                      });
+                                      _firstLoad();
+                                      Future.delayed(Duration(seconds: 1), () {
+                                        Navigator.pop(context); //pop dialog
+                                      });
+                                    },
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    //dropdown
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          /// This Future Builder is Used for Area DropDown list
+                          FutureBuilder(
+                            future: futureArea,
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData) {
+                                return Expanded(
+                                    child: getArea(context, snapshot.data!));
+                              } else if (snapshot.hasError) {
+                                return Text(
+                                  "Something Went Wrong: " +
+                                      snapshot.error.toString(),
+                                  textScaleFactor: 1,
+                                );
+                              } else {
+                                return Center(child: Container());
+                              }
+                            },
+                          ),
+                          SizedBox(
+                            width: 10,
                           ),
 
-                          //dropdown
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                /// This Future Builder is Used for Area DropDown list
-                                FutureBuilder(
-                                  future: futureArea,
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot snapshot) {
-                                    if (snapshot.hasData) {
-                                      return Expanded(
-                                          child:
-                                              getArea(context, snapshot.data!));
-                                    } else if (snapshot.hasError) {
-                                      return Text(
-                                        "Something Went Wrong: " +
-                                            snapshot.error.toString(),
-                                        textScaleFactor: 1,
-                                      );
-                                    } else {
-                                      return Center(child: Container());
-                                    }
-                                  },
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-
-                                ///This Future Builder is Used for Distibutory DropDown List
-                                FutureBuilder(
-                                  future: futureDistributory,
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot snapshot) {
-                                    if (snapshot.hasData) {
-                                      return Expanded(
-                                          child:
-                                              getDist(context, snapshot.data!));
-                                    } else if (snapshot.hasError) {
-                                      return Container() /*Text(
+                          ///This Future Builder is Used for Distibutory DropDown List
+                          FutureBuilder(
+                            future: futureDistributory,
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData) {
+                                return Expanded(
+                                    child: getDist(context, snapshot.data!));
+                              } else if (snapshot.hasError) {
+                                return Container() /*Text(
                                   "Something Went Wrong: " /*+
                                       snapshot.error.toString()*/
                                   ,
                                   textScaleFactor: 1,
                                 )*/
-                                          ;
-                                    } else {
-                                      return Center(child: Container());
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
+                                    ;
+                              } else {
+                                return Center(child: Container());
+                              }
+                            },
                           ),
+                        ],
+                      ),
+                    ),
 
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                if (ProcessList != null)
-                                  Expanded(
-                                      child: getProcess(context, ProcessList!)),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                if (ProcessStatusList != null &&
-                                    process != 'All')
-                                  Expanded(
-                                      child: getProcessStatus(
-                                          context,
-                                          ProcessStatusList!
-                                              .where((element) =>
-                                                  element.processId ==
-                                                  int.tryParse(process))
-                                              .toList())),
-                              ],
-                            ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          if (ProcessList != null)
+                            Expanded(child: getProcess(context, ProcessList!)),
+                          SizedBox(
+                            width: 10,
                           ),
+                          if (ProcessStatusList != null && process != 'All')
+                            Expanded(
+                                child: getProcessStatus(
+                                    context,
+                                    ProcessStatusList!
+                                        .where((element) =>
+                                            element.processId ==
+                                            int.tryParse(process))
+                                        .toList())),
+                        ],
+                      ),
+                    ),
 
-                          //listview
-                          Expanded(
-                            child: Scrollbar(
-                              controller: _controller,
-                              interactive: true,
-                              thickness: 10,
-                              radius: Radius.circular(15),
-                              thumbVisibility: true,
-                              child: SingleChildScrollView(
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                scrollDirection: Axis.vertical,
-                                controller: _controller,
-                                child: SizedBox(
-                                  width: size.width,
-                                  child: _isFirstLoadRunning
-                                      ? Center(
-                                          child: CircularProgressIndicator(),
-                                        )
-                                      : Column(children: [
-                                          getBody(),
-                                          // when the _loadMore function is running
-                                          if (_isLoadMoreRunning == true)
-                                            Container(),
-                                          // When nothing else to load
-                                          if (_hasNextPage == false)
-                                            Container(
-                                              width: double.infinity,
-                                              height: 150,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.red),
-                                            ),
-                                        ]),
-                                ),
-                              ),
-                            ),
+                    //listview
+                    Expanded(
+                      child: Scrollbar(
+                        controller: _controller,
+                        interactive: true,
+                        thickness: 10,
+                        radius: Radius.circular(15),
+                        thumbVisibility: true,
+                        child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          scrollDirection: Axis.vertical,
+                          controller: _controller,
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: _isFirstLoadRunning
+                                ? Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : Column(children: [
+                                    getBody(),
+                                    // when the _loadMore function is running
+                                    if (_isLoadMoreRunning == true) Container(),
+                                    // Center(
+                                    //   child: CircularProgressIndicator(),
+                                    // ),
+
+                                    // When nothing else to load
+                                    if (_hasNextPage == false) Container(),
+                                  ]),
                           ),
-                        ])
-                  : Center(
+                        ),
+                      ),
+                    ),
+                  ])
+              /*: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -638,21 +630,15 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
                           ),
                         ],
                       ),
-                    )),
+                    )*/
+              ),
         ),
       ),
     );
   }
 
-  var conString;
   getBody() {
     try {
-      List projectNameArr = [
-        'Cluster - I',
-        'Cluster - II',
-        'Cluster - IX',
-        'Cluster - XII'
-      ];
       var _processlist =
           ProcessList!.where((element) => element.processId != 0).toList();
       return ListView.builder(
@@ -662,100 +648,97 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
           itemBuilder: (BuildContext context, int index) {
             return InkWell(
               onTap: () async {
-                var source = 'ams';
+                var source = 'lora';
                 var projectName;
                 SharedPreferences preferences =
                     await SharedPreferences.getInstance();
+                preferences.setString(
+                    'Mechanical', _DisplayList![index].mechanical.toString());
+                preferences.setString(
+                    'Erection', _DisplayList![index].erection.toString());
+                preferences.setString('DryComm',
+                    _DisplayList![index].dryCommissioning.toString());
+                preferences.setString('AutoDryComm',
+                    _DisplayList![index].autoDryCommissioning.toString());
+                preferences.setString(
+                    'TowerInst', _DisplayList![index].process1.toString());
+                preferences.setString(
+                    'ControlUnit', _DisplayList![index].process2.toString());
+                preferences.setString(
+                    'Comission', _DisplayList![index].process3.toString());
+
+                var conString = preferences.getString('ConString');
                 projectName = preferences.getString('ProjectName')!;
-                projectNameArr.contains(projectName)
-                    ? showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Page under development"),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                AnimatedBuilder(
-                                  animation: _animationController,
-                                  builder:
-                                      (BuildContext context, Widget? child) {
-                                    return Transform.scale(
-                                      scale: _animation.value,
-                                      child: Icon(Icons.warning_amber_outlined,
-                                          size: 50.0, color: Colors.yellow),
-                                    );
-                                  },
-                                ),
-                                const SizedBox(height: 20.0),
-                                const Text("Please check back later!"),
-                              ],
-                            ),
-                            // actions: [
-                            //   ElevatedButton(
-                            //     onPressed: () {
-                            //       Navigator.pop(context);
-                            //     },
-                            //     child: const Text("OK"),
-                            //   ),
-                            // ],
-                          );
-                        },
-                      )
-                    : (conString!.toString().contains('ID=sa')
-                            ? Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => NodeDetails_SQL(
-                                        _DisplayList![index],
-                                        projectName,
-                                        source,
-                                        listdatas)),
-                                (Route<dynamic> route) => true,
-                              ).whenComplete(() => {
-                                  _firstLoad(),
-                                  getDropDownAsync(),
-                                  _controller = ScrollController()
-                                    ..addListener(_loadMore),
-                                  _animationController = AnimationController(
-                                      vsync: this,
-                                      duration: const Duration(seconds: 3))
-                                    ..repeat(reverse: true),
-                                  _animation = Tween<double>(begin: 1, end: 2)
-                                      .animate(_animationController)
-                                })
-                            : Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => NodeDetails(
-                                        _DisplayList![index],
-                                        projectName,
-                                        source,
-                                        viewdata!,
-                                        listdatas)),
-                                (Route<dynamic> route) => true,
-                              ))
-                        .whenComplete(() => {
-                              _firstLoad(),
-                              getDropDownAsync(),
-                              _controller = ScrollController()
-                                ..addListener(_loadMore),
-                              _animationController = AnimationController(
-                                  vsync: this,
-                                  duration: const Duration(seconds: 3))
-                                ..repeat(reverse: true),
-                              _animation = Tween<double>(begin: 1, end: 2)
-                                  .animate(_animationController)
-                            });
-                setState(() {
-                  viewdata = _DisplayList![index];
-                  listdatas = _DisplayList![index].amsId;
-                });
-                // setState(() {
-                //   viewdata = _DisplayList![index];
-                // });
-                // await addDataPMS();
-                // await addlist();
+
+                conString!.toString().contains('ID=sa')
+                    ? Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NodeDetails_SQL(
+                                _DisplayList![index],
+                                projectName,
+                                source,
+                                listdatas)),
+                        (Route<dynamic> route) => true,
+                      ).whenComplete(() {
+                          _firstLoad();
+                          getDropDownAsync();
+                          _controller = ScrollController()
+                            ..addListener(_loadMore);
+                          _controller = ScrollController()
+                            ..addListener(_loadMore);
+                          _acontroller = AnimationController(
+                            duration: Duration(milliseconds: 1000),
+                            vsync: this,
+                          )..repeat(reverse: true);
+                          _animation = Tween<double>(begin: 0.0, end: 10.0)
+                              .animate(_acontroller);
+                        })
+                    : Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NodeDetails(
+                                _DisplayList![index],
+                                projectName,
+                                source,
+                                viewdata!,
+                                listdatas)),
+                        (Route<dynamic> route) => true,
+                      ).whenComplete(() {
+                          _firstLoad();
+                          getDropDownAsync();
+                          _controller = ScrollController()
+                            ..addListener(_loadMore);
+                          _controller = ScrollController()
+                            ..addListener(_loadMore);
+                          _acontroller = AnimationController(
+                            duration: Duration(milliseconds: 1000),
+                            vsync: this,
+                          )..repeat(reverse: true);
+                          _animation = Tween<double>(begin: 0.0, end: 10.0)
+                              .animate(_acontroller);
+                        });
+
+                /*  Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => NodeDetails(_DisplayList![index],
+                          projectName, source, viewdata!, listdatas)),
+                  (Route<dynamic> route) => true,
+                ).whenComplete(() => {
+                      _firstLoad(),
+                      getDropDownAsync(),
+                      _controller = ScrollController()..addListener(_loadMore),
+                      _controller = ScrollController()..addListener(_loadMore),
+                      _acontroller = AnimationController(
+                        duration: Duration(milliseconds: 1000),
+                        vsync: this,
+                      )..repeat(reverse: true),
+                      _animation = Tween<double>(begin: 0.0, end: 10.0)
+                          .animate(_acontroller),
+                    });*/
+                viewdata = _DisplayList![index];
+                listdatas = _DisplayList![index].gateWayId;
               },
               child: Card(
                 elevation: 4,
@@ -768,27 +751,23 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       Container(
-                        // height: 50,
+                        height: 50,
                         width: double.infinity,
                         decoration: BoxDecoration(
                             color: colorchnger(index),
-                            //color: Colors.blue.shade400,
                             borderRadius: BorderRadius.circular(5)),
                         child: Center(
                             child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              _DisplayList![index].amsNo.toString(),
+                              _DisplayList![index].gatewayName.toString(),
                               style:
                                   TextStyle(fontSize: 14, color: Colors.white),
                             ),
                             Text(
                               '( ' +
-                                  (_DisplayList![index].areaName!.trim())
-                                      .toString() +
-                                  ' - ' +
-                                  (_DisplayList![index].description ?? '')
+                                  (_DisplayList![index].gateWayId ?? '')
                                       .toString() +
                                   ' )',
                               softWrap: true,
@@ -875,28 +854,16 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
   getprocessstatus(String pro, int proStatus) {
     String imagepath = 'assets/images/pending.png';
     try {
-      if (pro.toLowerCase().contains('dry comm')) {
-        if (proStatus == 1) {
-          imagepath = 'assets/images/Completed.png';
-        } else if (proStatus == 2) {
-          imagepath = 'assets/images/fullydone.png';
-        } else if (proStatus == 3) {
-          imagepath = 'assets/images/Commented.png';
-        } else {
-          imagepath = 'assets/images/notcompletted.png';
-        }
+      if (proStatus == 1) {
+        imagepath = 'assets/images/Partially.png';
+      } else if (proStatus == 2) {
+        imagepath = 'assets/images/Completed.png';
+      } else if (proStatus == 3) {
+        imagepath = 'assets/images/fullydone.png';
+      } else if (proStatus == 4) {
+        imagepath = 'assets/images/Commented.png';
       } else {
-        if (proStatus == 1) {
-          imagepath = 'assets/images/Partially.png';
-        } else if (proStatus == 2) {
-          imagepath = 'assets/images/Completed.png';
-        } else if (proStatus == 3) {
-          imagepath = 'assets/images/fullydone.png';
-        } else if (proStatus == 4) {
-          imagepath = 'assets/images/Commented.png';
-        } else {
-          imagepath = 'assets/images/notcompletted.png';
-        }
+        imagepath = 'assets/images/notcompletted.png';
       }
     } catch (ex, _) {
       imagepath = 'assets/images/notcompletted.png';
@@ -920,14 +887,12 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
     int? status = 0;
     try {
       proStatus = proStatus.toLowerCase();
-      if (proStatus.contains('mechan'))
-        status = int.tryParse(model.mechanical!);
-      else if (proStatus.contains('erect'))
-        status = int.tryParse(model.erection!);
-      else if (proStatus.contains('dry comm'))
-        status = int.tryParse(model.dryCommissioning!);
-      else if (proStatus.contains('wet comm'))
-        status = int.tryParse(model.wetCommissioning!);
+      if (proStatus.contains('tower installation'))
+        status = int.tryParse(model.process1!);
+      else if (proStatus.contains('control unit erection'))
+        status = int.tryParse(model.process2!);
+      else if (proStatus.contains('commissioning'))
+        status = int.tryParse(model.process3!);
     } catch (_) {}
     return status;
   }
@@ -968,16 +933,17 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
       _isFirstLoadRunning = false;
       _isLoadMoreRunning = false;
     });
+    
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
 
-      conString = preferences.getString('ConString');
+      String? conString = preferences.getString('ConString');
 
       final res = await http.get(Uri.parse(
-          'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=AMS&conString=$conString'));
+          'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=LORA&conString=$conString'));
 
       print(
-          'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=AMS&conString=$conString');
+          'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=LORA&conString=$conString');
 
       var json = jsonDecode(res.body);
       List<PMSListViewModel> fetchedData = <PMSListViewModel>[];
@@ -996,7 +962,7 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
     setState(() {
       _isFirstLoadRunning = false;
     });
-    await ListcolorChanger();
+    ListcolorChanger();
   }
 
   void _loadMore() async {
@@ -1012,11 +978,11 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
       try {
         SharedPreferences preferences = await SharedPreferences.getInstance();
         //int? userid = preferences.getInt('userid');
-        conString = preferences.getString('ConString');
+        String? conString = preferences.getString('ConString');
         //String? project = preferences.getString('project');
 
         final res = await http.get(Uri.parse(
-            'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=AMS&conString=$conString'));
+            'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=LORA&conString=$conString'));
         var json = jsonDecode(res.body);
         List<PMSListViewModel> fetchedData = <PMSListViewModel>[];
         json['data']['Response']
@@ -1024,7 +990,6 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
         if (fetchedData.length > 0) {
           setState(() {
             _DisplayList!.addAll(fetchedData);
-            // viewdata = _DisplayList;
           });
         } else {
           // This means there is no more data
@@ -1041,13 +1006,20 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
         _isLoadMoreRunning = false;
       });
     }
-    // await addDataPMS();
   }
 
+  // var viewdata;
   Future addlist() async {
     for (int i = 0; i <= ProcessList!.length; i++) {
       final data = ProcessList![i];
       ListModel.instance.insert(data.toJson());
     }
   }
+
+  // Future addDataPMS() async {
+  //   // for (int i = 0; i <= _DisplayList!.length; i++) {
+  //   final PMSView = viewdata;
+  //   await ListViewModel.instance.insert(PMSView.toJson());
+  //   // }
+  // }
 }

@@ -161,7 +161,7 @@ class _History_CommonListState extends State<History_CommonList> {
                                   Expanded(
                                     flex: 2,
                                     child: Container(
-                                      height: 100,
+                                      height: 120,
                                       child: Column(children: [
                                         Container(
                                           decoration: BoxDecoration(
@@ -314,14 +314,18 @@ class _History_CommonListState extends State<History_CommonList> {
                                                       color:
                                                           Colors.blue.shade400),
                                                 ),
-                                                Text(
-                                                  NewLine(_DisplayList![index]
-                                                              .remark ??
-                                                          "")
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.bold,
+                                                Expanded(
+                                                  child: Text(
+                                                    _DisplayList![index]
+                                                        .remark
+                                                        .toString(),
+                                                    softWrap: true,
+                                                    overflow: TextOverflow.fade,
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
                                                   ),
                                                 ),
                                               ],

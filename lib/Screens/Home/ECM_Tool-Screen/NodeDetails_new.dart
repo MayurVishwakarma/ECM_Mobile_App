@@ -770,6 +770,7 @@ class _NodeDetailsState extends State<NodeDetails> {
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(5.0)),
                   child: TabBar(
+                    indicatorSize: TabBarIndicatorSize.tab,
                     indicator: BoxDecoration(
                         color: Colors.blue[300],
                         borderRadius: BorderRadius.circular(5.0)),
@@ -885,11 +886,25 @@ class _NodeDetailsState extends State<NodeDetails> {
                                         // _showAlert(context);
                                       }),
                                       style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.green),
+                                        foregroundColor: Colors.white,
+                                        backgroundColor: Colors.green,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5.0),
+                                        ),
+                                      ),
                                     ),
                                   ElevatedButton(
                                     child: Text(
                                       "Save",
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      backgroundColor: Colors.blueGrey,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                      ),
                                     ),
                                     onPressed: (() async {
                                       await showDialog(
@@ -917,8 +932,6 @@ class _NodeDetailsState extends State<NodeDetails> {
                                         },
                                       );
                                     }),
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.blueGrey),
                                   ),
                                   if (datasoff.isNotEmpty)
                                     ElevatedButton(
@@ -1281,7 +1294,7 @@ class _NodeDetailsState extends State<NodeDetails> {
       } else if (source == 'rms') {
         deviceId = modelData!.rmsId;
       } else if (source == 'lora') {
-        deviceId = modelData!.gatewayName;
+        deviceId = modelData!.gateWayId;
       } else {
         deviceId = '1';
       }
@@ -1307,7 +1320,7 @@ class _NodeDetailsState extends State<NodeDetails> {
     setState(() {
       psId = processId;
     });
-    // await autosend();
+
     await fatchFirstloadoms();
     await fatchFirstloadRms();
     await fatchFirstloadams();
@@ -1332,11 +1345,10 @@ class _NodeDetailsState extends State<NodeDetails> {
         }
         setState(() {
           _ChecklistModel = value;
-          imageList = value
-              .where((element) =>
-                  element.inputType == 'image' &&
-                  element.processId == processId)
-              .toList();
+          print(_ChecklistModel?.length);
+          imageList =
+              value.where((element) => element.inputType == 'image').toList();
+          // print("Image List Lenght ${imageList?.length}");
         });
       });
     } catch (_) {}
@@ -1372,7 +1384,6 @@ class _NodeDetailsState extends State<NodeDetails> {
                   body: Column(children: [
                     for (var item in _ChecklistModel!.where((e) =>
                         e.subProcessName == subProcess &&
-                        e.processId == processId &&
                         e.inputType != 'image'))
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -1547,7 +1558,6 @@ class _NodeDetailsState extends State<NodeDetails> {
           return loginResult.firstname.toString();
         } else
           return '';
-        // throw Exception("Login Failed");
       } else {
         return '';
       }
@@ -1870,6 +1880,30 @@ class _NodeDetailsState extends State<NodeDetails> {
     var respflag;
     try {
       if (_checkList != null) {
+        /*        int checkCount = _checkList
+            .where((e) =>
+                (e.value == null || e.value!.isEmpty) && e.inputType != "image")
+            .length;
+        int imageCount = _checkList
+            .where((e) =>
+                ((e.value == null || e.value!.isEmpty) ||
+                    e.imageByteArray != null) &&
+                e.inputType == "image")
+            .length;
+        int imagewithvalue = imageList
+            .where((e) =>
+                ((e.value == null || e.value!.isEmpty) || e.image != null) &&
+                e.inputType == "image")
+            .length;
+        bool isPartialProcess =
+            selectedProcess!.toLowerCase().contains("dry") ||
+                selectedProcess!.toLowerCase().contains('auto');
+
+        var _imglistdataWithoutNullValue = imageList
+            .where((item) =>
+                item.inputType!.contains("image") &&
+                item.imageByteArray != null)
+            .toList(); */
         int approveStatus = 0;
         int checkCount = _checkList
             .where((e) =>
@@ -1877,7 +1911,8 @@ class _NodeDetailsState extends State<NodeDetails> {
             .length;
         int imageCount = _checkList
             .where((e) =>
-                ((e.value == null || e.value!.isEmpty) || e.image != null) &&
+                ((e.value == null || e.value!.isEmpty) ||
+                    e.imageByteArray != null) &&
                 e.inputType == "image")
             .length;
         int imagewithvalue = imageList!
@@ -1891,7 +1926,8 @@ class _NodeDetailsState extends State<NodeDetails> {
 
         var _imglistdataWithoutNullValue = imageList!
             .where((item) =>
-                item.inputType!.contains("image") && item.image != null)
+                item.inputType!.contains("image") &&
+                item.imageByteArray != null)
             .toList();
 
         if (checkCount !=
@@ -2057,6 +2093,7 @@ class _NodeDetailsState extends State<NodeDetails> {
                 'http://wmsservices.seprojects.in/api/PMS/InsertECMReport_WithSiteTeamEngineer'));
         request.headers.addAll(headers);
         request.body = json.encode(Insertobj);
+        print(request.body);
         http.StreamedResponse response = await request.send();
         if (response.statusCode == 200) {
           dynamic json = jsonDecode(await response.stream.bytesToString());
@@ -2311,11 +2348,14 @@ class _NodeDetailsState extends State<NodeDetails> {
     try {
       final prefs = await SharedPreferences.getInstance();
       bool allow = false;
-      String mech = prefs.getString("Mechanical")!;
-      String erec = prefs.getString("Erection")!;
-      String dry = prefs.getString("DryComm")!;
-      String autodry = prefs.getString("AutoDryComm")!;
-      String _proj = prefs.getString("ProjectName")!.toLowerCase();
+      String mech = prefs.getString("Mechanical") ?? '';
+      String erec = prefs.getString("Erection") ?? '';
+      String dry = prefs.getString("DryComm") ?? '';
+      String autodry = prefs.getString("AutoDryComm") ?? '';
+      String tower = prefs.getString("TowerInst") ?? '';
+      String control = prefs.getString("ControlUnit") ?? '';
+      String comms = prefs.getString("Comission") ?? '';
+      String _proj = (prefs.getString("ProjectName") ?? '').toLowerCase();
 
       if (processId! == 4) {
         if (selectedProcess!.toLowerCase().contains("mechanical"))
@@ -2331,6 +2371,8 @@ class _NodeDetailsState extends State<NodeDetails> {
             (erec == 2.toString() || erec == 3.toString()) &&
             ((dry == 1.toString() || dry == 2.toString()) ||
                 (autodry == 1.toString() || autodry == 2.toString())))
+          allow = true;
+        else if (selectedProcess!.toLowerCase().contains('tower'))
           allow = true;
         else
           await showDialog(

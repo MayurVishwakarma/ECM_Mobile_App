@@ -9,7 +9,6 @@ import 'package:ecm_application/Model/Project/Login/DistibutoryModel.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageReportStatus/SelectDamageListScreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:ecm_application/Operations/StatelistOperation.dart';
-import 'package:ecm_application/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -302,9 +301,7 @@ class _Ams_ReportListState extends State<Ams_ReportList> {
                                     height: 80,
                                     width: 100,
                                     margin: EdgeInsets.only(
-                                      bottom: getVerticalSize(
-                                        12.58,
-                                      ),
+                                      bottom: 12.58,
                                     ),
                                     decoration: BoxDecoration(
                                       color: selectedDamageType!
@@ -313,15 +310,11 @@ class _Ams_ReportListState extends State<Ams_ReportList> {
                                           ? Colors.lightBlue
                                           : Colors.white,
                                       borderRadius: BorderRadius.circular(5.0),
-                                      boxShadow: [
+                                      boxShadow: const [
                                         BoxShadow(
-                                          color: ColorConstant.black90026,
-                                          spreadRadius: getHorizontalSize(
-                                            2.00,
-                                          ),
-                                          blurRadius: getHorizontalSize(
-                                            2.00,
-                                          ),
+                                          color: Colors.black,
+                                          spreadRadius: 2.00,
+                                          blurRadius: 2.00,
                                           offset: Offset(
                                             0,
                                             2,
@@ -341,10 +334,8 @@ class _Ams_ReportListState extends State<Ams_ReportList> {
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: ColorConstant.black900,
-                                              fontSize: getFontSize(
-                                                9,
-                                              ),
+                                              color: Colors.black,
+                                              fontSize: 9,
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -363,9 +354,9 @@ class _Ams_ReportListState extends State<Ams_ReportList> {
                                                         .contains('total')
                                                     ? Colors.white
                                                     : Colors.black,
-                                                fontSize: getFontSize(
+                                                fontSize: 
                                                   14,
-                                                ),
+                                                
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.w400,
                                               ),
@@ -414,9 +405,9 @@ class _Ams_ReportListState extends State<Ams_ReportList> {
                                     height: 80,
                                     width: 100,
                                     margin: EdgeInsets.only(
-                                      bottom: getVerticalSize(
+                                      bottom: 
                                         12.58,
-                                      ),
+                                     
                                     ),
                                     decoration: BoxDecoration(
                                       color: selectedDamageType!
@@ -425,15 +416,15 @@ class _Ams_ReportListState extends State<Ams_ReportList> {
                                           ? Colors.lightBlue
                                           : Colors.white,
                                       borderRadius: BorderRadius.circular(5.0),
-                                      boxShadow: [
+                                      boxShadow: const [
                                         BoxShadow(
-                                          color: ColorConstant.black90026,
-                                          spreadRadius: getHorizontalSize(
+                                          color: Colors.black,
+                                          spreadRadius: 
                                             2.00,
-                                          ),
-                                          blurRadius: getHorizontalSize(
+                                        
+                                          blurRadius: 
                                             2.00,
-                                          ),
+                                         
                                           offset: Offset(
                                             0,
                                             2,
@@ -455,10 +446,10 @@ class _Ams_ReportListState extends State<Ams_ReportList> {
                                             textScaleFactor: 1,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: ColorConstant.black900,
-                                              fontSize: getFontSize(
+                                              color: Colors.black,
+                                              fontSize: 
                                                 9,
-                                              ),
+                                             
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -477,9 +468,9 @@ class _Ams_ReportListState extends State<Ams_ReportList> {
                                                         .contains('electrical')
                                                     ? Colors.white
                                                     : Colors.black,
-                                                fontSize: getFontSize(
+                                                fontSize: 
                                                   14,
-                                                ),
+                                              
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.w400,
                                               ),
@@ -529,9 +520,9 @@ class _Ams_ReportListState extends State<Ams_ReportList> {
                                     height: 80,
                                     width: 100,
                                     margin: EdgeInsets.only(
-                                      bottom: getVerticalSize(
+                                      bottom:
                                         12.58,
-                                      ),
+                                     
                                     ),
                                     decoration: BoxDecoration(
                                       color: selectedDamageType!
@@ -540,15 +531,15 @@ class _Ams_ReportListState extends State<Ams_ReportList> {
                                           ? Colors.lightBlue
                                           : Colors.white,
                                       borderRadius: BorderRadius.circular(5.0),
-                                      boxShadow: [
+                                      boxShadow: const [
                                         BoxShadow(
-                                          color: ColorConstant.black90026,
-                                          spreadRadius: getHorizontalSize(
+                                          color: Colors.black,
+                                          spreadRadius: 
                                             2.00,
-                                          ),
-                                          blurRadius: getHorizontalSize(
+                                       
+                                          blurRadius: 
                                             2.00,
-                                          ),
+                                        
                                           offset: Offset(
                                             0,
                                             2,
@@ -570,10 +561,10 @@ class _Ams_ReportListState extends State<Ams_ReportList> {
                                             textScaleFactor: 1,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: ColorConstant.black900,
-                                              fontSize: getFontSize(
+                                              color: Colors.black,
+                                              fontSize:
                                                 9,
-                                              ),
+                                              
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -592,9 +583,9 @@ class _Ams_ReportListState extends State<Ams_ReportList> {
                                                         .contains('mechanical')
                                                     ? Colors.white
                                                     : Colors.black,
-                                                fontSize: getFontSize(
+                                                fontSize: 
                                                   14,
-                                                ),
+                                                
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.w400,
                                               ),
@@ -682,8 +673,8 @@ class _Ams_ReportListState extends State<Ams_ReportList> {
                                               textScaleFactor: 1,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                color: ColorConstant.black900,
-                                                fontSize: getFontSize(10),
+                                                color: Colors.black,
+                                                fontSize:10,
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -700,7 +691,7 @@ class _Ams_ReportListState extends State<Ams_ReportList> {
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: Colors.red,
-                                                  fontSize: getFontSize(14),
+                                                  fontSize: 14,
                                                   fontFamily: 'Inter',
                                                   fontWeight: FontWeight.w400,
                                                 ),
@@ -805,8 +796,8 @@ class _Ams_ReportListState extends State<Ams_ReportList> {
                                               textScaleFactor: 1,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                color: ColorConstant.black900,
-                                                fontSize: getFontSize(10),
+                                                color: Colors.black,
+                                                fontSize: 10,
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -823,7 +814,7 @@ class _Ams_ReportListState extends State<Ams_ReportList> {
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: Colors.red,
-                                                  fontSize: getFontSize(14),
+                                                  fontSize: 14,
                                                   fontFamily: 'Inter',
                                                   fontWeight: FontWeight.w400,
                                                 ),

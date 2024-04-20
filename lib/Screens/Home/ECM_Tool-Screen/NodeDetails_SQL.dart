@@ -521,14 +521,14 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
           ),
           actions: [
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red,foregroundColor: Colors.white),
               child: Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green,foregroundColor: Colors.white),
               child: Text('OK'),
               onPressed: () {
                 //
@@ -781,6 +781,7 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(5.0)),
                   child: TabBar(
+                    indicatorSize: TabBarIndicatorSize.tab,
                     indicator: BoxDecoration(
                         color: Colors.blue,
                         borderRadius: BorderRadius.circular(5.0)),
@@ -892,7 +893,13 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
                                         await btnSubmit_Clicked();
                                       }),
                                       style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.green),
+                                        backgroundColor: Colors.green,
+                                        foregroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5.0),
+                                        ),
+                                      ),
                                     ),
                                   //Save evennt
                                   ElevatedButton(
@@ -925,7 +932,13 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
                                       );
                                     }),
                                     style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.blueGrey),
+                                      backgroundColor: Colors.blueGrey,
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                      ),
+                                    ),
                                   ),
                                   if (datasoff.isNotEmpty)
                                     ElevatedButton(
@@ -968,8 +981,7 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
                                         // }
                                       }),
                                       style: ElevatedButton.styleFrom(
-                                          primary:
-                                              Color.fromARGB(255, 82, 226, 66)),
+                                          backgroundColor: Color.fromARGB(255, 82, 226, 66)),
                                     ),
                                 ],
                               ),
@@ -1288,7 +1300,7 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
       } else if (source == 'rms') {
         deviceId = modelData!.rmsId;
       } else if (source == 'lora') {
-        deviceId = modelData!.gatewayName;
+        deviceId = modelData!.gateWayId;
       } else {
         deviceId = '1';
       }
@@ -1303,6 +1315,9 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
 
   getECMData(String processName) async {
     _ChecklistModel = [];
+    String? source;
+    int? deviceId;
+
     imageList = [];
     subProcessName = Set();
     setState(() {
@@ -1311,10 +1326,11 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
             (item) => item.processName == processName,
           )
           .processId;
-    });
-    setState(() {
       psId = processId;
+      source = widget.Source!;
+      deviceId = getDeviceid(source!);
     });
+
     //fatching offline data
     await fatchFirstloadoms();
     await fatchFirstloadams();
@@ -1323,8 +1339,7 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
     // await autosend();
     try {
       if (widget.Source == 'oms') {
-        getOMSECMCheckListByProcessId(getDeviceid(widget.Source!), processId!)
-            .then((value) {
+        getOMSECMCheckListByProcessId(deviceId!, processId!).then((value) {
           for (var element in value) {
             setState(() {
               subProcessName!.add(element.subProcessName!);
@@ -1347,8 +1362,7 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
           });
         });
       } else {
-        getECMCheckListByProcessId(
-                getDeviceid(widget.Source!), processId!, widget.Source!)
+        getECMCheckListByProcessId(deviceId!, processId!, source!)
             .then((value) {
           for (var element in value) {
             setState(() {
@@ -1969,10 +1983,11 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
             .length;
         int imageCount = _checkList
             .where((e) =>
-                ((e.value == null || e.value!.isEmpty) || e.image != null) &&
+                ((e.value == null || e.value!.isEmpty) ||
+                    e.imageByteArray != null) &&
                 e.inputType == "image")
             .length;
-        int imagewithvalue = imageList!
+        int imagewithvalue = imageList
             .where((e) =>
                 ((e.value == null || e.value!.isEmpty) || e.image != null) &&
                 e.inputType == "image")
@@ -1981,9 +1996,10 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
             selectedProcess!.toLowerCase().contains("dry") ||
                 selectedProcess!.toLowerCase().contains('auto');
 
-        var _imglistdataWithoutNullValue = imageList!
+        var _imglistdataWithoutNullValue = imageList
             .where((item) =>
-                item.inputType!.contains("image") && item.image != null)
+                item.inputType!.contains("image") &&
+                item.imageByteArray != null)
             .toList();
 
         if (checkCount !=
@@ -2210,6 +2226,7 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
                 'http://wmsservices.seprojects.in/api/PMS/InsertECMReport_New'));
         request.headers.addAll(headers);
         request.body = json.encode(Insertobj);
+        print(request.body);
         http.StreamedResponse response = await request.send();
         if (response.statusCode == 200) {
           dynamic json = jsonDecode(await response.stream.bytesToString());
@@ -2255,66 +2272,135 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
       String dry = prefs.getString("DryComm")!;
       String autodry = prefs.getString("AutoDryComm")!;
       String _proj = prefs.getString("ProjectName")!.toLowerCase();
+      String? process1;
+      String? process2;
+      String? process3;
+      if (widget.Source! == 'lora') {
+        process1 = prefs.getString("TowerInst")!;
+        process2 = prefs.getString("ControlUnit")!;
+        process3 = prefs.getString("Comission")!;
+      }
 
-      if (processId! == 4) {
-        if (selectedProcess!.toLowerCase().contains("mechanical"))
-          allow = true;
-        else if (selectedProcess!.toLowerCase().contains("erection"))
-          allow = true;
-        else if (selectedProcess!.toLowerCase().contains("dry") &&
-            (mech == 2.toString() || mech == 3.toString()) &&
-            (erec == 2.toString() || erec == 3.toString()))
-          allow = true;
-        else if (selectedProcess!.toLowerCase().contains("wet") &&
-            (mech == 2.toString() || mech == 3.toString()) &&
-            (erec == 2.toString() || erec == 3.toString()) &&
-            ((dry == 1.toString() || dry == 2.toString()) ||
-                (autodry == 1.toString() || autodry == 2.toString())))
-          allow = true;
-        else
-          await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Message"),
-                content: Text("Please complete the previous process"),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text("OK"),
-                  ),
-                ],
-              );
-            },
-          );
+      if (widget.Source! == 'lora') {
+        // if (processId! == 14 ) {
+          if (selectedProcess!.toLowerCase().contains("tower"))
+            allow = true;
+          else if (selectedProcess!.toLowerCase().contains("erection"))
+            allow = true;
+          else if (selectedProcess!.toLowerCase().contains("commiss") &&
+              (process1 == 2.toString() || process1 == 3.toString()) &&
+              (process2 == 2.toString() || processId == 3.toString()))
+            allow = true;
+          else
+            await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Message"),
+                  content: Text("Please complete the previous process"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("OK"),
+                    ),
+                  ],
+                );
+              },
+            );
+       /* } else {
+          if (selectedProcess!.toLowerCase().contains("mechanical"))
+            allow = true;
+          else if (selectedProcess!.toLowerCase().contains("erection"))
+            allow = true;
+          else if (selectedProcess!.toLowerCase().contains("dry comm") &&
+              (erec == 2.toString() || erec == 3.toString()))
+            allow = true;
+          else if (selectedProcess!
+                  .toLowerCase()
+                  .contains("wet commissioning") &&
+              (erec == 2.toString() || erec == 3.toString()) &&
+              (dry == 1.toString() || dry == 2.toString()))
+            allow = true;
+          else
+            await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Message"),
+                  content: Text("Please complete the previous process"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("OK"),
+                    ),
+                  ],
+                );
+              },
+            );
+        }*/
       } else {
-        if (selectedProcess!.toLowerCase().contains("mechanical"))
-          allow = true;
-        else if (selectedProcess!.toLowerCase().contains("erection"))
-          allow = true;
-        else if (selectedProcess!.toLowerCase().contains("dry comm") &&
-            (erec == 2.toString() || erec == 3.toString()))
-          allow = true;
-        else if (selectedProcess!.toLowerCase().contains("wet commissioning") &&
-            (erec == 2.toString() || erec == 3.toString()) &&
-            (dry == 1.toString() || dry == 2.toString()))
-          allow = true;
-        else
-          await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Message"),
-                content: Text("Please complete the previous process"),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text("OK"),
-                  ),
-                ],
-              );
-            },
-          );
+        if (processId! == 4) {
+          if (selectedProcess!.toLowerCase().contains("mechanical"))
+            allow = true;
+          else if (selectedProcess!.toLowerCase().contains("erection"))
+            allow = true;
+          else if (selectedProcess!.toLowerCase().contains("dry") &&
+              (mech == 2.toString() || mech == 3.toString()) &&
+              (erec == 2.toString() || erec == 3.toString()))
+            allow = true;
+          else if (selectedProcess!.toLowerCase().contains("wet") &&
+              (mech == 2.toString() || mech == 3.toString()) &&
+              (erec == 2.toString() || erec == 3.toString()) &&
+              ((dry == 1.toString() || dry == 2.toString()) ||
+                  (autodry == 1.toString() || autodry == 2.toString())))
+            allow = true;
+          else
+            await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Message"),
+                  content: Text("Please complete the previous process"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("OK"),
+                    ),
+                  ],
+                );
+              },
+            );
+        } else {
+          if (selectedProcess!.toLowerCase().contains("mechanical"))
+            allow = true;
+          else if (selectedProcess!.toLowerCase().contains("erection"))
+            allow = true;
+          else if (selectedProcess!.toLowerCase().contains("dry comm") &&
+              (erec == 2.toString() || erec == 3.toString()))
+            allow = true;
+          else if (selectedProcess!
+                  .toLowerCase()
+                  .contains("wet commissioning") &&
+              (erec == 2.toString() || erec == 3.toString()) &&
+              (dry == 1.toString() || dry == 2.toString()))
+            allow = true;
+          else
+            await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Message"),
+                  content: Text("Please complete the previous process"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("OK"),
+                    ),
+                  ],
+                );
+              },
+            );
+        }
       }
       if (allow) {
         _showAlert(context);
@@ -2478,15 +2564,15 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
           ),
           actions: [
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              child: Text('Cancel'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red,foregroundColor: Colors.white),
+              child: Text('Cancel',style: TextStyle(color: Colors.white),),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-              child: Text('OK'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green,foregroundColor: Colors.white),
+              child: Text('OK',style: TextStyle(color: Colors.white),),
               onPressed: () {
                 final snackBar = SnackBar(
                   content: const Text('Save Sucessfully'),

@@ -8,7 +8,6 @@ import 'package:ecm_application/Screens/Home/DamageRectification/RectificationFo
 import 'package:ecm_application/Model/Project/Login/AreaModel.dart';
 import 'package:ecm_application/Model/Project/Login/DistibutoryModel.dart';
 import 'package:ecm_application/Operations/StatelistOperation.dart';
-import 'package:ecm_application/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -73,7 +72,7 @@ class _DamageReportScreenState extends State<DamageReportScreen> {
     ];
 
     return Scaffold(
-        backgroundColor: ColorConstant.whiteA700,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text('Damage'),
         ),

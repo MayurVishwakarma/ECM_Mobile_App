@@ -327,9 +327,9 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                     height: 100,
                                     width: 80,
                                     margin: EdgeInsets.only(
-                                      bottom: getVerticalSize(
+                                      bottom:
                                         12.58,
-                                      ),
+                                      
                                     ),
                                     decoration: BoxDecoration(
                                       color: selectedDamageType!
@@ -340,13 +340,13 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                       borderRadius: BorderRadius.circular(5.0),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: ColorConstant.black90026,
-                                          spreadRadius: getHorizontalSize(
+                                          color: Colors.black,
+                                          spreadRadius: 
                                             2.00,
-                                          ),
-                                          blurRadius: getHorizontalSize(
+                                          
+                                          blurRadius: 
                                             2.00,
-                                          ),
+                                         
                                           offset: Offset(
                                             0,
                                             2,
@@ -369,10 +369,10 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                             textScaleFactor: 1,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: ColorConstant.black900,
-                                              fontSize: getFontSize(
+                                              color: Colors.black,
+                                              fontSize: 
                                                 9,
-                                              ),
+                                              
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -391,9 +391,9 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                                         .contains('total')
                                                     ? Colors.white
                                                     : Colors.black,
-                                                fontSize: getFontSize(
+                                                fontSize: 
                                                   14,
-                                                ),
+                                               
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.w400,
                                               ),
@@ -450,9 +450,9 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                     height: 100,
                                     width: 80,
                                     margin: EdgeInsets.only(
-                                      bottom: getVerticalSize(
+                                      bottom: 
                                         12.58,
-                                      ),
+                                    
                                     ),
                                     decoration: BoxDecoration(
                                       color: selectedDamageType!
@@ -463,13 +463,13 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                       borderRadius: BorderRadius.circular(5.0),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: ColorConstant.black90026,
-                                          spreadRadius: getHorizontalSize(
+                                          color: Colors.black,
+                                          spreadRadius: 
                                             2.00,
-                                          ),
-                                          blurRadius: getHorizontalSize(
+                                          
+                                          blurRadius: 
                                             2.00,
-                                          ),
+                                          
                                           offset: Offset(
                                             0,
                                             2,
@@ -492,10 +492,10 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                             textScaleFactor: 1,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: ColorConstant.black900,
-                                              fontSize: getFontSize(
+                                              color: Colors.black,
+                                              fontSize: 
                                                 9,
-                                              ),
+                                              
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -514,9 +514,9 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                                         .contains('elect')
                                                     ? Colors.white
                                                     : Colors.black,
-                                                fontSize: getFontSize(
+                                                fontSize: 
                                                   14,
-                                                ),
+                                               
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.w400,
                                               ),
@@ -568,9 +568,9 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                       height: 100,
                                       width: 80,
                                       margin: EdgeInsets.only(
-                                        bottom: getVerticalSize(
+                                        bottom:
                                           12.58,
-                                        ),
+                                        
                                       ),
                                       decoration: BoxDecoration(
                                         color: selectedDamageType!
@@ -582,13 +582,13 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                             BorderRadius.circular(5.0),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: ColorConstant.black90026,
-                                            spreadRadius: getHorizontalSize(
+                                            color: Colors.black,
+                                            spreadRadius: 
                                               2.00,
-                                            ),
-                                            blurRadius: getHorizontalSize(
+                                           
+                                            blurRadius: 
                                               2.00,
-                                            ),
+                                           
                                             offset: Offset(
                                               0,
                                               2,
@@ -611,11 +611,10 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                               textScaleFactor: 1,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                color: ColorConstant.black900,
-                                                fontSize: getFontSize(
+                                                color: Colors.black,
+                                                fontSize: 
                                                   9,
-                                                ),
-                                                fontFamily: 'Inter',
+                                                                                              fontFamily: 'Inter',
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
@@ -634,9 +633,9 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                                           .contains('tube')
                                                       ? Colors.white
                                                       : Colors.black,
-                                                  fontSize: getFontSize(
+                                                  fontSize: 
                                                     14,
-                                                  ),
+                                                
                                                   fontFamily: 'Inter',
                                                   fontWeight: FontWeight.w400,
                                                 ),
@@ -694,9 +693,9 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                     height: 100,
                                     width: 80,
                                     margin: EdgeInsets.only(
-                                      bottom: getVerticalSize(
+                                      bottom: 
                                         12.58,
-                                      ),
+                                      
                                     ),
                                     decoration: BoxDecoration(
                                       color: selectedDamageType!
@@ -707,13 +706,13 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                       borderRadius: BorderRadius.circular(5.0),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: ColorConstant.black90026,
-                                          spreadRadius: getHorizontalSize(
+                                          color: Colors.black,
+                                          spreadRadius: 
                                             2.00,
-                                          ),
-                                          blurRadius: getHorizontalSize(
+                                          
+                                          blurRadius: 
                                             2.00,
-                                          ),
+                                          
                                           offset: Offset(
                                             0,
                                             2,
@@ -736,10 +735,10 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                             textScaleFactor: 1,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: ColorConstant.black900,
-                                              fontSize: getFontSize(
+                                              color: Colors.black,
+                                              fontSize:
                                                 9,
-                                              ),
+                                              
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -758,9 +757,9 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                                         .contains('mech')
                                                     ? Colors.white
                                                     : Colors.black,
-                                                fontSize: getFontSize(
+                                                fontSize:
                                                   14,
-                                                ),
+                                               
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.w400,
                                               ),
@@ -849,8 +848,8 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                               textScaleFactor: 1,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                color: ColorConstant.black900,
-                                                fontSize: getFontSize(10),
+                                                color: Colors.black,
+                                                fontSize: 10,
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -867,7 +866,7 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: Colors.red,
-                                                  fontSize: getFontSize(14),
+                                                  fontSize: 14,
                                                   fontFamily: 'Inter',
                                                   fontWeight: FontWeight.w400,
                                                 ),
@@ -973,8 +972,8 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                               textScaleFactor: 1,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                color: ColorConstant.black900,
-                                                fontSize: getFontSize(10),
+                                                color: Colors.black,
+                                                fontSize:10,
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -989,7 +988,7 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: Colors.red,
-                                                  fontSize: getFontSize(14),
+                                                  fontSize: 14,
                                                   fontFamily: 'Inter',
                                                   fontWeight: FontWeight.w400,
                                                 ),
@@ -1098,8 +1097,8 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                               textScaleFactor: 1,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                color: ColorConstant.black900,
-                                                fontSize: getFontSize(10),
+                                                color: Colors.black,
+                                                fontSize: 10,
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -1116,7 +1115,7 @@ class _Rms_MaterialConsumptionState extends State<Rms_MaterialConsumption> {
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: Colors.red,
-                                                  fontSize: getFontSize(14),
+                                                  fontSize: 14,
                                                   fontFamily: 'Inter',
                                                   fontWeight: FontWeight.w400,
                                                 ),

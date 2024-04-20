@@ -1,23 +1,19 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:ecm_application/core/app_export.dart';
 
 class SplashScreen extends StatelessWidget {
-  void initState() {
-    //super.initState();
-  }
+  const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: Container(
-          height: size.height,
-          width: size.width,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
-              gradient: ColorConstant
-                  .appBarGradient /*LinearGradient(
+            gradient: LinearGradient(
               begin: Alignment(
                 0.5,
                 -3.0616171314629196e-17,
@@ -27,11 +23,11 @@ class SplashScreen extends StatelessWidget {
                 0.9999999999999999,
               ),
               colors: [
-                ColorConstant.blue100,
-                ColorConstant.lightBlue700,
+                Colors.blue.shade100,
+                Colors.lightBlue,
               ],
-            ),*/
-              ),
+            ),
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -50,9 +46,7 @@ class SplashScreen extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: Padding(
                             padding: EdgeInsets.only(
-                              top: getVerticalSize(
-                                99.00,
-                              ),
+                              top: 70.00,
                             ),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -62,43 +56,25 @@ class SplashScreen extends StatelessWidget {
                                 /// Company Logo
                                 Padding(
                                   padding: EdgeInsets.only(
-                                    left: getHorizontalSize(
-                                      18.00,
-                                    ),
-                                    right: getHorizontalSize(
-                                      18.00,
-                                    ),
+                                    left: 18.00,
+                                    right: 18.00,
                                   ),
                                   child: Image.asset(
-                                    ImageConstant.imgLogoresize1,
-                                    height: getVerticalSize(
-                                      126.00,
-                                    ),
-                                    width: getHorizontalSize(
-                                      186.00,
-                                    ),
+                                    'assets/images/img_logoresize1.png',
+                                    height: 126.00,
+                                    width: 186.00,
                                     fit: BoxFit.fill,
                                   ),
                                 ),
 
                                 ///Image set
                                 Container(
-                                  height: getVerticalSize(
-                                    243.96,
-                                  ),
-                                  width: getHorizontalSize(
-                                    326.00,
-                                  ),
+                                  height: 300.96,
+                                  width: 326.00,
                                   margin: EdgeInsets.only(
-                                    left: getHorizontalSize(
-                                      18.00,
-                                    ),
-                                    top: getVerticalSize(
-                                      47.00,
-                                    ),
-                                    right: getHorizontalSize(
-                                      16.00,
-                                    ),
+                                    // left: 18.00,
+                                    top: 47.00,
+                                    // right: 16.00,
                                   ),
 
                                   ///Polygon Image
@@ -109,25 +85,13 @@ class SplashScreen extends StatelessWidget {
                                       Align(
                                         alignment: Alignment.bottomRight,
                                         child: Padding(
-                                          padding: EdgeInsets.only(
-                                            left: getHorizontalSize(
-                                              10.00,
-                                            ),
-                                            top: getVerticalSize(
-                                              10.00,
-                                            ),
-                                            bottom: getVerticalSize(
-                                              0.00,
-                                            ),
+                                          padding: const EdgeInsets.only(
+                                            bottom: 10,
                                           ),
                                           child: Image.asset(
-                                            ImageConstant.imgPolygon3,
-                                            height: getSize(
-                                              138.00,
-                                            ),
-                                            width: getSize(
-                                              138.00,
-                                            ),
+                                            "assets/images/img_polygon3.png",
+                                            height: 138.00,
+                                            width: 138.00,
                                             fit: BoxFit.fill,
                                           ),
                                         ),
@@ -137,25 +101,12 @@ class SplashScreen extends StatelessWidget {
                                       Align(
                                         alignment: Alignment.bottomLeft,
                                         child: Padding(
-                                          padding: EdgeInsets.only(
-                                            top: getVerticalSize(
-                                              10.00,
-                                            ),
-                                            right: getHorizontalSize(
-                                              10.00,
-                                            ),
-                                            bottom: getVerticalSize(
-                                              1.00,
-                                            ),
-                                          ),
+                                          padding: const EdgeInsets.only(
+                                              bottom: 10, right: 10),
                                           child: Image.asset(
-                                            ImageConstant.imgPolygon2,
-                                            height: getVerticalSize(
-                                              120.00,
-                                            ),
-                                            width: getHorizontalSize(
-                                              138.00,
-                                            ),
+                                            'assets/images/img_polygon2.png',
+                                            height: 138.00,
+                                            width: 138.00,
                                             fit: BoxFit.fill,
                                           ),
                                         ),
@@ -165,25 +116,13 @@ class SplashScreen extends StatelessWidget {
                                       Align(
                                         alignment: Alignment.topCenter,
                                         child: Padding(
-                                          padding: EdgeInsets.only(
-                                            left: getHorizontalSize(
-                                              91.39,
-                                            ),
-                                            right: getHorizontalSize(
-                                              91.39,
-                                            ),
-                                            bottom: getVerticalSize(
-                                              10.00,
-                                            ),
+                                          padding: const EdgeInsets.only(
+                                            bottom: 20,
                                           ),
                                           child: Image.asset(
-                                            ImageConstant.imgPolygon1,
-                                            height: getSize(
-                                              138.00,
-                                            ),
-                                            width: getSize(
-                                              138.00,
-                                            ),
+                                            'assets/images/img_polygon1.png',
+                                            height: 138.00,
+                                            width: 138.00,
                                             fit: BoxFit.fill,
                                           ),
                                         ),
@@ -195,15 +134,9 @@ class SplashScreen extends StatelessWidget {
                                 ///App Details
                                 Padding(
                                   padding: EdgeInsets.only(
-                                    left: getHorizontalSize(
-                                      18.00,
-                                    ),
-                                    top: getVerticalSize(
-                                      34.04,
-                                    ),
-                                    right: getHorizontalSize(
-                                      18.00,
-                                    ),
+                                    left: 18.00,
+                                    top: 34.04,
+                                    right: 18.00,
                                   ),
                                   child: FittedBox(
                                     child: Text(
@@ -213,10 +146,8 @@ class SplashScreen extends StatelessWidget {
                                       softWrap: true,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        color: ColorConstant.whiteA700,
-                                        fontSize: getFontSize(
-                                          22,
-                                        ),
+                                        color: Colors.white,
+                                        fontSize: 22,
                                         fontFamily: 'Inter',
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -225,15 +156,9 @@ class SplashScreen extends StatelessWidget {
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(
-                                    left: getHorizontalSize(
-                                      18.00,
-                                    ),
-                                    top: getVerticalSize(
-                                      5.00,
-                                    ),
-                                    right: getHorizontalSize(
-                                      18.00,
-                                    ),
+                                    left: 18.00,
+                                    top: 5.00,
+                                    right: 18.00,
                                   ),
                                   child: Text(
                                     "ECM Application",
@@ -241,10 +166,8 @@ class SplashScreen extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      color: ColorConstant.whiteA700,
-                                      fontSize: getFontSize(
-                                        18,
-                                      ),
+                                      color: Colors.white,
+                                      fontSize: 18,
                                       fontFamily: 'Inter',
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -252,26 +175,18 @@ class SplashScreen extends StatelessWidget {
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(
-                                    left: getHorizontalSize(
-                                      18.00,
-                                    ),
-                                    top: getVerticalSize(
-                                      4.00,
-                                    ),
-                                    right: getHorizontalSize(
-                                      18.00,
-                                    ),
+                                    left: 18.00,
+                                    top: 4.00,
+                                    right: 18.00,
                                   ),
                                   child: Text(
-                                    "Version 0.7",
+                                    "Version 1.6",
                                     textScaleFactor: 1,
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      color: ColorConstant.black900,
-                                      fontSize: getFontSize(
-                                        12,
-                                      ),
+                                      color: Colors.black,
+                                      fontSize: 12,
                                       fontFamily: 'Inter',
                                       fontWeight: FontWeight.w400,
                                     ),

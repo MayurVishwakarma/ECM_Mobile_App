@@ -1,9 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, camel_case_types
 
 import 'package:flutter/material.dart';
-
-import '../../../core/utils/color_constant.dart';
-import '../../../core/utils/math_utils.dart';
 import 'Disnet.dart';
 
 class Maintenance_Guidance_Tool extends StatefulWidget {
@@ -26,8 +23,8 @@ class _Maintenance_Guidance_ToolState extends State<Maintenance_Guidance_Tool> {
             child: SingleChildScrollView(
                 physics: AlwaysScrollableScrollPhysics(),
                 child: SizedBox(
-                    height: size.height,
-                    width: size.width,
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
                     child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: ListView(
@@ -56,7 +53,7 @@ class _Maintenance_Guidance_ToolState extends State<Maintenance_Guidance_Tool> {
                                             blurRadius: 6.0,
                                           ),
                                         ],
-                                        color: ColorConstant.whiteA700,
+                                        color: Colors.white,
                                         borderRadius: BorderRadius.circular(8)),
                                     child: Row(
                                       children: [
@@ -71,7 +68,7 @@ class _Maintenance_Guidance_ToolState extends State<Maintenance_Guidance_Tool> {
                                           'Disnet',
                                           textScaleFactor: 1,
                                           style: TextStyle(
-                                              color: ColorConstant.black900,
+                                              color: Colors.black,
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold),
                                         ),
@@ -114,7 +111,7 @@ class _Maintenance_Guidance_ToolState extends State<Maintenance_Guidance_Tool> {
                                             blurRadius: 6.0,
                                           ),
                                         ],
-                                        color: ColorConstant.whiteA700,
+                                        color: Colors.white,
                                         borderRadius: BorderRadius.circular(8)),
                                     child: Row(
                                       children: [
@@ -129,7 +126,7 @@ class _Maintenance_Guidance_ToolState extends State<Maintenance_Guidance_Tool> {
                                           'Pumping Station & BPT',
                                           textScaleFactor: 1,
                                           style: TextStyle(
-                                              color: ColorConstant.black900,
+                                              color: Colors.black,
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold),
                                         ),

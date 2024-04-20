@@ -1,10 +1,12 @@
-// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, sort_child_properties_last, import_of_legacy_library_into_null_safe, use_key_in_widget_constructors, library_private_types_in_public_api, unused_import, unused_element, prefer_interpolation_to_compose_strings, avoid_print, prefer_is_empty, no_leading_underscores_for_local_identifiers, unused_catch_stack, duplicate_ignore, curly_braces_in_flow_control_structures, prefer_final_fields, non_constant_identifier_names, avoid_unnecessary_containers, unrelated_type_equality_checks, unused_local_variable, prefer_collection_literals, unnecessary_null_comparison, must_be_immutable, unused_field, prefer_typing_uninitialized_variables
+// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, sort_child_properties_last, import_of_legacy_library_into_null_safe, use_key_in_widget_constructors, library_private_types_in_public_api, unused_import, unused_element, prefer_interpolation_to_compose_strings, avoid_print, prefer_is_empty, use_build_context_synchronously, prefer_typing_uninitialized_variables, curly_braces_in_flow_control_structures, avoid_unnecessary_containers, must_be_immutable, non_constant_identifier_names, unused_local_variable, unused_catch_stack, unrelated_type_equality_checks, unnecessary_null_comparison, no_leading_underscores_for_local_identifiers, prefer_collection_literals
 // import 'package:custom_switch/custom_switch.dart';
 import 'dart:convert';
-
 import 'package:ecm_application/Model/Project/ECMTool/PMSChackListModel.dart';
 import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/ECMToolScreen.dart';
+import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/NodeDetails_SQL.dart';
 import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/NodeDetails_new.dart';
+import 'package:ecm_application/core/SQLite/DbHepherSQL.dart';
+import 'package:floor/floor.dart';
 import 'package:http/http.dart' as http;
 import 'package:ecm_application/Model/Project/Login/AreaModel.dart';
 import 'package:ecm_application/Model/Project/Login/DistibutoryModel.dart';
@@ -15,31 +17,20 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-
+import 'package:line_icons/line_icons.dart';
 import 'package:ecm_application/Model/Project/Login/State_list_Model.dart';
-import '../../../core/SQLite/DbHepherSQL.dart';
 
-class LoraPage extends StatefulWidget {
+class OmsPage extends StatefulWidget {
   String? ProjectName;
   String? Source;
-  LoraPage({
-    required,
-    this.ProjectName,
-    this.Source,
-  });
+  OmsPage({this.ProjectName, this.Source});
 
   @override
-  State<LoraPage> createState() => _LoraPageState();
+  State<OmsPage> createState() => _OmsPageState();
 }
 
-class _LoraPageState extends State<LoraPage>
-    with SingleTickerProviderStateMixin {
+class _OmsPageState extends State<OmsPage> {
   List<PMSListViewModel>? _DisplayList = <PMSListViewModel>[];
-  late AnimationController _acontroller;
-  late Animation<double> _animation;
-  var viewdata;
-  var listdatas;
-//  _DisplayList = [];
 
   @override
   void initState() {
@@ -48,24 +39,22 @@ class _LoraPageState extends State<LoraPage>
       _DisplayList = [];
       ProcessStatusList = [];
     });
+
     _firstLoad();
     getDropDownAsync();
     _controller = ScrollController()..addListener(_loadMore);
-    _controller = ScrollController()..addListener(_loadMore);
-    _acontroller = AnimationController(
-      duration: Duration(milliseconds: 1000),
-      vsync: this,
-    )..repeat(reverse: true);
-    _animation = Tween<double>(begin: 0.0, end: 10.0).animate(_acontroller);
   }
 
   @override
   void dispose() {
-    _acontroller.dispose();
     _controller.removeListener(_loadMore);
     super.dispose();
   }
 
+  List<PMSListViewModel> Listdata = [];
+  var conString;
+  PMSListViewModel? viewdata;
+  var listdatas;
   // Initial Selected Value
   var area = 'All';
   var distibutory = 'ALL';
@@ -96,7 +85,7 @@ class _LoraPageState extends State<LoraPage>
   Color colorchnger(int index) {
     try {
       for (var item in listview) {
-        if (item.gateWayId == _DisplayList![index].gateWayId) {
+        if (item.omsId == _DisplayList![index].omsId) {
           return Color.fromRGBO(108, 211, 180, 1);
         }
       }
@@ -111,7 +100,7 @@ class _LoraPageState extends State<LoraPage>
       futureArea = getAreaid();
       futureDistributory = getDistibutoryid();
     });
-    await getProcessid(source: 'LORA').then((values) {
+    await getProcessid().then((values) {
       ProcessList = [];
       ProcessStatusList = [];
       var processList = Set();
@@ -260,7 +249,7 @@ class _LoraPageState extends State<LoraPage>
             child: Center(
               child: FittedBox(
                 child: Text(
-                  areaModel.areaName!,
+                  areaModel.areaName ?? "",
                   textScaleFactor: 1,
                   style: TextStyle(fontSize: 13),
                 ),
@@ -334,16 +323,9 @@ class _LoraPageState extends State<LoraPage>
           );
         }).toList(),
         onChanged: (textvalue) async {
-          //onAreaChange(textvalue);
           var data = textvalue as PMSChaklistModel;
-          // var distriFuture = getProcessid();
-          // await distriFuture.then((value) => setState(() {
-          //       selectedProcess = value.first;
-          //       process = "All";
-          //     }));
           setState(() {
             selectedProcess = data;
-            // futureProcess = distriFuture;
 
             process = selectedProcess!.processId == 0
                 ? "All"
@@ -366,11 +348,9 @@ class _LoraPageState extends State<LoraPage>
         child: DropdownButton(
           underline: Container(color: Colors.transparent),
           value: selectedProcessStatus == null ||
-                  // ignore: prefer_is_empty
                   (values.where((element) => element == selectedProcessStatus))
                       .isEmpty
-              ? values
-                  .singleWhere((element) => element.processStatusId == 'All')
+              ? values.first
               : selectedProcessStatus,
           isExpanded: true,
           items: values.map((ProcessModel processModel) {
@@ -421,225 +401,219 @@ class _LoraPageState extends State<LoraPage>
         });
         _DisplayList = [];
         _firstLoad();
-        getpop(context);
-        Future.delayed(Duration(seconds: 1), () {
-          Navigator.pop(context); //pop dialog
-        });
       },
       child: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
         child: SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
           child: Container(
-              height: size.height,
-              width: size.width,
-              decoration: BoxDecoration(color: Colors.grey.shade200),
-              child: _DisplayList!.isNotEmpty
-                  ? Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                          //search
-                          Stack(
-                            children: [
-                              Positioned(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.black),
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: TextField(
-                                            onChanged: (value) async {
-                                              setState(() {
-                                                _search = value;
-                                              });
-                                            },
-                                            cursorColor: Colors.black,
-                                            keyboardType: TextInputType.text,
-                                            textInputAction: TextInputAction.go,
-                                            decoration: InputDecoration(
-                                                border: InputBorder.none,
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 15),
-                                                hintText: "Search"),
-                                          ),
-                                        ),
-                                        IconButton(
-                                          splashColor: Colors.blue,
-                                          icon: Icon(Icons.search),
-                                          onPressed: () {
-                                            getpop(context);
-
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(color: Colors.grey.shade200),
+            child: _DisplayList! != null
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                        //search
+                        Stack(
+                          children: [
+                            Positioned(
+                              child: Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.black),
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.white,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextField(
+                                          onChanged: (value) async {
                                             setState(() {
-                                              _page = 0;
-                                              _hasNextPage = true;
-                                              _isFirstLoadRunning = false;
-                                              _isLoadMoreRunning = false;
-                                              _DisplayList =
-                                                  <PMSListViewModel>[];
-                                            });
-                                            _firstLoad();
-                                            Future.delayed(Duration(seconds: 1),
-                                                () {
-                                              Navigator.pop(
-                                                  context); //pop dialog
+                                              _search = value;
                                             });
                                           },
+                                          cursorColor: Colors.black,
+                                          keyboardType: TextInputType.text,
+                                          textInputAction: TextInputAction.go,
+                                          decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                      horizontal: 15),
+                                              hintText: "Search"),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                      IconButton(
+                                        splashColor: Colors.blue,
+                                        icon: Icon(Icons.search),
+                                        onPressed: () {
+                                          getpop(context);
+
+                                          setState(() {
+                                            _page = 0;
+                                            _hasNextPage = true;
+                                            _isFirstLoadRunning = false;
+                                            _isLoadMoreRunning = false;
+                                            _DisplayList = <PMSListViewModel>[];
+                                          });
+                                          _firstLoad();
+
+                                          Future.delayed(Duration(seconds: 1),
+                                              () {
+                                            Navigator.pop(context); //pop dialog
+                                          });
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
+                        ),
 
-                          //dropdown
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                /// This Future Builder is Used for Area DropDown list
-                                FutureBuilder(
-                                  future: futureArea,
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot snapshot) {
-                                    if (snapshot.hasData) {
-                                      return Expanded(
-                                          child:
-                                              getArea(context, snapshot.data!));
-                                    } else if (snapshot.hasError) {
-                                      return Text(
-                                        "Something Went Wrong: " +
-                                            snapshot.error.toString(),
-                                        textScaleFactor: 1,
-                                      );
-                                    } else {
-                                      return Center(child: Container());
-                                    }
-                                  },
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
+                        //dropdown
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              /// This Future Builder is Used for Area DropDown list
+                              FutureBuilder(
+                                future: futureArea,
+                                builder: (BuildContext context,
+                                    AsyncSnapshot snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Expanded(
+                                        child:
+                                            getArea(context, snapshot.data!));
+                                  } else if (snapshot.hasError) {
+                                    return Text(
+                                      "Something Went Wrong: " +
+                                          snapshot.error.toString(),
+                                      textScaleFactor: 1,
+                                    );
+                                  } else {
+                                    return Center(child: Container());
+                                  }
+                                },
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
 
-                                ///This Future Builder is Used for Distibutory DropDown List
-                                FutureBuilder(
-                                  future: futureDistributory,
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot snapshot) {
-                                    if (snapshot.hasData) {
-                                      return Expanded(
-                                          child:
-                                              getDist(context, snapshot.data!));
-                                    } else if (snapshot.hasError) {
-                                      return Container() /*Text(
+                              ///This Future Builder is Used for Distibutory DropDown List
+                              FutureBuilder(
+                                future: futureDistributory,
+                                builder: (BuildContext context,
+                                    AsyncSnapshot snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Expanded(
+                                        child:
+                                            getDist(context, snapshot.data!));
+                                  } else if (snapshot.hasError) {
+                                    return Container() /*Text(
                                   "Something Went Wrong: " /*+
                                       snapshot.error.toString()*/
                                   ,
                                   textScaleFactor: 1,
                                 )*/
-                                          ;
-                                    } else {
-                                      return Center(child: Container());
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
+                                        ;
+                                  } else {
+                                    return Center(child: Container());
+                                  }
+                                },
+                              ),
+                            ],
                           ),
+                        ),
 
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                if (ProcessList != null)
-                                  Expanded(
-                                      child: getProcess(context, ProcessList!)),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                if (ProcessStatusList != null &&
-                                    process != 'All')
-                                  Expanded(
-                                      child: getProcessStatus(
-                                          context,
-                                          ProcessStatusList!
-                                              .where((element) =>
-                                                  element.processId ==
-                                                  int.tryParse(process))
-                                              .toList())),
-                              ],
-                            ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              if (ProcessList != null)
+                                Expanded(
+                                    child: getProcess(context, ProcessList!)),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              if (ProcessStatusList != null && process != 'All')
+                                Expanded(
+                                    child: getProcessStatus(
+                                        context,
+                                        ProcessStatusList!
+                                            .where((element) =>
+                                                element.processId ==
+                                                int.tryParse(process))
+                                            .toList())),
+                            ],
                           ),
+                        ),
 
-                          //listview
-                          Expanded(
-                            child: Scrollbar(
+                        //listview
+                        Expanded(
+                          child: Scrollbar(
+                            controller: _controller,
+                            interactive: true,
+                            thickness: 10,
+                            radius: Radius.circular(15),
+                            thumbVisibility: true,
+                            child: SingleChildScrollView(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              scrollDirection: Axis.vertical,
                               controller: _controller,
-                              interactive: true,
-                              thickness: 10,
-                              radius: Radius.circular(15),
-                              thumbVisibility: true,
-                              child: SingleChildScrollView(
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                scrollDirection: Axis.vertical,
-                                controller: _controller,
-                                child: SizedBox(
-                                  width: size.width,
-                                  child: _isFirstLoadRunning
-                                      ? Center(
-                                          child: CircularProgressIndicator(),
-                                        )
-                                      : Column(children: [
-                                          getBody(),
-                                          // when the _loadMore function is running
-                                          if (_isLoadMoreRunning == true)
-                                            Container(),
-                                          // Center(
-                                          //   child: CircularProgressIndicator(),
-                                          // ),
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: _isFirstLoadRunning
+                                    ? Center(
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : Column(children: [
+                                        getBody(),
+                                        SizedBox(height: 150),
+                                        // when the _loadMore function is running
+                                        if (_isLoadMoreRunning == true)
+                                          Container(),
+                                        // Center(
+                                        //   child: CircularProgressIndicator(),
+                                        // ),
 
-                                          // When nothing else to load
-                                          if (_hasNextPage == false)
-                                            Container(),
-                                        ]),
-                                ),
+                                        // When nothing else to load
+                                        if (_hasNextPage == false) Container(),
+                                      ]),
                               ),
                             ),
                           ),
-                        ])
-                  : Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/images/soon.gif',
-                            width: 200,
-                            height: 200,
+                        ),
+                      ])
+                : Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/images/soon.gif',
+                          width: 200,
+                          height: 200,
+                        ),
+                        SizedBox(height: 20.0),
+                        Text(
+                          'Page under construction',
+                          style: TextStyle(
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold,
                           ),
-                          SizedBox(height: 20.0),
-                          Text(
-                            'Page under construction',
-                            style: TextStyle(
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    )),
+                        ),
+                      ],
+                    ),
+                  ),
+          ),
         ),
       ),
     );
@@ -656,33 +630,62 @@ class _LoraPageState extends State<LoraPage>
           itemBuilder: (BuildContext context, int index) {
             return InkWell(
               onTap: () async {
-                var source = 'lora';
+                var source = 'oms';
                 var projectName;
+                var conString;
                 SharedPreferences preferences =
                     await SharedPreferences.getInstance();
 
+                preferences.setString(
+                    'Mechanical', _DisplayList![index].mechanical.toString());
+                preferences.setString(
+                    'Erection', _DisplayList![index].erection.toString());
+                preferences.setString('DryComm',
+                    _DisplayList![index].dryCommissioning.toString());
+                preferences.setString('AutoDryComm',
+                    _DisplayList![index].autoDryCommissioning.toString());
+                conString = preferences.getString('ConString');
                 projectName = preferences.getString('ProjectName')!;
 
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => NodeDetails(_DisplayList![index],
-                          projectName, source, viewdata!, listdatas)),
-                  (Route<dynamic> route) => true,
-                ).whenComplete(() => {
-                      _firstLoad(),
-                      getDropDownAsync(),
-                      _controller = ScrollController()..addListener(_loadMore),
-                      _controller = ScrollController()..addListener(_loadMore),
-                      _acontroller = AnimationController(
-                        duration: Duration(milliseconds: 1000),
-                        vsync: this,
-                      )..repeat(reverse: true),
-                      _animation = Tween<double>(begin: 0.0, end: 10.0)
-                          .animate(_acontroller),
-                    });
-                viewdata = _DisplayList![index];
-                listdatas = _DisplayList![index].gateWayId;
+                conString!.toString().contains('ID=sa')
+                    ? Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NodeDetails_SQL(
+                                _DisplayList![index],
+                                projectName,
+                                source,
+                                listdatas)),
+                        (Route<dynamic> route) => true,
+                      ).whenComplete(() {
+                        _firstLoad();
+                        getDropDownAsync();
+                        _controller = ScrollController()
+                          ..addListener(_loadMore);
+                      })
+                    : Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NodeDetails(
+                                _DisplayList![index],
+                                projectName,
+                                source,
+                                viewdata!,
+                                listdatas)),
+                        (Route<dynamic> route) => true,
+                      ).whenComplete(() {
+                        _firstLoad();
+                        getDropDownAsync();
+                        _controller = ScrollController()
+                          ..addListener(_loadMore);
+                      });
+
+                setState(() {
+                  viewdata = _DisplayList![index];
+                  listdatas = _DisplayList![index].omsId;
+                });
+                // await fatchdataSQL();
+                // await addDataPMS();
               },
               child: Card(
                 elevation: 4,
@@ -695,7 +698,7 @@ class _LoraPageState extends State<LoraPage>
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       Container(
-                        height: 50,
+                        // height: 50,
                         width: double.infinity,
                         decoration: BoxDecoration(
                             color: colorchnger(index),
@@ -705,16 +708,17 @@ class _LoraPageState extends State<LoraPage>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              _DisplayList![index].gatewayName.toString(),
+                              _DisplayList![index].chakNo.toString(),
                               style:
                                   TextStyle(fontSize: 14, color: Colors.white),
                             ),
                             Text(
                               '( ' +
-                                  (_DisplayList![index].areaName ?? '')
+                                  ((_DisplayList![index].areaName ?? '').trim())
                                       .toString() +
                                   ' - ' +
                                   (_DisplayList![index].description ?? '')
+                                      .trim()
                                       .toString() +
                                   ' )',
                               softWrap: true,
@@ -727,7 +731,7 @@ class _LoraPageState extends State<LoraPage>
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                             width: double.infinity,
-                            decoration: BoxDecoration(color: Colors.white),
+                            decoration: BoxDecoration(color: Colors.white70),
                             child: SafeArea(
                               child: GridView.builder(
                                 physics: NeverScrollableScrollPhysics(),
@@ -793,7 +797,7 @@ class _LoraPageState extends State<LoraPage>
               ),
             );
           });
-    } catch (_, ex) {
+    } catch (ex, _) {
       return Container();
     }
   }
@@ -801,7 +805,17 @@ class _LoraPageState extends State<LoraPage>
   getprocessstatus(String pro, int proStatus) {
     String imagepath = 'assets/images/pending.png';
     try {
-      if (pro.toLowerCase().contains('dry comm')) {
+      if (pro.toLowerCase().contains('auto')) {
+        if (proStatus == 1) {
+          imagepath = 'assets/images/Completed.png';
+        } else if (proStatus == 2) {
+          imagepath = 'assets/images/fullydone.png';
+        } else if (proStatus == 3) {
+          imagepath = 'assets/images/Commented.png';
+        } else {
+          imagepath = 'assets/images/notcompletted.png';
+        }
+      } else if (pro.toLowerCase().contains('dry comm')) {
         if (proStatus == 1) {
           imagepath = 'assets/images/Completed.png';
         } else if (proStatus == 2) {
@@ -850,6 +864,10 @@ class _LoraPageState extends State<LoraPage>
         status = int.tryParse(model.mechanical!);
       else if (proStatus.contains('erect'))
         status = int.tryParse(model.erection!);
+      else if (proStatus.contains('auto dry'))
+        status = int.tryParse(model.autoDryCommissioning);
+      else if (proStatus.contains('auto wet'))
+        status = int.tryParse(model.autoWetCommissioning);
       else if (proStatus.contains('dry comm'))
         status = int.tryParse(model.dryCommissioning!);
       else if (proStatus.contains('wet comm'))
@@ -872,7 +890,7 @@ class _LoraPageState extends State<LoraPage>
   }
 
   int _page = 0;
-  int _limit = 20;
+  final int _limit = 20;
 
   // There is next page or not
   bool _hasNextPage = true;
@@ -900,10 +918,10 @@ class _LoraPageState extends State<LoraPage>
       String? conString = preferences.getString('ConString');
 
       final res = await http.get(Uri.parse(
-          'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=LORA&conString=$conString'));
+          'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=OMS&conString=$conString'));
 
       print(
-          'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=LORA&conString=$conString');
+          'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=OMS&conString=$conString');
 
       var json = jsonDecode(res.body);
       List<PMSListViewModel> fetchedData = <PMSListViewModel>[];
@@ -913,6 +931,7 @@ class _LoraPageState extends State<LoraPage>
       if (fetchedData.length > 0) {
         setState(() {
           _DisplayList!.addAll(fetchedData);
+          // viewdata = _DisplayList;
         });
       }
     } catch (err) {
@@ -922,7 +941,7 @@ class _LoraPageState extends State<LoraPage>
     setState(() {
       _isFirstLoadRunning = false;
     });
-    ListcolorChanger();
+    await ListcolorChanger();
   }
 
   void _loadMore() async {
@@ -942,7 +961,7 @@ class _LoraPageState extends State<LoraPage>
         //String? project = preferences.getString('project');
 
         final res = await http.get(Uri.parse(
-            'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=LORA&conString=$conString'));
+            'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&Process=$process&ProcessStatus=$processStatus&pageIndex=$_page&pageSize=$_limit&Source=OMS&conString=$conString'));
         var json = jsonDecode(res.body);
         List<PMSListViewModel> fetchedData = <PMSListViewModel>[];
         json['data']['Response']
@@ -968,18 +987,25 @@ class _LoraPageState extends State<LoraPage>
     }
   }
 
-  // var viewdata;
   Future addlist() async {
     for (int i = 0; i <= ProcessList!.length; i++) {
+      // ProcessList[i].source
       final data = ProcessList![i];
       ListModel.instance.insert(data.toJson());
     }
   }
 
   // Future addDataPMS() async {
-  //   // for (int i = 0; i <= _DisplayList!.length; i++) {
-  //   final PMSView = viewdata;
-  //   await ListViewModel.instance.insert(PMSView.toJson());
+  //   //  if (listdatas == null) {
+  //   //   final data = listdatas!;
+  //   //   ListViewModel.instance.insert(data.toJson());
+  //   // } else {
+  //   //   final data = listdatas!;
+  //   //   ListViewModel.instance.NewUpdatedata(data);
   //   // }
+  //   for (int i = 0; i <= viewdata!.length; i++) {
+  //     final data = viewdata![i];
+  //     ListViewModel.instance.insert(data.toJson());
+  //   }
   // }
 }

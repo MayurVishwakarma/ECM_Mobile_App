@@ -86,7 +86,7 @@ class _DamageReport_ScreenState extends State<DamageReport_Screen> {
     ];
 
     return Scaffold(
-        backgroundColor: ColorConstant.whiteA700,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text('Damage Summary'),
         ),
@@ -238,7 +238,3 @@ class _DamageReport_ScreenState extends State<DamageReport_Screen> {
             )));
   }
 }
-
-
-
-

@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, sort_child_properties_last, import_of_legacy_library_into_null_safe, use_key_in_widget_constructors, library_private_types_in_public_api, unused_import, unused_element, prefer_interpolation_to_compose_strings, avoid_print, prefer_is_empty, unnecessary_null_comparison, must_be_immutable, non_constant_identifier_names, unused_field, prefer_typing_uninitialized_variables, unused_local_variable, unused_catch_stack, use_build_context_synchronously, no_leading_underscores_for_local_identifiers
+// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, sort_child_properties_last, import_of_legacy_library_into_null_safe, use_key_in_widget_constructors, library_private_types_in_public_api, unused_import, unused_element, prefer_interpolation_to_compose_strings, avoid_print, prefer_is_empty, unnecessary_null_comparison, must_be_immutable, non_constant_identifier_names, unused_field, prefer_typing_uninitialized_variables, unused_local_variable, unused_catch_stack, use_build_context_synchronously, no_leading_underscores_for_local_identifiers, deprecated_member_use
 // import 'package:custom_switch/custom_switch.dart';
 import 'dart:convert';
 import 'package:ecm_application/Model/Project/ECMTool/PMSChackListModel.dart';
@@ -437,8 +437,8 @@ class _RmsPageState extends State<RmsPage> with SingleTickerProviderStateMixin {
         child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
             child: Container(
-                height: size.height,
-                width: size.width,
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(color: Colors.grey.shade200),
                 child: _DisplayList!.isNotEmpty
                     ? Column(
@@ -494,8 +494,8 @@ class _RmsPageState extends State<RmsPage> with SingleTickerProviderStateMixin {
                                                     <PMSListViewModel>[];
                                               });
                                               _firstLoad();
-                                              new Future.delayed(
-                                                  new Duration(seconds: 1), () {
+                                              Future.delayed(
+                                                  Duration(seconds: 1), () {
                                                 Navigator.pop(
                                                     context); //pop dialog
                                               });
@@ -608,7 +608,7 @@ class _RmsPageState extends State<RmsPage> with SingleTickerProviderStateMixin {
                                   scrollDirection: Axis.vertical,
                                   controller: _controller,
                                   child: SizedBox(
-                                    width: size.width,
+                                    width: MediaQuery.of(context).size.width,
                                     child: _isFirstLoadRunning
                                         ? Center(
                                             child: CircularProgressIndicator(),
@@ -655,6 +655,7 @@ class _RmsPageState extends State<RmsPage> with SingleTickerProviderStateMixin {
     );
   }
 
+  var conString;
   getBody() {
     try {
       var _processlist =
@@ -670,7 +671,15 @@ class _RmsPageState extends State<RmsPage> with SingleTickerProviderStateMixin {
                 var projectName;
                 SharedPreferences preferences =
                     await SharedPreferences.getInstance();
-
+                preferences.setString(
+                    'Mechanical', _DisplayList![index].mechanical.toString());
+                preferences.setString(
+                    'Erection', _DisplayList![index].erection.toString());
+                preferences.setString('DryComm',
+                    _DisplayList![index].dryCommissioning.toString());
+                preferences.setString('AutoDryComm',
+                    _DisplayList![index].autoDryCommissioning.toString());
+                conString = preferences.getString('ConString');
                 projectName = preferences.getString('ProjectName')!;
 
                 Navigator.pushAndRemoveUntil(
@@ -679,16 +688,16 @@ class _RmsPageState extends State<RmsPage> with SingleTickerProviderStateMixin {
                       builder: (context) => NodeDetails(_DisplayList![index],
                           projectName, source, viewdata, listdatas)),
                   (Route<dynamic> route) => true,
-                ).whenComplete(() => {
-                      _firstLoad(),
-                      getDropDownAsync(),
-                      _controller = ScrollController()..addListener(_loadMore),
+                ).whenComplete(() {
+                      _firstLoad();
+                      getDropDownAsync();
+                      _controller = ScrollController()..addListener(_loadMore);
                       _acontroller = AnimationController(
                         duration: Duration(milliseconds: 1000),
                         vsync: this,
-                      )..repeat(reverse: true),
+                      )..repeat(reverse: true);
                       _animation = Tween<double>(begin: 0.0, end: 10.0)
-                          .animate(_acontroller)
+                          .animate(_acontroller);
                     });
                 viewdata = _DisplayList![index];
                 listdatas = _DisplayList![index].rmsId;

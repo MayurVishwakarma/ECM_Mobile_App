@@ -314,9 +314,9 @@ class _Lora_ReportListState extends State<Lora_ReportList> {
                                     height: 80,
                                     width: 100,
                                     margin: EdgeInsets.only(
-                                      bottom: getVerticalSize(
+                                      bottom: 
                                         12.58,
-                                      ),
+                                   
                                     ),
                                     decoration: BoxDecoration(
                                       color: selectedDamageType!
@@ -327,13 +327,13 @@ class _Lora_ReportListState extends State<Lora_ReportList> {
                                       borderRadius: BorderRadius.circular(5.0),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: ColorConstant.black90026,
-                                          spreadRadius: getHorizontalSize(
+                                          color: Colors.black,
+                                          spreadRadius: 
                                             2.00,
-                                          ),
-                                          blurRadius: getHorizontalSize(
+                                        
+                                          blurRadius:
                                             2.00,
-                                          ),
+                                         
                                           offset: Offset(
                                             0,
                                             2,
@@ -353,10 +353,10 @@ class _Lora_ReportListState extends State<Lora_ReportList> {
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: ColorConstant.black900,
-                                              fontSize: getFontSize(
+                                              color: Colors.black,
+                                              fontSize: 
                                                 9,
-                                              ),
+                                           
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -375,9 +375,9 @@ class _Lora_ReportListState extends State<Lora_ReportList> {
                                                         .contains('total')
                                                     ? Colors.white
                                                     : Colors.black,
-                                                fontSize: getFontSize(
+                                                fontSize:
                                                   14,
-                                                ),
+                                               
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.w400,
                                               ),
@@ -436,9 +436,9 @@ class _Lora_ReportListState extends State<Lora_ReportList> {
                                     height: 80,
                                     width: 100,
                                     margin: EdgeInsets.only(
-                                      bottom: getVerticalSize(
+                                      bottom: 
                                         12.58,
-                                      ),
+                                     
                                     ),
                                     decoration: BoxDecoration(
                                       color: selectedDamageType!
@@ -449,13 +449,13 @@ class _Lora_ReportListState extends State<Lora_ReportList> {
                                       borderRadius: BorderRadius.circular(5.0),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: ColorConstant.black90026,
-                                          spreadRadius: getHorizontalSize(
+                                          color: Colors.black,
+                                          spreadRadius: 
                                             2.00,
-                                          ),
-                                          blurRadius: getHorizontalSize(
+                                          
+                                          blurRadius:
                                             2.00,
-                                          ),
+                                         
                                           offset: Offset(
                                             0,
                                             2,
@@ -477,10 +477,10 @@ class _Lora_ReportListState extends State<Lora_ReportList> {
                                             textScaleFactor: 1,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: ColorConstant.black900,
-                                              fontSize: getFontSize(
+                                              color: Colors.black,
+                                              fontSize:
                                                 9,
-                                              ),
+                                           
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -499,9 +499,9 @@ class _Lora_ReportListState extends State<Lora_ReportList> {
                                                         .contains('electrical')
                                                     ? Colors.white
                                                     : Colors.black,
-                                                fontSize: getFontSize(
+                                                fontSize: 
                                                   14,
-                                                ),
+                                               
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.w400,
                                               ),
@@ -561,9 +561,9 @@ class _Lora_ReportListState extends State<Lora_ReportList> {
                                     height: 80,
                                     width: 100,
                                     margin: EdgeInsets.only(
-                                      bottom: getVerticalSize(
+                                      bottom: 
                                         12.58,
-                                      ),
+                                      
                                     ),
                                     decoration: BoxDecoration(
                                       color: selectedDamageType!
@@ -574,13 +574,13 @@ class _Lora_ReportListState extends State<Lora_ReportList> {
                                       borderRadius: BorderRadius.circular(5.0),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: ColorConstant.black90026,
-                                          spreadRadius: getHorizontalSize(
+                                          color: Colors.black,
+                                          spreadRadius: 
                                             2.00,
-                                          ),
-                                          blurRadius: getHorizontalSize(
+                                          
+                                          blurRadius: 
                                             2.00,
-                                          ),
+                                         
                                           offset: Offset(
                                             0,
                                             2,
@@ -602,10 +602,10 @@ class _Lora_ReportListState extends State<Lora_ReportList> {
                                             textScaleFactor: 1,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: ColorConstant.black900,
-                                              fontSize: getFontSize(
+                                              color: Colors.black,
+                                              fontSize:
                                                 9,
-                                              ),
+                                            
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -625,9 +625,9 @@ class _Lora_ReportListState extends State<Lora_ReportList> {
                                                         .contains('mechanical')
                                                     ? Colors.white
                                                     : Colors.black,
-                                                fontSize: getFontSize(
+                                                fontSize: 
                                                   14,
-                                                ),
+                                                
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.w400,
                                               ),
@@ -714,8 +714,8 @@ class _Lora_ReportListState extends State<Lora_ReportList> {
                                               textScaleFactor: 1,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                color: ColorConstant.black900,
-                                                fontSize: getFontSize(10),
+                                                color: Colors.black,
+                                                fontSize: 10,
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -732,7 +732,7 @@ class _Lora_ReportListState extends State<Lora_ReportList> {
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: Colors.red,
-                                                  fontSize: getFontSize(14),
+                                                  fontSize: 14,
                                                   fontFamily: 'Inter',
                                                   fontWeight: FontWeight.w400,
                                                 ),
@@ -837,8 +837,8 @@ class _Lora_ReportListState extends State<Lora_ReportList> {
                                               textScaleFactor: 1,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                color: ColorConstant.black900,
-                                                fontSize: getFontSize(10),
+                                                color: Colors.black,
+                                                fontSize: 10,
                                                 fontFamily: 'Inter',
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -855,7 +855,7 @@ class _Lora_ReportListState extends State<Lora_ReportList> {
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: Colors.red,
-                                                  fontSize: getFontSize(14),
+                                                  fontSize: 14,
                                                   fontFamily: 'Inter',
                                                   fontWeight: FontWeight.w400,
                                                 ),

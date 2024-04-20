@@ -1,4 +1,5 @@
-// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, sort_child_properties_last, unused_element, prefer_typing_uninitialized_variables, unused_field, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_collection_literals, duplicate_ignore, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, no_leading_underscores_for_local_identifiers, unnecessary_null_in_if_null_operators, must_be_immutable, avoid_function_literals_in_foreach_calls, unused_local_variable, use_build_context_synchronously, curly_braces_in_flow_control_structures, unused_catch_stack, unnecessary_null_comparison, camel_case_types, prefer_const_declarations
+// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, sort_child_properties_last, unused_element, prefer_typing_uninitialized_variables, unused_field, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_collection_literals, duplicate_ignore, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, no_leading_underscores_for_local_identifiers, unnecessary_null_in_if_null_operators, must_be_immutable, avoid_function_literals_in_foreach_calls, unused_local_variable, use_build_context_synchronously, curly_braces_in_flow_control_structures, unused_catch_stack, unnecessary_null_comparison, camel_case_types, prefer_const_declarations, avoid_print, file_names, avoid_unnecessary_containers
+
 import 'dart:convert';
 import 'dart:math';
 import 'package:ecm_application/Model/Project/RoutineCheck/RoutineCheckListModel.dart';
@@ -498,7 +499,11 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('Distibutory : ${widget.Areaname!}'),
-                              Text('Sub Area : ${widget.Description!}')
+                              SizedBox(
+                                width: 130,
+                                child:
+                                    Text('Sub Area : ${widget.Description!}'),
+                              )
                             ],
                           ),
                         ),
@@ -592,7 +597,9 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
                                   // _showAlert(context);
                                 }),
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green),
+                                    backgroundColor: Colors.green,
+                                    foregroundColor: Colors.white
+                                    ),
                               ),
                             ],
                           ),
@@ -786,11 +793,10 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
                                           final result = await showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
-                                              return Expanded(
-                                                  child: SingleChildScrollView(
+                                              return SingleChildScrollView(
                                                 child:
                                                     UserDetailPopup(pos ?? ""),
-                                              ));
+                                              );
                                             },
                                           );
 
@@ -860,10 +866,10 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
       var rssi = signalDetails.elementAt(3) ?? '';
       var snr = signalDetails.elementAt(4) ?? '';
       return Container(
-        height: 100,
+        // height: 100,
         width: 160,
         decoration: BoxDecoration(
-            border: Border.all(color: Colors.black),
+            border: Border.all(color: const Color.fromARGB(255, 43, 40, 40)),
             borderRadius: BorderRadius.circular(5)),
         child: Padding(
           padding: const EdgeInsets.all(2.0),
@@ -892,20 +898,6 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
     }
   }
 
-  /*void _showUserDetailPopup(BuildContext context) async {
-    final result = await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return UserDetailPopup();
-      },
-    );
-
-    if (result != null && result is String) {
-      // Process the user details here, which are stored in the `result` variable.
-      // print("User Details: $result");
-    }
-  }
-*/
   getWorkedByNAme(String userid) async {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -929,7 +921,6 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
           return loginResult.firstname.toString();
         } else
           return '';
-        // throw Exception("Login Failed");
       } else {
         return '';
       }
@@ -941,7 +932,7 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
 
   getshortdate(String date) {
     try {
-      if (date.length > 0) {
+      if (date.isNotEmpty) {
         final DateTime now = DateTime.parse(date);
         final DateFormat formatter = DateFormat('d-MMM-y H:m:s');
         final String formatted = formatter.format(now);
@@ -949,8 +940,7 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
       } else {
         return '';
       }
-    } catch (_, ex) {} // print(formatted);
-    // return formatted; // something like 2013-04-20
+    } catch (_, ex) {}
   }
 
   getUserType() async {
@@ -1142,6 +1132,7 @@ class _RoutineManual_CheckListState extends State<RoutineManual_CheckList> {
                 'http://wmsservices.seprojects.in/api/Routine/InsertRoutineReport'));
         request.headers.addAll(headers);
         request.body = json.encode(Insertobj);
+        print(request.body);
         http.StreamedResponse response = await request.send();
         if (response.statusCode == 200) {
           dynamic json = jsonDecode(await response.stream.bytesToString());
@@ -1188,6 +1179,7 @@ class PreviewImageWidget extends StatelessWidget {
     );
   }
 }
+
 /*
 // // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, sort_child_properties_last, unused_element, prefer_typing_uninitialized_variables, unused_field, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_collection_literals, duplicate_ignore, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, no_leading_underscores_for_local_identifiers, unnecessary_null_in_if_null_operators, must_be_immutable, avoid_function_literals_in_foreach_calls, unused_local_variable, use_build_context_synchronously, curly_braces_in_flow_control_structures, unused_catch_stack, unnecessary_null_comparison
 // import 'dart:convert';

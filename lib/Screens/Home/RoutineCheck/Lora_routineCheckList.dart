@@ -307,8 +307,8 @@ class _RoutineCheckList_LoraState extends State<RoutineCheckList_Lora> {
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
             child: Container(
-              height: size.height,
-              width: size.width,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(color: Colors.grey.shade200),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -963,14 +963,7 @@ class _RoutineCheckList_LoraState extends State<RoutineCheckList_Lora> {
           scrollDirection: Axis.vertical,
           controller: _controller,
           child: Container(
-            margin: EdgeInsets.only(
-                left: getHorizontalSize(
-                  8.00,
-                ),
-                right: getHorizontalSize(
-                  8.00,
-                ),
-                bottom: getVerticalSize(13.00)),
+            margin: EdgeInsets.only(left: 8.00, right: 8.00, bottom: (13.00)),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
@@ -978,7 +971,7 @@ class _RoutineCheckList_LoraState extends State<RoutineCheckList_Lora> {
                 bottomRight: Radius.circular(10),
               ),
             ),
-            width: size.width,
+            width: MediaQuery.of(context).size.width,
             child: _isFirstLoadRunning
                 ? Center(
                     child: CircularProgressIndicator(),
@@ -1025,7 +1018,7 @@ class _RoutineCheckList_LoraState extends State<RoutineCheckList_Lora> {
                       widget.ProjectName!,
                       true,
                       'lora',
-                      _DisplayList[index]!.amsCoordinate ?? '')),
+                      _DisplayList[index].amsCoordinate ?? '')),
               (Route<dynamic> route) => true,
             );
           },
@@ -1046,7 +1039,7 @@ class _RoutineCheckList_LoraState extends State<RoutineCheckList_Lora> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Center(
-                          child: Text(_DisplayList[index].gateWayName!,
+                          child: Text(_DisplayList[index].gateWayName ?? "",
                               textScaleFactor: 1,
                               // textAlign: TextAlign.center,
                               style: TextStyle(

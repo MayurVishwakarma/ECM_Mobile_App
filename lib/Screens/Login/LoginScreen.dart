@@ -3,7 +3,6 @@
 import 'package:ecm_application/Model/Project/Login/LoginModel.dart';
 import 'package:ecm_application/Operations/LoginOperations.dart';
 import 'package:ecm_application/Screens/Login/Dashboard.dart';
-import 'package:ecm_application/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,8 +27,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 Container(
                   height: MediaQuery.of(context).size.height, // 0.40,
                   width: double.infinity,
-                  decoration:
-                      BoxDecoration(gradient: ColorConstant.appBarGradient),
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [
+                    Color.fromARGB(255, 98, 182, 183),
+                    Color.fromARGB(255, 151, 222, 206)
+                  ])),
                 ),
                 Align(
                     alignment: Alignment.topCenter,
@@ -46,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               "Erection, Commission & Maintenance Application",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  color: ColorConstant.green900,
+                                  color: Colors.green.shade800,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w500),
                             )
@@ -188,7 +190,8 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
         child: ElevatedButton(
             child: Center(child: Text("Login")),
             style: ElevatedButton.styleFrom(
-              // backgroundColor: Colors.teal,
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
               elevation: 3,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0)),
@@ -228,7 +231,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
               },
               child: Text(
                 "Forgot Password",
-                style: TextStyle(color: ColorConstant.gray600),
+                style: TextStyle(color: Colors.grey),
               ))
         ],
       ),
@@ -296,12 +299,15 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
         body: Center(
           child: Container(
             decoration: BoxDecoration(
-                gradient: ColorConstant.appBarGradient,
+                gradient: LinearGradient(colors: [
+                  Color.fromARGB(255, 98, 182, 183),
+                  Color.fromARGB(255, 151, 222, 206)
+                ]),
                 // color: ColorConstant.cyan301,
                 borderRadius: BorderRadius.circular(10)),
             alignment: Alignment.center,
-            width: size.width * 0.75,
-            height: size.height * 0.45,
+            width: MediaQuery.of(context).size.width * 0.75,
+            height: MediaQuery.of(context).size.height * 0.45,
             child: Column(
               children: [
                 Container(
@@ -319,7 +325,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                       Text(
                         "ECM",
                         style: TextStyle(
-                            color: ColorConstant.green900,
+                            color: Colors.green.shade800,
                             fontSize: 20,
                             fontWeight: FontWeight.bold),
                       )
@@ -344,7 +350,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                           data!.fName.toString(),
                           textScaleFactor: 1,
                           style: TextStyle(
-                              color: ColorConstant.whiteA700,
+                              color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.bold),
                         ),
@@ -361,9 +367,11 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
 
                 ///Button
                 Container(
-                  width: size.width * 0.3,
+                  width: MediaQuery.of(context).size.width * 0.3,
                   child: ElevatedButton(
                       style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.blue),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(

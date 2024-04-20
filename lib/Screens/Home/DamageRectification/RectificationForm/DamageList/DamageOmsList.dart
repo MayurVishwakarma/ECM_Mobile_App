@@ -9,7 +9,6 @@ import 'package:ecm_application/Model/Project/Login/DistibutoryModel.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/RectificationForm/DamageForms/DamageInsertForm.dart';
 import 'package:http/http.dart' as http;
 import 'package:ecm_application/Operations/StatelistOperation.dart';
-import 'package:ecm_application/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -194,8 +193,8 @@ class _Oms_DamagePageState extends State<Oms_DamagePage> {
         child: SingleChildScrollView(
           physics: NeverScrollableScrollPhysics(),
           child: Container(
-            height: size.height,
-            width: size.width,
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(color: Colors.grey.shade200),
             child: _DisplayList! != null
                 ? Column(
@@ -441,7 +440,7 @@ class _Oms_DamagePageState extends State<Oms_DamagePage> {
           child: Container(
             margin: EdgeInsets.only(left: 8.0, right: 8.0, bottom: 13.0),
             decoration: BoxDecoration(
-              color: ColorConstant.whiteA700,
+              color: Colors.white,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(30), // Increase the circular radius
                 bottomRight:
@@ -449,14 +448,14 @@ class _Oms_DamagePageState extends State<Oms_DamagePage> {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: ColorConstant.black90026,
+                  color: Colors.black,
                   spreadRadius: 2.0,
                   blurRadius: 2.0,
                   offset: Offset(0, 2),
                 ),
               ],
             ),
-            width: size.width,
+            width: MediaQuery.of(context).size.width,
             child: _isFirstLoadRunning
                 ? Center(
                     child: CircularProgressIndicator(),

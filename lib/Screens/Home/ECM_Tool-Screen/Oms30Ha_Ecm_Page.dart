@@ -410,8 +410,8 @@ class _Oms30haPageState extends State<Oms30haPage> {
         child: SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
           child: Container(
-            height: size.height,
-            width: size.width,
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(color: Colors.grey.shade200),
             child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -571,7 +571,7 @@ class _Oms30haPageState extends State<Oms30haPage> {
                         scrollDirection: Axis.vertical,
                         controller: _controller,
                         child: SizedBox(
-                          width: size.width,
+                          width: MediaQuery.of(context).size.width,
                           child: _isFirstLoadRunning
                               ? Center(
                                   child: CircularProgressIndicator(),

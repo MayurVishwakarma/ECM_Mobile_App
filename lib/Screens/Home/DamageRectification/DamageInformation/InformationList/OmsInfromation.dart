@@ -179,354 +179,313 @@ class _Oms_informationState extends State<Oms_information> {
         child: GestureDetector(
           onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
           child: SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
-            child: _DisplayList != null
-                ? Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                        //dropdown
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 8),
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    //dropdown
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          FutureBuilder(
+                            future: futureArea,
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData) {
+                                return Expanded(
+                                    child: getArea(context, snapshot.data!));
+                              } else if (snapshot.hasError) {
+                                return Text(
+                                  "Something Went Wrong: " +
+                                      snapshot.error.toString(),
+                                  textScaleFactor: 1,
+                                );
+                              } else {
+                                return Center(child: Container());
+                              }
+                            },
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+
+                          ///This Future Builder is Used for Distibutory DropDown List
+                          FutureBuilder(
+                            future: futureDistributory,
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData) {
+                                return Expanded(
+                                    child: getDist(context, snapshot.data!));
+                              } else if (snapshot.hasError) {
+                                return Container();
+                              } else {
+                                return Center(child: Container());
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Container(
+                        height: 50,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 0, 110, 189),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              FutureBuilder(
-                                future: futureArea,
-                                builder: (BuildContext context,
-                                    AsyncSnapshot snapshot) {
-                                  if (snapshot.hasData) {
-                                    return Expanded(
-                                        child:
-                                            getArea(context, snapshot.data!));
-                                  } else if (snapshot.hasError) {
-                                    return Text(
-                                      "Something Went Wrong: " +
-                                          snapshot.error.toString(),
-                                      textScaleFactor: 1,
-                                    );
-                                  } else {
-                                    return Center(child: Container());
-                                  }
-                                },
+                              Text(
+                                "INFORMATION",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16),
                               ),
-                              SizedBox(
-                                width: 10,
-                              ),
-
-                              ///This Future Builder is Used for Distibutory DropDown List
-                              FutureBuilder(
-                                future: futureDistributory,
-                                builder: (BuildContext context,
-                                    AsyncSnapshot snapshot) {
-                                  if (snapshot.hasData) {
-                                    return Expanded(
-                                        child:
-                                            getDist(context, snapshot.data!));
-                                  } else if (snapshot.hasError) {
-                                    return Container();
-                                  } else {
-                                    return Center(child: Container());
-                                  }
-                                },
+                              Text(
+                                "TOTAL OMS : " +
+                                    (_DisplayList!.first.totalDevice!)
+                                        .toString(),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16),
                               ),
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Container(
-                            height: 50,
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 0, 110, 189),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "INFORMATION",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),
-                                  ),
-                                  Text(
-                                    "TOTAL OMS : " +
-                                        (_DisplayList!.first.totalDevice!)
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            isClicked = false;
+                          });
+                          selectedDamageType = "Total Information Collected";
+                          _firstLoad();
+                        },
+                        onDoubleTap: () {
+                          setState(() {
+                            color:
+                            Colors.blue;
+                          });
+
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      SelectedOmsDamageInformationScreen(
+                                        area_: selectedArea,
+                                        dist_: selectedDistributory,
+                                        ListStatus_: _selectedTotalId
+                                            .join(',')
                                             .toString(),
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),
-                                  ),
-                                ],
+                                        Source_: "OMS",
+                                      ))).whenComplete(() {
+                            _firstLoad();
+                          });
+                        },
+                        child: Container(
+                          height: 100,
+                          width: 100,
+                          margin: EdgeInsets.only(
+                            bottom: 12.58,
+                          ),
+                          decoration: BoxDecoration(
+                            color: selectedDamageType!
+                                    .toLowerCase()
+                                    .contains('total')
+                                ? Colors.lightBlue
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(5.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black,
+                                spreadRadius: 2.00,
+                                blurRadius: 2.00,
+                                offset: Offset(
+                                  0,
+                                  2,
+                                ),
                               ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Total Information Collected".toUpperCase(),
+                                  textScaleFactor: 1,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 9,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    (_DisplayList!.first.total!).toString(),
+                                    textScaleFactor: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: selectedDamageType!
+                                              .toLowerCase()
+                                              .contains('total')
+                                          ? Colors.white
+                                          : Colors.black,
+                                      fontSize: 14,
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: InkWell(
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Container(
+                        height: 50,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 0, 110, 189),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "list Of Information",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GridView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: _DisplayList!.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3, // Number of columns
+                          crossAxisSpacing: 1.5, // Spacing between columns
+                          childAspectRatio: 1,
+                          mainAxisSpacing: 1.5,
+                        ),
+                        itemBuilder: (BuildContext context, int i) {
+                          bool isSelected = _selectedTotalId
+                              .contains(_DisplayList![i].infoId!);
+
+                          return InkWell(
                             onTap: () {
                               setState(() {
-                                isClicked = false;
-                              });
-                              selectedDamageType =
-                                  "Total Information Collected";
-                              _firstLoad();
-                            },
-                            onDoubleTap: () {
-                              setState(() {
-                                color:
-                                Colors.blue;
-                              });
-
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          SelectedOmsDamageInformationScreen(
-                                            area_: selectedArea,
-                                            dist_: selectedDistributory,
-                                            ListStatus_: _selectedTotalId
-                                                .join(',')
-                                                .toString(),
-                                            Source_: "OMS",
-                                          ))).whenComplete(() {
-                                _firstLoad();
+                                if (isSelected) {
+                                  _selectedTotalId
+                                      .remove(_DisplayList![i].infoId!);
+                                } else {
+                                  _selectedTotalId
+                                      .add(_DisplayList![i].infoId!);
+                                }
                               });
                             },
-                            child: Container(
-                              height: 100,
-                              width: 100,
-                              margin: EdgeInsets.only(
-                                bottom: getVerticalSize(
-                                  12.58,
-                                ),
-                              ),
-                              decoration: BoxDecoration(
-                                color: selectedDamageType!
-                                        .toLowerCase()
-                                        .contains('total')
-                                    ? Colors.lightBlue
-                                    : Colors.white,
-                                borderRadius: BorderRadius.circular(5.0),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: ColorConstant.black90026,
-                                    spreadRadius: getHorizontalSize(
-                                      2.00,
-                                    ),
-                                    blurRadius: getHorizontalSize(
-                                      2.00,
-                                    ),
-                                    offset: Offset(
-                                      0,
-                                      2,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Total Information Collected"
-                                          .toUpperCase(),
-                                      textScaleFactor: 1,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: ColorConstant.black900,
-                                        fontSize: getFontSize(
-                                          9,
-                                        ),
-                                        fontFamily: 'Inter',
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        (_DisplayList!.first.total!).toString(),
-                                        textScaleFactor: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: selectedDamageType!
-                                                  .toLowerCase()
-                                                  .contains('total')
-                                              ? Colors.white
-                                              : Colors.black,
-                                          fontSize: getFontSize(
-                                            14,
-                                          ),
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Container(
-                            height: 50,
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 0, 110, 189),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                            child: Card(
+                              elevation: 5,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    "list Of Information",
+                                    _DisplayList![i]
+                                        .infoDescription!
+                                        .toUpperCase(),
+                                    textScaleFactor: 1,
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12),
+                                      color: Colors.black,
+                                      fontSize: (10),
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      _DisplayList![i].cNT.toString(),
+                                      textScaleFactor: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: (14),
+                                        fontFamily: 'Inter',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                  Checkbox(
+                                    activeColor: Colors.white54,
+                                    checkColor: Color.fromARGB(255, 251, 3, 3),
+                                    value: isSelected,
+                                    onChanged: (bool? newValue) {
+                                      setState(() {
+                                        if (newValue == true) {
+                                          _selectedTotalId
+                                              .add(_DisplayList![i].infoId!);
+                                        } else {
+                                          _selectedTotalId
+                                              .remove(_DisplayList![i].infoId!);
+                                        }
+                                      });
+                                    },
                                   ),
                                 ],
                               ),
                             ),
-                          ),
-                        ),
-
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: GridView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: _DisplayList!.length,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3, // Number of columns
-                              crossAxisSpacing: 1.5, // Spacing between columns
-                              childAspectRatio: 1,
-                              mainAxisSpacing: 1.5,
-                            ),
-                            itemBuilder: (BuildContext context, int i) {
-                              bool isSelected = _selectedTotalId
-                                  .contains(_DisplayList![i].infoId!);
-
-                              return InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    if (isSelected) {
-                                      _selectedTotalId
-                                          .remove(_DisplayList![i].infoId!);
-                                    } else {
-                                      _selectedTotalId
-                                          .add(_DisplayList![i].infoId!);
-                                    }
-                                  });
-                                },
-                                child: Card(
-                                  elevation: 5,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        _DisplayList![i]
-                                            .infoDescription!
-                                            .toUpperCase(),
-                                        textScaleFactor: 1,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: ColorConstant.black900,
-                                          fontSize: getFontSize(10),
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          _DisplayList![i].cNT.toString(),
-                                          textScaleFactor: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.red,
-                                            fontSize: getFontSize(14),
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ),
-                                      Checkbox(
-                                        activeColor: Colors.white54,
-                                        checkColor:
-                                            Color.fromARGB(255, 251, 3, 3),
-                                        value: isSelected,
-                                        onChanged: (bool? newValue) {
-                                          setState(() {
-                                            if (newValue == true) {
-                                              _selectedTotalId.add(
-                                                  _DisplayList![i].infoId!);
-                                            } else {
-                                              _selectedTotalId.remove(
-                                                  _DisplayList![i].infoId!);
-                                            }
-                                          });
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ])
-                : Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/images/soon.gif',
-                          width: 200,
-                          height: 200,
-                        ),
-                        SizedBox(height: 20.0),
-                        Text(
-                          'Page under construction',
-                          style: TextStyle(
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                          );
+                        },
+                      ),
                     ),
-                  ),
-          ),
+                  ])),
         ),
       );
     } else {
-      return _widget = const Center(child: CircularProgressIndicator());
+      return Center(child: CircularProgressIndicator());
     }
   }
 
-  String? selectedDamageType = "Total Material Consume";
-  Widget? _widget;
+  String? selectedDamageType = 'Total Information Collected';
   bool isChecked = false;
   List<int> _selectedTotalId = [];
   void _firstLoad() async {

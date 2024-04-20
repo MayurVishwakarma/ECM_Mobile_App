@@ -793,7 +793,7 @@ class _SQL_ScreenState extends State<SQL_Screen> {
                                         // }
                                       }),
                                       style: ElevatedButton.styleFrom(
-                                          primary: Colors.blueGrey),
+                                          backgroundColor: Colors.blueGrey),
                                     ),
                                     // ElevatedButton(
                                     //   child: Text(

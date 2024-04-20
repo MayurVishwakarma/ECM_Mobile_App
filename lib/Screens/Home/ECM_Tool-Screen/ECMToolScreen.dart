@@ -1,28 +1,21 @@
 // ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, sort_child_properties_last, import_of_legacy_library_into_null_safe, use_key_in_widget_constructors, library_private_types_in_public_api, unused_import, unused_element, prefer_interpolation_to_compose_strings, avoid_print, prefer_is_empty, non_constant_identifier_names, use_build_context_synchronously, unused_local_variable, unused_catch_stack
-// import 'package:custom_switch/custom_switch.dart';
+
 import 'dart:convert';
 import 'package:ecm_application/Model/Project/ECMTool/ECMCountMasterModel.dart';
-import 'package:ecm_application/Model/Project/ECMTool/PMSChackListModel.dart';
-import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/Ams_Ecm_Page.dart';
-import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/Lora_Ecm_Page.dart';
-import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/Oms30Ha_Ecm_Page.dart';
-import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/Oms_Ecm_Page.dart';
-import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/Rms_Ecm_Page.dart';
-import 'package:ecm_application/Services/RestPmsService.dart';
+import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/ECM-Tool/Ams_Ecm_Page.dart';
+import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/ECM-Tool/Lora_Ecm_Page.dart';
+import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/ECM-Tool/Oms_Ecm_Page.dart';
+import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/ECM-Tool/Rms_Ecm_Page.dart';
 import 'package:ecm_application/core/SQLite/Screen/Offline_ListMySql.dart';
 import 'package:ecm_application/core/SQLite/Screen/Offline_ListSQL.dart';
 import 'package:http/http.dart' as http;
 import 'package:ecm_application/Model/Project/Login/AreaModel.dart';
 import 'package:ecm_application/Model/Project/Login/DistibutoryModel.dart';
-import 'package:ecm_application/Model/Project/ECMTool/PMSListViewModel.dart';
 import 'package:ecm_application/Operations/StatelistOperation.dart';
 import 'package:ecm_application/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:toggle_switch/toggle_switch.dart';
-import 'package:line_icons/line_icons.dart';
-import 'package:ecm_application/Model/Project/Login/State_list_Model.dart';
 
 class EcmToolScreen extends StatefulWidget {
   @override
@@ -90,7 +83,7 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
         LoraPage(ProjectName: projectName, Source: source),
     ];
     return Scaffold(
-        backgroundColor: ColorConstant.whiteA700,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text('ECM TOOL'),
           actions: [
@@ -275,7 +268,11 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
                       } else if (index == 1) {
                         source = 'AMS';
                       } else if (index == 2) {
-                        source = 'RMS';
+                        if (ecString![2] == '0') {
+                          source = 'LORA';
+                        } else {
+                          source = 'RMS';
+                        }
                       } else if (index == 3) {
                         source = 'LORA';
                       }
@@ -330,7 +327,7 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
                               width: double.infinity,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
-                                  color: ColorConstant.whiteA700),
+                                  color: Colors.white),
                               child: Column(children: [
                                 //Heading Part
                                 Padding(
@@ -348,7 +345,7 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
                                             padding: const EdgeInsets.all(5.0),
                                             child: Icon(
                                               Icons.info,
-                                              color: ColorConstant.whiteA700,
+                                              color: Colors.white,
                                             ),
                                           ),
                                           Padding(
@@ -356,8 +353,7 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
                                             child: Text(
                                               projectName.toString(),
                                               style: TextStyle(
-                                                  color:
-                                                      ColorConstant.whiteA700,
+                                                  color: Colors.white,
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold),
                                             ),
@@ -370,8 +366,7 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
                                                 }),
                                                 child: Icon(
                                                   Icons.clear,
-                                                  color:
-                                                      ColorConstant.whiteA700,
+                                                  color: Colors.white,
                                                 )),
                                           )
                                         ]),

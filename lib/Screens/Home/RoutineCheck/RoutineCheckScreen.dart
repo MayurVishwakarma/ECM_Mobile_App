@@ -307,8 +307,8 @@ class _RoutineCheckScreenState extends State<RoutineCheckScreen> {
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
             child: Container(
-              height: size.height,
-              width: size.width,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(color: Colors.grey.shade200),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -963,13 +963,13 @@ class _RoutineCheckScreenState extends State<RoutineCheckScreen> {
           controller: _controller,
           child: Container(
             margin: EdgeInsets.only(
-                left: getHorizontalSize(
+                left: 
                   8.00,
-                ),
-                right: getHorizontalSize(
+               
+                right: 
                   8.00,
-                ),
-                bottom: getVerticalSize(13.00)),
+                
+                bottom: (13.00)),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
@@ -977,7 +977,7 @@ class _RoutineCheckScreenState extends State<RoutineCheckScreen> {
                 bottomRight: Radius.circular(10),
               ),
             ),
-            width: size.width,
+            width: MediaQuery.of(context).size.width,
             child: _isFirstLoadRunning
                 ? Center(
                     child: CircularProgressIndicator(),
@@ -1024,7 +1024,7 @@ class _RoutineCheckScreenState extends State<RoutineCheckScreen> {
                       widget.ProjectName!,
                       true,
                       'oms',
-                      _DisplayList[index]!.amsCoordinate ?? '')),
+                      _DisplayList[index].amsCoordinate ?? '')),
               (Route<dynamic> route) => true,
             );
           },
@@ -1053,14 +1053,16 @@ class _RoutineCheckScreenState extends State<RoutineCheckScreen> {
                                 fontWeight: FontWeight.bold,
                               )),
                         ),
-                        Text(
-                            '( ${_DisplayList[index].description ?? ' '}-${_DisplayList[index].areaName ?? ' '} )',
-                            textScaleFactor: 1,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.normal,
-                                color: Colors.cyan)),
+                        Expanded(
+                          child: Text(
+                              '( ${_DisplayList[index].description ?? ' '}-${_DisplayList[index].areaName ?? ' '} )',
+                              textScaleFactor: 1,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.cyan)),
+                        ),
                       ],
                     )),
 

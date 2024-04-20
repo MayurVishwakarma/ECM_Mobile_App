@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable, prefer_typing_uninitialized_variables, prefer_const_constructors, use_build_context_synchronously, camel_case_types, must_be_immutable, non_constant_identifier_names, unnecessary_null_comparison, unused_field
+// ignore_for_file: unused_local_variable, prefer_typing_uninitialized_variables, prefer_const_constructors, use_build_context_synchronously, camel_case_types, must_be_immutable, non_constant_identifier_names, unnecessary_null_comparison, unused_field, unrelated_type_equality_checks, avoid_print
 
 import 'dart:convert';
 import 'package:ecm_application/Model/Project/Damage/OmsDamageModel.dart';
@@ -6,11 +6,9 @@ import 'package:ecm_application/Model/Project/ECMTool/PMSChackListModel.dart';
 import 'package:ecm_application/Model/Project/Login/AreaModel.dart';
 import 'package:ecm_application/Model/Project/Login/DistibutoryModel.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageHistory/History_CommonScreen.dart';
-import 'package:ecm_application/Screens/Home/DamageRectification/RectificationForm/DamageForms/DamageInsertForm.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/RectificationForm/DamageReportList.dart';
 import 'package:http/http.dart' as http;
 import 'package:ecm_application/Operations/StatelistOperation.dart';
-import 'package:ecm_application/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -206,8 +204,8 @@ class _Rms_HistoryState extends State<Rms_History> {
         child: SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
           child: Container(
-            height: size.height,
-            width: size.width,
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(color: Colors.grey.shade200),
             child: _DisplayList! != null
                 ? Column(
@@ -297,8 +295,7 @@ class _Rms_HistoryState extends State<Rms_History> {
                                             getArea(context, snapshot.data!));
                                   } else if (snapshot.hasError) {
                                     return Text(
-                                      "Something Went Wrong: " +
-                                          snapshot.error.toString(),
+                                      "Something Went Wrong: ${snapshot.error}",
                                       textScaleFactor: 1,
                                     );
                                   } else {
@@ -362,12 +359,12 @@ class _Rms_HistoryState extends State<Rms_History> {
                                     topRight: Radius.circular(10))),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
+                              children: const [
                                 SizedBox(
                                   width: 150,
                                   child: Center(
                                     child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
+                                      padding: EdgeInsets.all(10.0),
                                       child: Column(
                                         children: [
                                           Text(
@@ -464,22 +461,22 @@ class _Rms_HistoryState extends State<Rms_History> {
           child: Container(
             margin: EdgeInsets.only(left: 8.0, right: 8.0, bottom: 13.0),
             decoration: BoxDecoration(
-              color: ColorConstant.whiteA700,
+              color: Colors.white,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(30), // Increase the circular radius
                 bottomRight:
                     Radius.circular(30), // Increase the circular radius
               ),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
-                  color: ColorConstant.black90026,
+                  color: Colors.black,
                   spreadRadius: 2.0,
                   blurRadius: 2.0,
                   offset: Offset(0, 2),
                 ),
               ],
             ),
-            width: size.width,
+            width: MediaQuery.of(context).size.width,
             child: _isFirstLoadRunning
                 ? Center(
                     child: CircularProgressIndicator(),
@@ -550,7 +547,7 @@ class _Rms_HistoryState extends State<Rms_History> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       //chak No.
-                      Container(
+                      SizedBox(
                           height: 50,
                           width: 150,
                           child: Padding(
@@ -573,15 +570,7 @@ class _Rms_HistoryState extends State<Rms_History> {
                                 Expanded(
                                   child: Center(
                                     child: Text(
-                                        '( ' +
-                                            _DisplayList![index]
-                                                .areaName
-                                                .toString() +
-                                            '-' +
-                                            _DisplayList![index]
-                                                .description
-                                                .toString() +
-                                            ' )',
+                                        '( ${_DisplayList![index].areaName}-${_DisplayList![index].description} )',
                                         textScaleFactor: 1,
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
@@ -656,10 +645,8 @@ class _Rms_HistoryState extends State<Rms_History> {
       barrierDismissible: false,
       useSafeArea: false,
       context: context,
-      builder: (ctx) => Container(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
+      builder: (ctx) => Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }
@@ -708,7 +695,7 @@ class _Rms_HistoryState extends State<Rms_History> {
       json['data']['Response']
           .forEach((e) => fetchedData.add(DamageModel.fromJson(e)));
       _DisplayList = [];
-      if (fetchedData.length > 0) {
+      if (fetchedData.isNotEmpty) {
         setState(() {
           _DisplayList!.addAll(fetchedData);
           // viewdata = _DisplayList;
@@ -745,7 +732,7 @@ class _Rms_HistoryState extends State<Rms_History> {
         List<DamageModel> fetchedData = <DamageModel>[];
         json['data']['Response']
             .forEach((e) => fetchedData.add(DamageModel.fromJson(e)));
-        if (fetchedData.length > 0) {
+        if (fetchedData.isNotEmpty) {
           setState(() {
             _DisplayList!.addAll(fetchedData);
           });

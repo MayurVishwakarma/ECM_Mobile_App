@@ -6,15 +6,12 @@ import 'package:ecm_application/Model/Common/EngineerModel.dart';
 import 'package:ecm_application/Model/project/Constants.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageMenuScreen.dart';
 import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/ECMToolScreen.dart';
-import 'package:ecm_application/Screens/Home/RoutineCheck/RoutineCheckScreen.dart';
 import 'package:ecm_application/Screens/Home/RoutineCheck/RoutineCheckStatusCommon.dart';
 import 'package:http/http.dart' as http;
 import 'package:ecm_application/Model/Project/Login/State_list_Model.dart';
 import 'package:ecm_application/Operations/StatelistOperation.dart';
-
 import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/ECMToolScreen_30Ha.dart';
 import 'package:flutter/material.dart';
-import 'package:ecm_application/core/app_export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Home/Maintenance/Maintenance_Guidance_Tool.dart';
 
@@ -81,7 +78,7 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: ColorConstant.whiteA700,
+        backgroundColor: Colors.white,
         // drawer: MyDrawerScreen(),
         appBar: AppBar(
           title: Text(
@@ -97,8 +94,8 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
             child: SizedBox(
-              height: size.height,
-              width: size.width,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ListView(
@@ -128,7 +125,7 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
                                     blurRadius: 6.0,
                                   ),
                                 ],
-                                color: ColorConstant.whiteA700,
+                                color: Colors.white,
                                 borderRadius: BorderRadius.circular(10)),
                             child: Row(
                               children: [
@@ -144,7 +141,7 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
                                     'Maintenance Guidance Tool',
                                     textScaleFactor: 1,
                                     style: TextStyle(
-                                        color: ColorConstant.black900,
+                                        color: Colors.black,
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -194,7 +191,7 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
                                       blurRadius: 6.0,
                                     ),
                                   ],
-                                  color: ColorConstant.whiteA700,
+                                  color: Colors.white,
                                   borderRadius: BorderRadius.circular(10)),
                               child: Row(
                                 children: [
@@ -208,7 +205,7 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
                                   Text(
                                     'Damage/Rectification',
                                     style: TextStyle(
-                                        color: ColorConstant.black900,
+                                        color: Colors.black,
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -255,7 +252,7 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
                                       blurRadius: 6.0,
                                     ),
                                   ],
-                                  color: ColorConstant.whiteA700,
+                                  color: Colors.white,
                                   borderRadius: BorderRadius.circular(10)),
                               child: Row(
                                 children: [
@@ -268,7 +265,7 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
                                   Text(
                                     'ECM Tool',
                                     style: TextStyle(
-                                        color: ColorConstant.black900,
+                                        color: Colors.black,
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -300,7 +297,7 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
                                     blurRadius: 6.0,
                                   ),
                                 ],
-                                color: ColorConstant.whiteA700,
+                                color: Colors.white,
                                 borderRadius: BorderRadius.circular(10)),
                             child: Row(
                               children: [
@@ -314,7 +311,7 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
                                 Text(
                                   'Routine Check',
                                   style: TextStyle(
-                                      color: ColorConstant.black900,
+                                      color: Colors.black,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),
