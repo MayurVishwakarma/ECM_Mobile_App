@@ -1,8 +1,9 @@
-// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, sort_child_properties_last, unused_element, prefer_typing_uninitialized_variables, unused_field, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_collection_literals, duplicate_ignore, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, no_leading_underscores_for_local_identifiers, unnecessary_null_in_if_null_operators, must_be_immutable, avoid_function_literals_in_foreach_calls, unused_local_variable, use_build_context_synchronously, curly_braces_in_flow_control_structures, unnecessary_null_comparison, unnecessary_new, unused_import, camel_case_types, library_private_types_in_public_api, unused_catch_stack
+// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, sort_child_properties_last, unused_element, prefer_typing_uninitialized_variables, unused_field, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_collection_literals, duplicate_ignore, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, no_leading_underscores_for_local_identifiers, unnecessary_null_in_if_null_operators, must_be_immutable, avoid_function_literals_in_foreach_calls, unused_local_variable, use_build_context_synchronously, curly_braces_in_flow_control_structures, unnecessary_null_comparison, unnecessary_new, unused_import, camel_case_types, library_private_types_in_public_api, unused_catch_stack, avoid_print
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:ecm_application/Model/Project/ECMTool/PMSChackListModel.dart';
+import 'package:ecm_application/Screens/Home/ECM-History/Ecm-HistoryPage.dart';
 import 'package:ecm_application/core/SQLite/DbHepherSQL.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ecm_application/Model/Common/EngineerModel.dart';
@@ -17,12 +18,15 @@ import 'package:ecm_application/Widget/ExpandableTiles.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:path/path.dart' hide context;
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'dart:async';
 
 PMSListViewModel? modelData;
 List<PMSListViewModel>? _DisplayList = <PMSListViewModel>[];
@@ -67,6 +71,8 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
   int? psId;
   bool sendData = false;
   String? userType = '';
+  bool _isConnected = false;
+  StreamSubscription<InternetConnectionStatus>? _connectivitySubscription;
 
   @override
   void initState() {
@@ -87,6 +93,28 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
     getUserType();
     getDeviceid(widget.Source!);
     getECMData(selectedProcess!);
+    _initConnectivity();
+    _connectivitySubscription = InternetConnectionCheckerPlus()
+        .onStatusChange
+        .listen(_updateConnectionStatus);
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _initConnectivity() async {
+    InternetConnectionStatus status = (await InternetConnectionCheckerPlus()
+        .hasConnection) as InternetConnectionStatus;
+    _updateConnectionStatus(status);
+  }
+
+  void _updateConnectionStatus(InternetConnectionStatus status) {
+    setState(() {
+      _isConnected = status == InternetConnectionStatus.connected;
+    });
   }
 
   List<PMSListViewModel> Listdata = [];
@@ -521,14 +549,16 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
           ),
           actions: [
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red,foregroundColor: Colors.white),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red, foregroundColor: Colors.white),
               child: Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green,foregroundColor: Colors.white),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green, foregroundColor: Colors.white),
               child: Text('OK'),
               onPressed: () {
                 //
@@ -765,6 +795,359 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
+      length: listdistinctProcess?.length ?? 0,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(getAppbarName(widget.Source ?? "")),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EcmHistoryScreen(
+                              nodeDetails: modelData!,
+                              source: widget.Source,
+                            )),
+                    (Route<dynamic> route) => true,
+                  );
+                },
+                icon: Icon(Icons.info_outline_rounded))
+          ],
+        ),
+        body: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              _buildTabBar(),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      getECMFeed(),
+                      _buildImageSelectionTile(),
+                      if (datasoff.isNotEmpty) _buildOfflineSaveText(),
+                      if (isSubmit()) _buildSubmitButtons(),
+                      if (isApproved()) _buildApprovalButtons(),
+                      if (siteTeamMember.isNotEmpty) _buildSiteTeamMemberText(),
+                      if (remarkval.isNotEmpty)
+                        _buildRemarkTile(
+                            "Submitted", workdoneby, workedondate, remarkval),
+                      if (approvedremark.isNotEmpty)
+                        _buildRemarkTile(
+                            "Approved", approvedby, approvedon, approvedremark),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabBar() {
+    return Container(
+      height: 45,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: TabBar(
+        indicatorSize: TabBarIndicatorSize.tab,
+        indicator: BoxDecoration(
+          color: Colors.blue[300],
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        labelColor: Colors.white,
+        unselectedLabelColor: Colors.black,
+        tabs: listdistinctProcess!
+            .map((e) => FittedBox(
+                  child: Text(
+                    e.replaceAll(' ', '\n'),
+                    softWrap: true,
+                    style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
+                  ),
+                ))
+            .toList(),
+        onTap: (value) async {
+          setState(() {
+            selectedProcess = listdistinctProcess!.elementAt(value);
+            subProcessName?.clear(); // Clear existing subprocesses
+            _ChecklistModel = []; // Clear existing checklist items
+          });
+          getECMData(selectedProcess!);
+        },
+        // onTap: (value) async {
+        //   setState(() {
+        //     selectedProcess = listdistinctProcess!.elementAt(value);
+        //   });
+        //   getECMData(selectedProcess!);
+        // },
+      ),
+    );
+  }
+
+  Widget _buildImageSelectionTile() {
+    final hasImage = imageList.any((element) =>
+        element.processId == processId &&
+        element.inputType == 'image' &&
+        element.value != null);
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: imageListpopup,
+            child: Image(
+              image: AssetImage(hasImage
+                  ? 'assets/images/imagepreview.png'
+                  : 'assets/images/uploadimage.png'),
+              fit: BoxFit.cover,
+              height: 80,
+              width: 80,
+            ),
+          ),
+          SizedBox(
+            child: Center(
+              child: Text(hasImage ? 'Image Uploaded' : 'No Image Uploaded',
+                  style: TextStyle(fontSize: 16)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOfflineSaveText() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Center(
+        child: Text(datasoff.first.issaved!),
+      ),
+    );
+  }
+
+  Widget _buildSubmitButtons() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          if (!datasoff.isNotEmpty || _isConnected)
+            ElevatedButton(
+              child: Text("Submit"),
+              onPressed: btnSubmit_Clicked,
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0)),
+              ),
+            ),
+          if (!_isConnected)
+            ElevatedButton(
+              child: Text("Save"),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.blueGrey,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0)),
+              ),
+              onPressed: () {
+                _showSaveConfirmationDialog();
+              },
+            ),
+          if (datasoff.isNotEmpty)
+            ElevatedButton(
+              child: Text("Upload"),
+              onPressed: () {
+                _showUploadConfirmationDialog();
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildApprovalButtons() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          ElevatedButton(
+            child: Text("Approve"),
+            onPressed: btnApproveClicked,
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+          ),
+          ElevatedButton(
+            child: Text("Comment"),
+            onPressed: btnCommentClicked,
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSiteTeamMemberText() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Text(
+            'Site Team Member: ',
+            style: TextStyle(
+                fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            siteTeamMember,
+            style: TextStyle(fontSize: 16),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRemarkTile(String title, String by, String date, String remark) {
+    return Padding(
+      padding: EdgeInsets.all(8),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(color: Colors.white),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    'By: ',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    by,
+                    style: TextStyle(color: Colors.black, fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    'On: ',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    getshortdate(date),
+                    style: TextStyle(color: Colors.black, fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    'Remark: ',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Expanded(
+                    child: Text(
+                      remark,
+                      softWrap: true,
+                      style: TextStyle(color: Colors.black, fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showSaveConfirmationDialog() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('ARE YOU SURE TO SAVE'),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            ElevatedButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _showAlert_off(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showUploadConfirmationDialog() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('ARE YOU SURE TO UPLOAD'),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            ElevatedButton(
+              child: Text('OK'),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                if (datasoff.isNotEmpty) {
+                  await insertCheckListDataWithSiteTeamEngineer_off(datasoff);
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /*@override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
       length: listdistinctProcess!.length,
       child: Scaffold(
           appBar: AppBar(
@@ -981,7 +1364,8 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
                                         // }
                                       }),
                                       style: ElevatedButton.styleFrom(
-                                          backgroundColor: Color.fromARGB(255, 82, 226, 66)),
+                                          backgroundColor:
+                                              Color.fromARGB(255, 82, 226, 66)),
                                     ),
                                 ],
                               ),
@@ -1237,6 +1621,7 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
           )),
     );
   }
+*/
 
   String approvedTitle() {
     if (selectedProcess!.toLowerCase().contains('dry comm')) {
@@ -1393,8 +1778,196 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
   var getapproveby;
   bool isLoading = false;
 
-  getECMFeed() {
+  Widget getECMFeed() {
+    // Show loading indicator if subprocess or checklist is empty
+    if (subProcessName!.isEmpty || _ChecklistModel!.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    // Filter subprocesses by the selected process
+    return Column(
+      children: subProcessName!.map((subProcess) {
+        // Filter checklist items by subprocess and exclude 'image' type
+        var filteredItems = _ChecklistModel!
+            .where((item) =>
+                item.subProcessName == subProcess && item.inputType != 'image')
+            .toList();
+
+        // Return an empty container if no items match the filter
+        if (filteredItems.isEmpty) return SizedBox.shrink();
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: ExpandableTile(
+            title: Text(
+              subProcess.toUpperCase(),
+              softWrap: true,
+            ),
+            body: Column(
+              children: filteredItems
+                  .map((item) => _buildChecklistItem(item))
+                  .toList(),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildChecklistItem(dynamic item) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text(item.description!,
+                textAlign: TextAlign.left, softWrap: true),
+          ),
+          const SizedBox(width: 20),
+          if (item.inputType == 'text' || item.inputType == 'float')
+            Expanded(
+              flex: 1,
+              child: TextFormField(
+                enabled: isEdit(),
+                initialValue: item.value,
+                decoration: InputDecoration(
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(width: 1, color: Colors.blue),
+                  ),
+                  suffixText:
+                      item.inputText?.isNotEmpty == true ? item.inputText : '',
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    item.value = value;
+                  });
+                },
+              ),
+            ),
+          if (item.inputType == 'boolean')
+            Expanded(
+              flex: 0,
+              child: Checkbox(
+                activeColor: Colors.white54,
+                checkColor: Colors.green,
+                value: item.value == 'OK',
+                onChanged: isEdit()
+                    ? (value) {
+                        setState(() {
+                          item.value = value! ? 'OK' : '';
+                        });
+                      }
+                    : null,
+              ),
+            ),
+          if (item.inputType == 'pdf' || item.inputType == 'json')
+            Expanded(
+              flex: 0,
+              child: IconButton(
+                icon: Image.asset(
+                  "assets/images/pdf.png",
+                  cacheHeight: 25,
+                ),
+                onPressed: () async {
+                  await _showPDFDialog(item);
+                },
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showPDFDialog(dynamic item) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          icon: Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+          iconColor: Colors.red,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          content: SizedBox(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildPDFUploadButton(item),
+                if (item.image != null && item.value == null)
+                  _buildPDFViewButton(item.image!.path),
+                if (item.value != null) _buildPDFViewButton(item.value!),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildPDFUploadButton(dynamic item) {
+    return SizedBox(
+      height: 100,
+      width: 100,
+      child: IconButton(
+        onPressed: () {
+          Navigator.pop(context);
+          getPdf(item);
+        },
+        icon: Column(
+          children: [
+            Icon(Icons.upload),
+            Text('Upload PDF'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  //we can upload image from camera or from gallery based on parameter
+  Future getPdf(ECM_Checklist_Model model) async {
+    var pdf = await picker.pickMedia();
+    var imageselected = File(pdf!.path);
+    var byte = await pdf.readAsBytes();
+    await storeImagePath(pdf);
+    final duplicateFilePath = await getExternalStorageDirectory();
+    final fileName = basename(pdf.path);
+    await pdf.saveTo('${duplicateFilePath!.path}/$fileName');
+    // storeImagesInSharedPref(pdf.path, imageList![index].checkListId.toString());
+    setState(() {
+      hasData = false;
+      model.image = pdf;
+    });
+  }
+
+  Widget _buildPDFViewButton(String path) {
+    return SizedBox(
+      height: 100,
+      width: 100,
+      child: IconButton(
+        onPressed: () async {
+          await OpenFilex.open(path);
+        },
+        icon: Column(
+          children: [
+            Icon(Icons.document_scanner_rounded),
+            Text('View PDF'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /*getECMFeed() {
     Widget? widget = const Center(child: CircularProgressIndicator());
+
     if (subProcessName!.isNotEmpty && _ChecklistModel!.isNotEmpty) {
       widget = Column(
         children: [
@@ -1408,8 +1981,8 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
                   ),
                   body: Column(children: [
                     for (var item in _ChecklistModel!.where((e) =>
-                        e.subProcessName == subProcess &&
-                        e.processId == processId &&
+                        (e.subProcessName == subProcess &&
+                            e.processId == processId) &&
                         e.inputType != 'image'))
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -1586,7 +2159,7 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
     }
     return widget;
   }
-
+*/
   bool isEdit() {
     var flag = userType!.toLowerCase().contains('manager') ||
         userType!.toLowerCase().contains('admin');
@@ -2283,31 +2856,31 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
 
       if (widget.Source! == 'lora') {
         // if (processId! == 14 ) {
-          if (selectedProcess!.toLowerCase().contains("tower"))
-            allow = true;
-          else if (selectedProcess!.toLowerCase().contains("erection"))
-            allow = true;
-          else if (selectedProcess!.toLowerCase().contains("commiss") &&
-              (process1 == 2.toString() || process1 == 3.toString()) &&
-              (process2 == 2.toString() || processId == 3.toString()))
-            allow = true;
-          else
-            await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text("Message"),
-                  content: Text("Please complete the previous process"),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text("OK"),
-                    ),
-                  ],
-                );
-              },
-            );
-       /* } else {
+        if (selectedProcess!.toLowerCase().contains("tower"))
+          allow = true;
+        else if (selectedProcess!.toLowerCase().contains("erection"))
+          allow = true;
+        else if (selectedProcess!.toLowerCase().contains("commiss") &&
+            (process1 == 2.toString() || process1 == 3.toString()) &&
+            (process2 == 2.toString() || processId == 3.toString()))
+          allow = true;
+        else
+          await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Message"),
+                content: Text("Please complete the previous process"),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text("OK"),
+                  ),
+                ],
+              );
+            },
+          );
+        /* } else {
           if (selectedProcess!.toLowerCase().contains("mechanical"))
             allow = true;
           else if (selectedProcess!.toLowerCase().contains("erection"))
@@ -2564,15 +3137,23 @@ class _NodeDetails_SQLState extends State<NodeDetails_SQL> {
           ),
           actions: [
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red,foregroundColor: Colors.white),
-              child: Text('Cancel',style: TextStyle(color: Colors.white),),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red, foregroundColor: Colors.white),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.white),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green,foregroundColor: Colors.white),
-              child: Text('OK',style: TextStyle(color: Colors.white),),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green, foregroundColor: Colors.white),
+              child: Text(
+                'OK',
+                style: TextStyle(color: Colors.white),
+              ),
               onPressed: () {
                 final snackBar = SnackBar(
                   content: const Text('Save Sucessfully'),

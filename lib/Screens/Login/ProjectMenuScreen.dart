@@ -1,15 +1,14 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, prefer_const_literals_to_create_immutables, unnecessary_new, file_names, use_key_in_widget_constructors, prefer_collection_literals, unnecessary_null_comparison, unused_field, must_be_immutable, avoid_print, avoid_unnecessary_containers
 
 import 'dart:convert';
-
 import 'package:ecm_application/Model/Common/EngineerModel.dart';
 import 'package:ecm_application/Model/project/Constants.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageMenuScreen.dart';
 import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/ECMToolScreen.dart';
 import 'package:ecm_application/Screens/Home/RoutineCheck/RoutineCheckStatusCommon.dart';
+import 'package:ecm_application/Screens/Home/SurveyForm/SurveyNodeList.dart';
 import 'package:http/http.dart' as http;
 import 'package:ecm_application/Model/Project/Login/State_list_Model.dart';
-import 'package:ecm_application/Operations/StatelistOperation.dart';
 import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/ECMToolScreen_30Ha.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,40 +27,15 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
   @override
   void initState() {
     super.initState();
-    getProjectList();
     getDataString();
     getUserId();
   }
 
-  Set<String>? stateList;
-  String? selectState;
-  List<ProjectModel>? projectList;
   ProjectModel? selectProject;
-  Future<List<ProjectModel>>? futureProjectList;
-
-  getProjectList() {
-    setState(() {
-      stateList = new Set();
-      stateList!.add('ALL STATE');
-      projectList = [];
-      projectList!.add(new ProjectModel(id: 0, projectName: 'ALL PROJECT'));
-      selectState = stateList!.first;
-      selectProject = projectList!.first;
-      futureProjectList = getStateAuthority();
-      futureProjectList!.then((value) {
-        projectList!.addAll(value);
-        for (var element in value) {
-          stateList!.add(element.state!);
-        }
-      });
-    });
-  }
-
   String? search = 'All';
-  String dropdownvalue = 'Item 1';
   String? ecString = '1111';
   String? dcString = '1111';
-  String? rcString = '1000';
+  // String? rcString = '1000';
 
   var _current = 0;
 
@@ -70,7 +44,7 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
     setState(() {
       ecString = preferences.getString('EcString');
       dcString = preferences.getString('DcString');
-      rcString = preferences.getString('RcString');
+      // rcString = preferences.getString('RcString');
     });
   }
 
@@ -83,7 +57,6 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
         appBar: AppBar(
           title: Text(
             widget.projectName!.toUpperCase(),
-            textScaleFactor: 1,
             style: TextStyle(
               color: Color.fromARGB(255, 255, 255, 255),
             ),
@@ -139,7 +112,6 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
                                 Expanded(
                                   child: Text(
                                     'Maintenance Guidance Tool',
-                                    textScaleFactor: 1,
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 18,
@@ -314,6 +286,53 @@ class _ProjectMenuScreenState extends State<ProjectMenuScreen> {
                                       color: Colors.black,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SurveyNodeListScreen()),
+                              (Route<dynamic> route) => true,
+                            );
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            height: 80,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey,
+                                    offset: Offset(3.0, 3.0), //(x,y)
+                                    blurRadius: 6.0,
+                                  ),
+                                ],
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Image(
+                                    image: AssetImage(
+                                        'assets/images/survey_form.png'),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    'Site Survey Form',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               ],
                             ),

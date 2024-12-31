@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_typing_uninitialized_variables, non_constant_identifier_names, use_key_in_widget_constructors, unnecessary_null_in_if_null_operators, camel_case_types, must_be_immutable, unused_catch_stack, unused_field, unused_local_variable, unnecessary_null_comparison, prefer_const_constructors, use_build_context_synchronously, no_leading_underscores_for_local_identifiers
+// ignore_for_file: prefer_typing_uninitialized_variables, non_constant_identifier_names, use_key_in_widget_constructors, unnecessary_null_in_if_null_operators, camel_case_types, must_be_immutable, unused_catch_stack, unused_field, unused_local_variable, unnecessary_null_comparison, prefer_const_constructors, use_build_context_synchronously, no_leading_underscores_for_local_identifiers, avoid_print, unused_element, prefer_collection_literals
 
 import 'dart:convert';
 import 'dart:io';
@@ -74,12 +74,10 @@ class _MySql_ScreenState extends State<MySql_Screen> {
   void initState() {
     setState(() {
       listProcess = [];
-      // imageDescription = [];
       listdistinctProcess = Set();
       subProcessName = Set();
       selectedProcess = '';
       _widget = const Center(child: CircularProgressIndicator());
-      //proccessid = processId;
     });
     if (datas.isEmpty) {
       fatchFirstloadAms(widget.amsId!);
@@ -92,9 +90,8 @@ class _MySql_ScreenState extends State<MySql_Screen> {
   }
 
   firstLoad() async {
-    // fatchdataSQL();
-    if (datas.isNotEmpty)
-      setState(() {
+    if (datas.isNotEmpty) {
+      setState() {
         listProcess = datas;
         proccessid = datas.first.processId;
         deviceId = datas.first.deviceId;
@@ -102,7 +99,8 @@ class _MySql_ScreenState extends State<MySql_Screen> {
         processName = datas.first.processName;
         subprocessName = datas.first.subProcessName;
         selectedProcess = listdistinctProcesss.first.processName;
-      });
+      }
+    }
 
     getECMData(selectedProcess!);
     setState(() {
@@ -112,7 +110,7 @@ class _MySql_ScreenState extends State<MySql_Screen> {
 
   getshortdate(String date) {
     try {
-      if (date.length > 0) {
+      if (date.isNotEmpty) {
         final DateTime now = DateTime.parse(date);
         final DateFormat formatter = DateFormat('d-MMM-y H:m:s');
         final String formatted = formatter.format(now);
@@ -154,7 +152,6 @@ class _MySql_ScreenState extends State<MySql_Screen> {
   Future fatchFirstloadOms(int omsid) async {
     if (omsid != 0) {
       setState(() => isLoading = true);
-      // datas11 = await DBSQL.instance.fatchdataSQLNew();
       Listdata = await ListViewModel.instance.fatchdataPMSView11oms(omsid);
       listdistinctProcesss = await ListModel.instance.fatchdataPMSListData();
       datas = await DBSQL.instance.fatchdataSQCommon(omsid);
@@ -299,23 +296,11 @@ class _MySql_ScreenState extends State<MySql_Screen> {
     setState(() => isLoading = false);
   }
 
-  // Future fatchdataSQLImage() async {
-  //   setState(() => isLoading = true);
-  //   Listdata = await ListViewModel.instance.fatchdataPMSViewData();
-  //   listdistinctProcesss = await ListModel.instance.fatchdataPMSListData();
-  //   imageList = await DBSQL.instance.fatchdataSQLImage(
-  //     widget.omsId!,
-  //     processIds!,
-  //   );
-  //   setState(() => isLoading = false);
-  // }
-
   bool ischecked() {
     return false;
   }
 
   Widget? _widget;
-  // String? selectedProcess;
   int? processId;
   int? processIds;
   List<ECM_Checklist_Model> imageList = [];
@@ -323,27 +308,6 @@ class _MySql_ScreenState extends State<MySql_Screen> {
   List<ECM_Checklist_Model>? listProcess;
   Set<String>? subProcessName;
   Set<String>? listdistinctProcess;
-
-//we can upload image from camera or from gallery based on parameter
-  // Future getImage(ImageSource media, int index) async {
-  //   XFile? img = await picker.pickImage(source: media, imageQuality: 30);
-  //   var byte = await img!.readAsBytes();
-  //   final duplicateFilePath = await getExternalStorageDirectory();
-  //   final fileName = basename(img.path);
-  //   await img.saveTo('${duplicateFilePath!.path}/$fileName');
-
-  //   setState(() {
-  //     // image = img;
-  //     // (datas.where((e) => e.inputType == "image").toList())[index].image = img;
-  //     (datas.where((e) => e.inputType == "image").toList())[index].value =
-  //         img.path;
-  //     //imageList[index].image = img;
-  //     (datas.where((e) => e.inputType == "image").toList())[index]
-  //         .imageByteArray = byte;
-  //     //datas[index].imageByteArray = byte;
-  //     hasData = false;
-  //   });
-  // }
 
   //we can upload image from camera or from gallery based on parameter
   Future<bool> storeImagesInSharedPref(
@@ -391,64 +355,6 @@ class _MySql_ScreenState extends State<MySql_Screen> {
     }
     return null;
   }
-
-  // void imageListpopup() {
-  //   fatchdataSQLImage();
-  //   showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return AlertDialog(
-  //           icon: Align(
-  //             alignment: Alignment.centerRight,
-  //             child: IconButton(
-  //               icon: Icon(Icons.close),
-  //               onPressed: () => Navigator.of(context).pop(),
-  //             ),
-  //           ),
-  //           iconColor: Colors.red,
-  //           shape:
-  //               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-  //           content: ListView.builder(
-  //               shrinkWrap: true,
-  //               itemCount: datas.length,
-  //               itemBuilder: (BuildContext context, int index) {
-  //                 return ListTile(
-  //                     trailing: datas[index].imageByteArray != null
-  //                         ? InkWell(
-  //                             onTap: () => previewAlert(
-  //                                 datas[index].imageByteArray!,
-  //                                 index,
-  //                                 datas[index].description),
-  //                             child: Image.memory(
-  //                               datas[index].imageByteArray!,
-  //                               fit: BoxFit.fitWidth,
-  //                               width: 50,
-  //                               height: 50,
-  //                             ),
-  //                           )
-  //                         : GestureDetector(
-  //                             onTap: () {
-  //                               uploadAlert(index);
-  //                             },
-  //                             child: Image(
-  //                               image:
-  //                                   AssetImage('assets/images/uploadimage.png'),
-  //                               fit: BoxFit.cover,
-  //                               height: 50,
-  //                               width: 50,
-  //                             ),
-  //                           ),
-  //                     title: SizedBox(
-  //                       width: 140,
-  //                       child: Text(
-  //                         datas[index].description!,
-  //                         style: TextStyle(color: Colors.green, fontSize: 15),
-  //                       ),
-  //                     ));
-  //               }),
-  //         );
-  //       });
-  // }
 
   void imageListpopup() {
     // fatchdataSQLImage();
@@ -558,7 +464,7 @@ class _MySql_ScreenState extends State<MySql_Screen> {
                       getImage(ImageSource.gallery, index);
                     },
                     child: Row(
-                      children: [
+                      children: const [
                         Icon(Icons.image),
                         Text('From Gallery'),
                       ],
@@ -571,7 +477,7 @@ class _MySql_ScreenState extends State<MySql_Screen> {
                       getImage(ImageSource.camera, index);
                     },
                     child: Row(
-                      children: [
+                      children: const [
                         Icon(Icons.camera),
                         Text('From Camera'),
                       ],
@@ -674,39 +580,6 @@ class _MySql_ScreenState extends State<MySql_Screen> {
     }
   }
 
-  // Future<bool> addAll(List<ECM_Checklist_Model> imageList) async {
-  //   try {
-  //     SharedPreferences preferences = await SharedPreferences.getInstance();
-  //     String? conString = preferences.getString('ConString');
-  //     project = preferences.getString('ProjectName');
-  //     projectName = preferences.getString('ProjectName')!.replaceAll(' ', '_');
-  //     proUserId = preferences.getInt('ProUserId');
-  //     source = widget.Source;
-  //     omsId = getDeviceid(widget.Source!);
-  //     String submitDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(currDate!);
-  //     imagePath = "$projectName/$source/$omsId/";
-  //     int countflag = 0;
-  //     int uploadflag = 0;
-  //     // Map each element in imageList to a Future returned by uploadImage,
-  //     // then use Future.wait to wait for all the Futures to complete
-  //     // before continuing
-  //     await Future.wait(imageList
-  //         .where((element) =>
-  //             element.inputType == 'image' && element.image != null)
-  //         .map((element) async {
-  //       String? imagePathValue = await uploadImage(imagePath, element.image);
-  //       if (imagePathValue!.isNotEmpty) {
-  //         element.value = imagePathValue;
-  //         uploadflag++;
-  //       }
-  //       countflag++;
-  //     }));
-  //     return true;
-  //   } catch (_, ex) {
-  //     throw new Exception();
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     if (listdistinctProcesss.isNotEmpty) {
@@ -716,7 +589,6 @@ class _MySql_ScreenState extends State<MySql_Screen> {
           appBar: AppBar(
             title: Text(Listdata.first.chakNo ?? ""),
             centerTitle: true,
-            // actions: [buildButton()],
           ),
           body: Padding(
             padding: EdgeInsets.all(8.0),
@@ -728,16 +600,20 @@ class _MySql_ScreenState extends State<MySql_Screen> {
                     color: Colors.grey[300],
                     borderRadius: BorderRadius.circular(5.0)),
                 child: TabBar(
+                  indicatorSize: TabBarIndicatorSize.tab,
                   indicator: BoxDecoration(
-                      color: Color.fromARGB(255, 225, 73, 167),
-                      borderRadius: BorderRadius.circular(5.0)),
+                    color: Colors.blue[300],
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
                   labelColor: Colors.white,
                   unselectedLabelColor: Colors.black,
                   tabs: listdistinctProcesss
-                      .map((e) => Text(
-                            e.processName ?? "",
-                            softWrap: true,
-                            style: TextStyle(fontSize: 10),
+                      .map((e) => FittedBox(
+                            child: Text(
+                              e.processName?.replaceAll(' ', '\n') ?? "",
+                              softWrap: true,
+                              style: TextStyle(fontSize: 10),
+                            ),
                           ))
                       .toList(),
                   onTap: (value) async {
@@ -749,14 +625,6 @@ class _MySql_ScreenState extends State<MySql_Screen> {
                   },
                 ),
               ),
-              // if (selectedProcess == "CONTROL UNIT ERECTION" &&
-              //         datas.first.subProcessName ==
-              //             "INSTALLATION & VISUAL CHECKS" ||
-              //     selectedProcess == "DRY COMMISSIONING" &&
-              //         datas.last.subProcessName == "VISUAL CHECKS" ||
-              //     selectedProcess == "WET COMMISSIONING" &&
-              //         datas.first.subProcessName == "COMMISSIONING LOCALLY")
-              // if (datas.first.processName == selectedProcess)
               if (datas.isNotEmpty)
                 Expanded(
                     child: SingleChildScrollView(
@@ -825,8 +693,6 @@ class _MySql_ScreenState extends State<MySql_Screen> {
                                   ],
                                 ),
                               ),
-                              //  update data
-                              // if (approvedremark.isEmpty)
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
 
@@ -837,9 +703,6 @@ class _MySql_ScreenState extends State<MySql_Screen> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     ElevatedButton(
-                                      child: Text(
-                                        "upload offline data",
-                                      ),
                                       onPressed: (() async {
                                         await showDialog(
                                           context: context,
@@ -869,36 +732,20 @@ class _MySql_ScreenState extends State<MySql_Screen> {
                                             );
                                           },
                                         );
-
-                                        // if (datasoff.isNotEmpty) {
-                                        //   await insertCheckListDataWithSiteTeamEngineer_off(
-                                        //       datasoff);
-                                        // }
                                       }),
                                       style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.blueGrey),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.5)),
+                                          foregroundColor: Colors.white,
+                                          backgroundColor: Colors.amber),
+                                      child: Text(
+                                        "upload offline data",
+                                      ),
                                     ),
-                                    // ElevatedButton(
-                                    //   child: Text(
-                                    //     "Upload To Server",
-                                    //   ),
-                                    //   onPressed: (() async {
-                                    //     final snackBar = SnackBar(
-                                    //       content: const Text('Upload Sucessfully'),
-                                    //     );
-                                    //     if (datas.isNotEmpty) {
-                                    //       insertCheckListDataWithSiteTeamEngineer_off(
-                                    //           datas);
-                                    //     }
-                                    //   }),
-                                    //   style: ElevatedButton.styleFrom(
-                                    //       primary:
-                                    //           Color.fromARGB(255, 137, 61, 212)),
-                                    // ),
                                   ],
                                 ),
                               ),
-
                               Padding(
                                   padding: EdgeInsets.all(8),
                                   child: Container(
@@ -993,130 +840,13 @@ class _MySql_ScreenState extends State<MySql_Screen> {
                                       ],
                                     ),
                                   )),
-                              //if (datas.first.approvalRemark != null)
-                              // Padding(
-                              //     padding: EdgeInsets.all(8),
-                              //     child: Container(
-                              //       width: double.infinity,
-                              //       decoration: BoxDecoration(color: Colors.white),
-                              //       child: Column(
-                              //         crossAxisAlignment: CrossAxisAlignment.start,
-                              //         children: [
-                              //           Text(
-                              //             //datas.first.approvedOn!,
-                              //             'Approved',
-                              //             style: TextStyle(
-                              //                 color: Colors.black,
-                              //                 fontSize: 16,
-                              //                 fontWeight: FontWeight.bold),
-                              //           ),
-                              //           Padding(
-                              //             padding: const EdgeInsets.all(8.0),
-                              //             child: Row(
-                              //               children: [
-                              //                 Text(
-                              //                   'By: ',
-                              //                   style: TextStyle(
-                              //                       color: Colors.black,
-                              //                       fontSize: 16,
-                              //                       fontWeight: FontWeight.bold),
-                              //                 ),
-                              //                 Text(
-                              //                   datas.first.approvedBy.toString(),
-                              //                   // approvedby.toString(),
-                              //                   style: TextStyle(
-                              //                       color: Colors.black,
-                              //                       fontSize: 14,
-                              //                       fontWeight: FontWeight.normal),
-                              //                 ),
-                              //               ],
-                              //             ),
-                              //           ),
-                              //           Padding(
-                              //             padding: const EdgeInsets.all(8.0),
-                              //             child: Row(
-                              //               children: [
-                              //                 Text(
-                              //                   'On: ',
-                              //                   style: TextStyle(
-                              //                       color: Colors.black,
-                              //                       fontSize: 16,
-                              //                       fontWeight: FontWeight.bold),
-                              //                 ),
-                              //                 Text(
-                              //                   datas.first.approvedOn ?? "",
-                              //                   // getshortdate(approvedon),
-                              //                   style: TextStyle(
-                              //                       color: Colors.black,
-                              //                       fontSize: 14,
-                              //                       fontWeight: FontWeight.normal),
-                              //                 ),
-                              //               ],
-                              //             ),
-                              //           ),
-                              //           Padding(
-                              //             padding: const EdgeInsets.all(8.0),
-                              //             child: Row(
-                              //               children: [
-                              //                 Text(
-                              //                   'Remark: ',
-                              //                   style: TextStyle(
-                              //                       color: Colors.black,
-                              //                       fontSize: 16,
-                              //                       fontWeight: FontWeight.bold),
-                              //                 ),
-                              //                 Expanded(
-                              //                   child: Text(
-                              //                     datas.first.approvalRemark ?? "",
-                              //                     // approvedremark,
-                              //                     softWrap: true,
-                              //                     style: TextStyle(
-                              //                         color: Colors.black,
-                              //                         fontSize: 14,
-                              //                         fontWeight:
-                              //                             FontWeight.normal),
-                              //                   ),
-                              //                 ),
-                              //               ],
-                              //             ),
-                              //           ),
-                              //         ],
-                              //       ),
-                              //     )),
                             ]))),
-
-              // if (selectedProcess == 0 &&
-              //     datas.first.description == "INSTALLATION & VISUAL CHECKS")
             ]),
           ),
         ),
       );
     } else {
       return const Center(child: CircularProgressIndicator());
-      // return Scaffold(
-      //   appBar: AppBar(
-      //     title: Text("OMS Save Screen"),
-      //     centerTitle: true,
-      //     // actions: [buildButton()],
-      //   ),
-      //   body: Container(
-      //     height: MediaQuery.of(context).size.height,
-      //     width: MediaQuery.of(context).size.width,
-      //     decoration: BoxDecoration(
-      //       color: Color.fromARGB(255, 224, 242, 238),
-      //       //borderRadius: BorderRadius.circular(55.0)
-      //     ),
-      //     child: Center(
-      //       child: Text(
-      //         "No Data",
-      //         style: TextStyle(
-      //           decorationThickness: 2.0,
-      //           fontSize: 20,
-      //         ),
-      //       ),
-      //     ),
-      //   ),
-      // );
     }
   }
 
@@ -1186,7 +916,7 @@ class _MySql_ScreenState extends State<MySql_Screen> {
                         getImage(ImageSource.gallery, index);
                       },
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(Icons.image),
                           Text('From Gallery'),
                         ],
@@ -1200,7 +930,7 @@ class _MySql_ScreenState extends State<MySql_Screen> {
                         getImage(ImageSource.camera, index);
                       },
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(Icons.camera),
                           Text('From Camera'),
                         ],
@@ -1243,8 +973,8 @@ class _MySql_ScreenState extends State<MySql_Screen> {
       final res = await http.get(Uri.parse(
           'http://wmsservices.seprojects.in/api/login/GetUserDetailsByMobile?mobile=""&userid=$userid&conString=$conString'));
 
-      print(
-          'http://wmsservices.seprojects.in/api/login/GetUserDetailsByMobile?mobile=""&userid=$userid&conString=$conString');
+      // print(
+      //     'http://wmsservices.seprojects.in/api/login/GetUserDetailsByMobile?mobile=""&userid=$userid&conString=$conString');
 
       if (res.statusCode == 200) {
         var json = jsonDecode(res.body);
@@ -1254,10 +984,8 @@ class _MySql_ScreenState extends State<MySql_Screen> {
           setState(() {
             workdoneby = loginResult.firstname.toString();
           });
-          print(loginResult.firstname.toString());
           return loginResult.firstname.toString();
-        } else
-          return '';
+        } //else
         // throw Exception("Login Failed");
       } else {
         return '';
@@ -1282,10 +1010,11 @@ class _MySql_ScreenState extends State<MySql_Screen> {
 
       if (response.statusCode == 200) {
         var path = await response.stream.bytesToString();
-        if (path == '""')
+        if (path == '""') {
           return '';
-        else
+        } else {
           return path.replaceAll('"', '');
+        }
       } else {
         return '';
       }
@@ -1293,7 +1022,6 @@ class _MySql_ScreenState extends State<MySql_Screen> {
     return '';
   }
 
-//off data send to server
   Future<bool> insertCheckListDataWithSiteTeamEngineer_off(
       List<ECM_Checklist_Model> _checkList) async {
     bool flag = false;
@@ -1311,6 +1039,93 @@ class _MySql_ScreenState extends State<MySql_Screen> {
                     e.imageByteArray != null) &&
                 e.inputType == "image")
             .length;
+        int imagewithvalue = _checkList
+            .where((e) =>
+                ((e.value == null || e.value!.isEmpty) || e.image != null) &&
+                e.inputType == "image")
+            .length;
+        bool isPartialProcess =
+            selectedProcess!.toLowerCase().contains("dry") ||
+                selectedProcess!.toLowerCase().contains('auto');
+
+        var _imglistdataWithoutNullValue = _checkList
+            .where((item) =>
+                item.inputType!.contains("image") &&
+                item.imageByteArray != null)
+            .toList();
+
+        if (checkCount !=
+                _checkList.where((e) => e.inputText != "image").length ||
+            imageCount != 0) {
+          if (checkCount == 0 && _imglistdataWithoutNullValue.length < 3) {
+            await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Message"),
+                  content: Text("Minimum 3 Images are required to proceed"),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("OK"),
+                    ),
+                  ],
+                );
+              },
+            );
+            return false;
+          } else if (imageCount >= 3 && checkCount == 0) {
+            approveStatus = isPartialProcess ? 1 : 2;
+          } else if (!isPartialProcess) {
+            approveStatus = 1;
+          } else {
+            if (imageCount < 3) {
+              await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Message"),
+                    content: Text("Minimum 3 Images are required to proceed"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text("OK"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
+            if (checkCount != 0) {
+              await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Message"),
+                    content:
+                        Text("Partially done is not allow in this process"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text("OK"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
+            // print("Partially done is not allow in this process");
+            return false;
+          }
+        } else {
+          return false;
+        }
 
         int flagCounter = 0;
         for (var subpro in subProcessName!) {
@@ -1318,7 +1133,6 @@ class _MySql_ScreenState extends State<MySql_Screen> {
               .where((element) =>
                   element.subProcessName!.toLowerCase() == subpro.toLowerCase())
               .toList();
-
           respflag = await insertCheckListDataWithSiteTeamEngineer_Send(
               list, list.first.subProcessId!,
               apporvedStatus: approveStatus);
@@ -1327,10 +1141,15 @@ class _MySql_ScreenState extends State<MySql_Screen> {
           }
         }
         if (flagCounter == subProcessName!.length) {
-          final snackBar = SnackBar(
-            content: const Text('Uploaded Sucessfully'),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          getECMData(selectedProcess!);
+          setState(() {
+            isSubmited = true;
+          });
+          setState(() {
+            Source = widget.Source;
+          });
+
+          await listdatacheckup();
           await DBSQL.instance.deleteCheckListData(
               datas.first.deviceId!, datas.first.processId!);
           await DeviceAllDAta();
@@ -1338,6 +1157,14 @@ class _MySql_ScreenState extends State<MySql_Screen> {
             await listdatacheckup();
             Navigator.of(context).pop(true);
           }
+
+          setState(() {
+            isSubmited = true;
+          });
+          setState(() {
+            Source = widget.Source;
+          });
+          flag = true;
         } else {
           throw new Exception();
         }
@@ -1345,7 +1172,7 @@ class _MySql_ScreenState extends State<MySql_Screen> {
     } catch (_, ex) {
       flag = false;
     }
-    return firstLoad();
+    return flag;
   }
 
   List<ECM_Checklist_Model> nodedata = [];
@@ -1458,8 +1285,9 @@ class _MySql_ScreenState extends State<MySql_Screen> {
             Navigator.pop(context);
           }
           return true;
-        } else
+        } else {
           throw new Exception();
+        }
       } else {}
       // } else {}
       throw new Exception();
@@ -1482,10 +1310,11 @@ class _MySql_ScreenState extends State<MySql_Screen> {
 
       if (response.statusCode == 200) {
         var path = await response.stream.bytesToString();
-        if (path == '""')
+        if (path == '""') {
           return '';
-        else
+        } else {
           return path.replaceAll('"', '');
+        }
       } else {
         return '';
       }
@@ -1497,7 +1326,7 @@ class _MySql_ScreenState extends State<MySql_Screen> {
       List<ECM_Checklist_Model> imageListNew) async {
     try {
       if (
-        // imageListNew[index].value == null &&
+          // imageListNew[index].value == null &&
           imageListNew[index].imageByteArray != null) {
         XFile? image = await getPrefImage(imageListNew[index].checkListId);
         await clearImageFromSharedPreferences(
@@ -1599,245 +1428,6 @@ class _MySql_ScreenState extends State<MySql_Screen> {
     }
     return widget;
   }
-  // getECMFeed() {
-  //   Widget? widget = const Center(child: CircularProgressIndicator());
-  //   if (datas.isNotEmpty) {
-  //     widget = Column(
-  //       children: [
-  //         Padding(
-  //           padding: const EdgeInsets.symmetric(vertical: 5),
-  //           child: ExpandableTile(
-  //             title: Text(
-  //               datas.first.subProcessName ?? "",
-  //               softWrap: true,
-  //             ),
-  //             body: Column(children: [
-  //               Container(
-  //                   width: MediaQuery.of(context).size.width,
-  //                   height: 250,
-  //                   //,
-  //                   decoration: BoxDecoration(
-  //                       // image: backgroundImage,
-  //                       ),
-  //                   child: isLoading
-  //                       ? CircularProgressIndicator()
-  //                       : datas.isEmpty
-  //                           ? Center(
-  //                               child: Text(
-  //                                 'No Data',
-  //                                 style: TextStyle(
-  //                                     color: Color.fromARGB(255, 0, 0, 0),
-  //                                     fontSize: 26),
-  //                                 // textAlign: ,
-  //                               ),
-  //                             )
-  //                           : ListView.builder(
-  //                               padding: EdgeInsets.all(4),
-  //                               itemCount: datas.length,
-  //                               itemBuilder: (context, index) {
-  //                                 final data = datas[index];
-  //                                 if (!data.description!.contains("Image") &&
-  //                                     datas.first.subProcessName ==
-  //                                         data.subProcessName) {
-  //                                   return Row(
-  //                                     crossAxisAlignment:
-  //                                         CrossAxisAlignment.center,
-  //                                     mainAxisAlignment:
-  //                                         MainAxisAlignment.spaceBetween,
-  //                                     children: [
-  //                                       Expanded(
-  //                                         flex: 2,
-  //                                         child: Text(data.description!,
-  //                                             textAlign: TextAlign.left,
-  //                                             softWrap: true),
-  //                                       ),
-  //                                       const SizedBox(
-  //                                         width: 20,
-  //                                       ),
-  //                                       if (data.inputType == 'text' ||
-  //                                           data.inputType == 'float' &&
-  //                                               datas.first.subProcessName ==
-  //                                                   data.subProcessName)
-  //                                         Expanded(
-  //                                           flex: 1,
-  //                                           child: TextFormField(
-  //                                             initialValue: data.value,
-  //                                             decoration: InputDecoration(
-  //                                               enabledBorder:
-  //                                                   UnderlineInputBorder(
-  //                                                 borderSide: BorderSide(
-  //                                                     width: 1,
-  //                                                     color: Colors
-  //                                                         .blue), //<-- SEE HERE
-  //                                               ),
-  //                                               suffixText:
-  //                                                   (data.inputText != null &&
-  //                                                           data.inputText!
-  //                                                               .isNotEmpty)
-  //                                                       ? data.inputText!
-  //                                                       : '',
-  //                                             ),
-  //                                             onChanged: (value) {
-  //                                               setState(() {
-  //                                                 data.value = value;
-  //                                                 values = data.value = value;
-  //                                               });
-  //                                             },
-  //                                           ),
-  //                                         ),
-  //                                       if (data.inputType == 'boolean' &&
-  //                                           datas.first.subProcessName ==
-  //                                               data.subProcessName)
-  //                                         Expanded(
-  //                                             flex: 0,
-  //                                             child: Checkbox(
-  //                                               activeColor: Colors.white54,
-  //                                               checkColor: Colors.green,
-  //                                               value: data.value == 'OK'
-  //                                                   ? true
-  //                                                   : false,
-  //                                               onChanged: (value) {
-  //                                                 setState(() {
-  //                                                   data.value =
-  //                                                       value! ? 'OK' : '';
-  //                                                   //values = item.value = value ? 'OK' : '';
-  //                                                 });
-  //                                               },
-  //                                             ))
-  //                                     ],
-  //                                   );
-  //                                 } else {
-  //                                   return Container();
-  //                                 }
-
-  //                                 // data: data,
-  //                                 // index: index
-  //                               },
-  //                             )),
-  //             ]),
-  //           ),
-  //         ),
-  //         if (datas.first.subProcessName != datas.last.subProcessName)
-  //           Padding(
-  //             padding: const EdgeInsets.symmetric(vertical: 5),
-  //             child: ExpandableTile(
-  //               title: Text(
-  //                 datas.last.subProcessName ?? "",
-  //                 softWrap: true,
-  //               ),
-  //               body: Column(children: [
-  //                 Container(
-  //                     width: MediaQuery.of(context).size.width,
-  //                     height: 300,
-  //                     //height: MediaQuery.of(context).size.height,
-  //                     decoration: BoxDecoration(
-  //                         // image: backgroundImage,
-  //                         ),
-  //                     child: isLoading
-  //                         ? CircularProgressIndicator()
-  //                         : datas.isEmpty
-  //                             ? Center(
-  //                                 child: Text(
-  //                                   'No Data',
-  //                                   style: TextStyle(
-  //                                       color: Color.fromARGB(255, 0, 0, 0),
-  //                                       fontSize: 26),
-  //                                   // textAlign: ,
-  //                                 ),
-  //                               )
-  //                             : ListView.builder(
-  //                                 padding: EdgeInsets.all(4),
-  //                                 itemCount: datas.length,
-  //                                 itemBuilder: (context, index) {
-  //                                   final data = datas[index];
-  //                                   if (!data.description!.contains("Image") &&
-  //                                       datas.last.subProcessName ==
-  //                                           data.subProcessName) {
-  //                                     return Row(
-  //                                       crossAxisAlignment:
-  //                                           CrossAxisAlignment.center,
-  //                                       mainAxisAlignment:
-  //                                           MainAxisAlignment.spaceBetween,
-  //                                       children: [
-  //                                         Expanded(
-  //                                           flex: 2,
-  //                                           child: Text(data.description!,
-  //                                               textAlign: TextAlign.left,
-  //                                               softWrap: true),
-  //                                         ),
-  //                                         const SizedBox(
-  //                                           width: 20,
-  //                                         ),
-  //                                         if (data.inputType == 'text' ||
-  //                                             data.inputType == 'float' &&
-  //                                                 datas.last.subProcessName ==
-  //                                                     data.subProcessName)
-  //                                           Expanded(
-  //                                             flex: 1,
-  //                                             child: TextFormField(
-  //                                               initialValue: data.value,
-  //                                               decoration: InputDecoration(
-  //                                                 enabledBorder:
-  //                                                     UnderlineInputBorder(
-  //                                                   borderSide: BorderSide(
-  //                                                       width: 1,
-  //                                                       color: Colors
-  //                                                           .blue), //<-- SEE HERE
-  //                                                 ),
-  //                                                 suffixText:
-  //                                                     (data.inputText != null &&
-  //                                                             data.inputText!
-  //                                                                 .isNotEmpty)
-  //                                                         ? data.inputText!
-  //                                                         : '',
-  //                                               ),
-  //                                               onChanged: (value) {
-  //                                                 setState(() {
-  //                                                   data.value = value;
-  //                                                   values = data.value = value;
-  //                                                 });
-  //                                               },
-  //                                             ),
-  //                                           ),
-  //                                         if (data.inputType == 'boolean' &&
-  //                                             datas.last.subProcessName ==
-  //                                                 data.subProcessName)
-  //                                           Expanded(
-  //                                               flex: 0,
-  //                                               child: Checkbox(
-  //                                                 activeColor: Colors.white54,
-  //                                                 checkColor: Colors.green,
-  //                                                 value: data.value == 'OK'
-  //                                                     ? true
-  //                                                     : false,
-  //                                                 onChanged: (value) {
-  //                                                   setState(() {
-  //                                                     data.value =
-  //                                                         value! ? 'OK' : '';
-  //                                                     //values = item.value = value ? 'OK' : '';
-  //                                                   });
-  //                                                 },
-  //                                               ))
-  //                                       ],
-  //                                     );
-  //                                   } else {
-  //                                     return Container();
-  //                                   }
-
-  //                                   // data: data,
-  //                                   // index: index
-  //                                 },
-  //                               )),
-  //               ]),
-  //             ),
-  //           ),
-  //       ],
-  //     );
-  //   } else {
-  //     widget = const Center(child: CircularProgressIndicator());
-  //   }
-  //   return widget;
-  // }
 
   getAppbarName(String source) {
     var title;

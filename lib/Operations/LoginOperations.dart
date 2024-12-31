@@ -19,8 +19,9 @@ Future<LoginMasterModel?> fetchLoginDetails(String mobno, String passwd) async {
         LoginMasterModel loginResult =
             LoginMasterModel.fromJson(json['data']['Response']);
         return loginResult;
-      } else
+      } else {
         throw Exception("Login Failed");
+      }
     } else {
       throw Exception("Login Failed");
     }

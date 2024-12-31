@@ -1,9 +1,12 @@
 // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, sort_child_properties_last, unused_element, prefer_typing_uninitialized_variables, unused_field, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_collection_literals, duplicate_ignore, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, no_leading_underscores_for_local_identifiers, unnecessary_null_in_if_null_operators, must_be_immutable, avoid_function_literals_in_foreach_calls, unused_local_variable, empty_catches, unnecessary_new, curly_braces_in_flow_control_structures, use_build_context_synchronously, file_names, library_private_types_in_public_api, unused_catch_stack, unnecessary_null_comparison, unrelated_type_equality_checks
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:ecm_application/Model/Project/ECMTool/PMSChackListModel.dart';
+import 'package:ecm_application/Screens/Home/ECM-History/Ecm-HistoryPage.dart';
 import 'package:ecm_application/core/SQLite/DbHepherSQL.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ecm_application/Model/Common/EngineerModel.dart';
 import 'package:ecm_application/Model/project/Constants.dart';
@@ -14,6 +17,7 @@ import 'package:ecm_application/Services/RestPmsService.dart';
 import 'package:ecm_application/Widget/ExpandableTiles.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:path/path.dart' hide context;
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
@@ -45,6 +49,8 @@ class NodeDetails extends StatefulWidget {
 }
 
 class _NodeDetailsState extends State<NodeDetails> {
+  bool _isConnected = false;
+  StreamSubscription<InternetConnectionStatus>? _connectivitySubscription;
   @override
   void initState() {
     fToast = FToast();
@@ -60,6 +66,28 @@ class _NodeDetailsState extends State<NodeDetails> {
     firstLoad();
     getDeviceid(widget.Source!);
     getUserType();
+    _initConnectivity();
+    _connectivitySubscription = InternetConnectionCheckerPlus()
+        .onStatusChange
+        .listen(_updateConnectionStatus);
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _initConnectivity() async {
+    InternetConnectionStatus status = (await InternetConnectionCheckerPlus()
+        .hasConnection) as InternetConnectionStatus;
+    _updateConnectionStatus(status);
+  }
+
+  void _updateConnectionStatus(InternetConnectionStatus status) {
+    setState(() {
+      _isConnected = status == InternetConnectionStatus.connected;
+    });
   }
 
   //fatch data offline
@@ -122,6 +150,7 @@ class _NodeDetailsState extends State<NodeDetails> {
   List<ECM_Checklist_Model> datas = [];
   List<ECM_Checklist_Model>? Addchecklist = [];
   bool isLoading = false;
+  String? pdfString;
   Future fatchdataSQL() async {
     setState(() => isLoading = true);
     Listdata = await ListViewModel.instance.fatchdataPMSViewData();
@@ -194,11 +223,27 @@ class _NodeDetailsState extends State<NodeDetails> {
     });
   }
 
+  //we can upload image from camera or from gallery based on parameter
+  Future getPdf(ECM_Checklist_Model model) async {
+    var pdf = await picker.pickMedia();
+    var imageselected = File(pdf!.path);
+    var byte = await pdf.readAsBytes();
+    await storeImagePath(pdf);
+    final duplicateFilePath = await getExternalStorageDirectory();
+    final fileName = basename(pdf.path);
+    await pdf.saveTo('${duplicateFilePath!.path}/$fileName');
+    // storeImagesInSharedPref(pdf.path, imageList![index].checkListId.toString());
+    setState(() {
+      hasData = false;
+      model.image = pdf;
+    });
+  }
+
 // Store XFile path in SharedPreferences
   Future<void> storeImagePath(XFile file) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('imagePath', file.path);
-    print(prefs);
+    // print(prefs);
   }
 
 // Retrieve XFile path from SharedPreferences
@@ -754,481 +799,353 @@ class _NodeDetailsState extends State<NodeDetails> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: listdistinctProcess!.length,
+      length: listdistinctProcess?.length ?? 0,
       child: Scaffold(
-          appBar: AppBar(
-            title: Text(getAppbarName(widget.Source!)),
+        appBar: AppBar(
+          title: Text(getAppbarName(widget.Source ?? "")),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EcmHistoryScreen(
+                              nodeDetails: widget.viewdata!,
+                              source: widget.Source,
+                            )),
+                    (Route<dynamic> route) => true,
+                  );
+                },
+                icon: Icon(Icons.info_outline_rounded))
+          ],
+        ),
+        body: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              _buildTabBar(),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      getECMFeed(),
+                      _buildImageSelectionTile(),
+                      if (datasoff.isNotEmpty) _buildOfflineSaveText(),
+                      if (isSubmit()) _buildSubmitButtons(),
+                      if (isApproved()) _buildApprovalButtons(),
+                      if (siteTeamMember.isNotEmpty) _buildSiteTeamMemberText(),
+                      if (remarkval.isNotEmpty)
+                        _buildRemarkTile(
+                            "Submitted", workdoneby, workedondate, remarkval),
+                      if (approvedremark.isNotEmpty)
+                        _buildRemarkTile(
+                            "Approved", approvedby, approvedon, approvedremark),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-          body: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Container(
-                  height: 45,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(5.0)),
-                  child: TabBar(
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    indicator: BoxDecoration(
-                        color: Colors.blue[300],
-                        borderRadius: BorderRadius.circular(5.0)),
-                    labelColor: Colors.white,
-                    unselectedLabelColor: Colors.black,
-                    tabs: listdistinctProcess!
-                        .map((e) => FittedBox(
-                              child: Text(
-                                e.replaceAll(' ', '\n'),
-                                softWrap: true,
-                                style: TextStyle(
-                                    fontSize: 8, fontWeight: FontWeight.bold),
-                              ),
-                            ))
-                        .toList(),
-                    onTap: (value) async {
-                      setState(() {
-                        selectedProcess = listdistinctProcess!.elementAt(value);
-                      });
-                      getECMData(selectedProcess!);
-                    },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabBar() {
+    return Container(
+      height: 45,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: TabBar(
+        indicatorSize: TabBarIndicatorSize.tab,
+        indicator: BoxDecoration(
+          color: Colors.blue[300],
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        labelColor: Colors.white,
+        unselectedLabelColor: Colors.black,
+        tabs: listdistinctProcess!
+            .map((e) => FittedBox(
+                  child: Text(
+                    e.replaceAll(' ', '\n'),
+                    softWrap: true,
+                    style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
                   ),
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    physics: AlwaysScrollableScrollPhysics(),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          //Expandable Tile
-                          getECMFeed(),
-                          //Image Selection Tile
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: imageList!
-                                            .where((element) =>
-                                                element.processId ==
-                                                    processId &&
-                                                element.inputType == 'image' &&
-                                                element.value != null)
-                                            .isNotEmpty
-                                        ? GestureDetector(
-                                            onTap: () {
-                                              imageListpopup();
-                                            },
-                                            child: Image(
-                                              image: AssetImage(
-                                                  'assets/images/imagepreview.png'),
-                                              fit: BoxFit.cover,
-                                              height: 80,
-                                              width: 80,
-                                            ))
-                                        : GestureDetector(
-                                            onTap: () {
-                                              imageListpopup();
-                                            },
-                                            child: Image(
-                                              image: AssetImage(
-                                                  'assets/images/uploadimage.png'),
-                                              fit: BoxFit.cover,
-                                              height: 80,
-                                              width: 80,
-                                            ))),
-                                imageList!
-                                        .where((element) =>
-                                            element.processId == processId &&
-                                            element.inputType == 'image' &&
-                                            element.value != null)
-                                        .isNotEmpty
-                                    ? Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20),
-                                        child: SizedBox(
-                                            child: Center(
-                                                child: Text('Image Uploaded'))))
-                                    : Center(
-                                        child: Text(
-                                          "No Image Uploaded",
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                      ),
-                              ],
-                            ),
-                          ),
-                          if (datasoff.isNotEmpty)
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Center(
-                                child: Text(datasoff.first.issaved!),
-                              ),
-                            ),
-                          //Submit Button
-                          if (isSubmit())
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  if (!datasoff.isNotEmpty)
-                                    ElevatedButton(
-                                      child: Text(
-                                        "Submit",
-                                      ),
-                                      onPressed: (() async {
-                                        await btnSubmit_Clicked();
-                                        // _showAlert(context);
-                                      }),
-                                      style: ElevatedButton.styleFrom(
-                                        foregroundColor: Colors.white,
-                                        backgroundColor: Colors.green,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5.0),
-                                        ),
-                                      ),
-                                    ),
-                                  ElevatedButton(
-                                    child: Text(
-                                      "Save",
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      foregroundColor: Colors.white,
-                                      backgroundColor: Colors.blueGrey,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                      ),
-                                    ),
-                                    onPressed: (() async {
-                                      await showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text('ARE YOU SURE TO SAVE'),
-                                            // content: Text('30Ha node'),
-                                            actions: <Widget>[
-                                              ElevatedButton(
-                                                child: Text('Cancel'),
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                              ),
-                                              ElevatedButton(
-                                                child: Text('OK'),
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                  _showAlert_off(context);
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    }),
-                                  ),
-                                  if (datasoff.isNotEmpty)
-                                    ElevatedButton(
-                                      child: Text(
-                                        "Upload",
-                                      ),
-                                      onPressed: (() async {
-                                        await showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: Text(
-                                                  'ARE YOU SURE TO UPLOAD'),
-                                              // content: Text('30Ha node'),
-                                              actions: <Widget>[
-                                                ElevatedButton(
-                                                  child: Text('Cancel'),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                                ElevatedButton(
-                                                  child: Text('OK'),
-                                                  onPressed: () async {
-                                                    Navigator.of(context).pop();
+                ))
+            .toList(),
+        onTap: (value) async {
+          setState(() {
+            selectedProcess = listdistinctProcess!.elementAt(value);
+            subProcessName?.clear(); // Clear existing subprocesses
+            _ChecklistModel = []; // Clear existing checklist items
+          });
+          getECMData(selectedProcess!);
+        },
+        // onTap: (value) async {
+        //   setState(() {
+        //     selectedProcess = listdistinctProcess!.elementAt(value);
+        //   });
+        //   getECMData(selectedProcess!);
+        // },
+      ),
+    );
+  }
 
-                                                    if (datasoff.isNotEmpty) {
-                                                      await insertCheckListDataWithSiteTeamEngineer_off(
-                                                          datasoff);
-                                                    }
-                                                  },
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
+  Widget _buildImageSelectionTile() {
+    final hasImage = imageList!.any((element) =>
+        element.processId == processId &&
+        element.inputType == 'image' &&
+        element.value != null);
 
-                                        // Navigator.of(context).pop();
-                                        // if (datasoff.isNotEmpty) {
-                                        //   await insertCheckListDataWithSiteTeamEngineer_off(
-                                        //       datasoff);
-                                        // }
-                                      }),
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.green),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          if (isApproved())
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  ElevatedButton(
-                                    child: Text(
-                                      "Approve",
-                                    ),
-                                    onPressed: (() async {
-                                      await btnApproveClicked();
-                                      // _showAlert(context);
-                                    }),
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.green),
-                                  ),
-                                  ElevatedButton(
-                                    child: Text(
-                                      "Comment",
-                                    ),
-                                    onPressed: (() async {
-                                      await btnCommentClicked();
-                                      // _showAlert(context);
-                                    }),
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.orange),
-                                  ),
-                                ],
-                              ),
-                            ),
-//Site Engineer Name
-                          if (siteTeamMember.isNotEmpty)
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    'Site Team Member: ',
-                                    textScaleFactor: 1,
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    siteTeamMember,
-                                    textScaleFactor: 1,
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                      fontSize: 16,
-
-                                      // color: Colors.black,
-                                      // fontWeight: FontWeight.bold
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          //Submittion Tile
-                          if (remarkval.isNotEmpty)
-                            Padding(
-                                padding: EdgeInsets.all(8),
-                                child: Container(
-                                  width: double.infinity,
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Submited',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              'By: ',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              workdoneby.toString(),
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 14,
-                                                  fontWeight:
-                                                      FontWeight.normal),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              'On: ',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              getshortdate(workedondate),
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 14,
-                                                  fontWeight:
-                                                      FontWeight.normal),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              'Remark: ',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Expanded(
-                                              child: Text(
-                                                remarkval,
-                                                softWrap: true,
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 14,
-                                                    fontWeight:
-                                                        FontWeight.normal),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )),
-                          if (approvedremark.isNotEmpty)
-                            Padding(
-                                padding: EdgeInsets.all(8),
-                                child: Container(
-                                  width: double.infinity,
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Approved',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              'By: ',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              approvedby.toString(),
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 14,
-                                                  fontWeight:
-                                                      FontWeight.normal),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              'On: ',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              getshortdate(approvedon),
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 14,
-                                                  fontWeight:
-                                                      FontWeight.normal),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              'Remark: ',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Expanded(
-                                              child: Text(
-                                                approvedremark,
-                                                softWrap: true,
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 14,
-                                                    fontWeight:
-                                                        FontWeight.normal),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ))
-                        ]),
-                  ),
-                ),
-              ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: imageListpopup,
+            child: Image(
+              image: AssetImage(hasImage
+                  ? 'assets/images/imagepreview.png'
+                  : 'assets/images/uploadimage.png'),
+              fit: BoxFit.cover,
+              height: 80,
+              width: 80,
             ),
-          )),
+          ),
+          SizedBox(
+            child: Center(
+              child: Text(hasImage ? 'Image Uploaded' : 'No Image Uploaded',
+                  style: TextStyle(fontSize: 16)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOfflineSaveText() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Center(
+        child: Text(datasoff.first.issaved!),
+      ),
+    );
+  }
+
+  Widget _buildSubmitButtons() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          if (!datasoff.isNotEmpty || _isConnected)
+            ElevatedButton(
+              child: Text("Submit"),
+              onPressed: btnSubmit_Clicked,
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0)),
+              ),
+            ),
+          if (!_isConnected)
+            ElevatedButton(
+              child: Text("Save"),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.blueGrey,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0)),
+              ),
+              onPressed: () {
+                _showSaveConfirmationDialog();
+              },
+            ),
+          if (datasoff.isNotEmpty)
+            ElevatedButton(
+              child: Text("Upload"),
+              onPressed: () {
+                _showUploadConfirmationDialog();
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildApprovalButtons() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          ElevatedButton(
+            child: Text("Approve"),
+            onPressed: btnApproveClicked,
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+          ),
+          ElevatedButton(
+            child: Text("Comment"),
+            onPressed: btnCommentClicked,
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSiteTeamMemberText() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Text(
+            'Site Team Member: ',
+            style: TextStyle(
+                fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            siteTeamMember,
+            style: TextStyle(fontSize: 16),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRemarkTile(String title, String by, String date, String remark) {
+    return Padding(
+      padding: EdgeInsets.all(8),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(color: Colors.white),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    'By: ',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    by,
+                    style: TextStyle(color: Colors.black, fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    'On: ',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    getshortdate(date),
+                    style: TextStyle(color: Colors.black, fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    'Remark: ',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Expanded(
+                    child: Text(
+                      remark,
+                      softWrap: true,
+                      style: TextStyle(color: Colors.black, fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showSaveConfirmationDialog() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('ARE YOU SURE TO SAVE'),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            ElevatedButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _showAlert_off(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showUploadConfirmationDialog() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('ARE YOU SURE TO UPLOAD'),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            ElevatedButton(
+              child: Text('OK'),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                if (datasoff.isNotEmpty) {
+                  await insertCheckListDataWithSiteTeamEngineer_off(datasoff);
+                }
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -1274,6 +1191,26 @@ class _NodeDetailsState extends State<NodeDetails> {
       } else if (source == 'rms') {
         title = modelData!.rmsNo.toString();
       } else if (source == 'lora') {
+        title = modelData!.gatewayName;
+      } else {
+        title = '';
+      }
+    } catch (_, ex) {
+      title = '';
+    }
+    return title;
+  }
+
+  getFilename() {
+    var title;
+    try {
+      if (widget.Source == 'oms') {
+        title = modelData!.chakNo.toString();
+      } else if (widget.Source == 'ams') {
+        title = modelData!.amsNo.toString();
+      } else if (widget.Source == 'rms') {
+        title = modelData!.rmsNo.toString();
+      } else if (widget.Source == 'lora') {
         title = modelData!.gatewayName;
       } else {
         title = '';
@@ -1345,7 +1282,7 @@ class _NodeDetailsState extends State<NodeDetails> {
         }
         setState(() {
           _ChecklistModel = value;
-          print(_ChecklistModel?.length);
+          // print(_ChecklistModel?.length);
           imageList =
               value.where((element) => element.inputType == 'image').toList();
           // print("Image List Lenght ${imageList?.length}");
@@ -1368,173 +1305,319 @@ class _NodeDetailsState extends State<NodeDetails> {
     }
   }
 
-  getECMFeed() {
-    Widget? widget = const Center(child: CircularProgressIndicator());
-    if (subProcessName!.isNotEmpty && _ChecklistModel!.isNotEmpty) {
-      widget = Column(
-        children: [
-          for (var subProcess in subProcessName!)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: ExpandableTile(
-                  title: Text(
-                    subProcess.toUpperCase(),
-                    softWrap: true,
-                  ),
-                  body: Column(children: [
-                    for (var item in _ChecklistModel!.where((e) =>
-                        e.subProcessName == subProcess &&
-                        e.inputType != 'image'))
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Text(item.description!,
-                                  textAlign: TextAlign.left, softWrap: true),
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            if (item.inputType == 'text' ||
-                                item.inputType == 'float')
-                              Expanded(
-                                flex: 1,
-                                child: TextFormField(
-                                  enabled: isEdit(),
-                                  initialValue: item.value,
-                                  decoration: InputDecoration(
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1,
-                                          color: Colors.blue), //<-- SEE HERE
-                                    ),
-                                    suffixText: (item.inputText != null &&
-                                            item.inputText!.isNotEmpty)
-                                        ? item.inputText!
-                                        : '',
-                                  ),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      item.value = value;
-                                    });
-                                  },
-                                ),
-                              ),
-                            if (item.inputType == 'boolean')
-                              Expanded(
-                                  flex: 0,
-                                  child: Checkbox(
-                                    activeColor: Colors.white54,
-                                    checkColor: Colors.green,
-                                    value: item.value == 'OK' ? true : false,
-                                    onChanged: isEdit()
-                                        ? (value) {
-                                            setState(() {
-                                              item.value = value! ? 'OK' : '';
-                                            });
-                                          }
-                                        : null,
-                                  )),
-                          ],
-                        ),
-                      )
-                  ])),
-            )
-        ],
-      );
-    } else {
-      widget = const Center(child: CircularProgressIndicator());
+  Widget getECMFeed() {
+    // Show loading indicator if subprocess or checklist is empty
+    if (subProcessName!.isEmpty || _ChecklistModel!.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
     }
-    return widget;
+
+    // Filter subprocesses by the selected process
+    return Column(
+      children: subProcessName!.map((subProcess) {
+        // Filter checklist items by subprocess and exclude 'image' type
+        var filteredItems = _ChecklistModel!
+            .where((item) =>
+                item.subProcessName == subProcess && item.inputType != 'image')
+            .toList();
+
+        // Return an empty container if no items match the filter
+        if (filteredItems.isEmpty) return SizedBox.shrink();
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: ExpandableTile(
+            title: Text(
+              subProcess.toUpperCase(),
+              softWrap: true,
+            ),
+            body: Column(
+              children: filteredItems
+                  .map((item) => _buildChecklistItem(item))
+                  .toList(),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildChecklistItem(dynamic item) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text(item.description!,
+                textAlign: TextAlign.left, softWrap: true),
+          ),
+          const SizedBox(width: 20),
+          if (item.inputType == 'text' || item.inputType == 'float')
+            Expanded(
+              flex: 1,
+              child: TextFormField(
+                enabled: isEdit(),
+                initialValue: item.value,
+                decoration: InputDecoration(
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(width: 1, color: Colors.blue),
+                  ),
+                  suffixText:
+                      item.inputText?.isNotEmpty == true ? item.inputText : '',
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    item.value = value;
+                  });
+                },
+              ),
+            ),
+          if (item.inputType == 'boolean')
+            Expanded(
+              flex: 0,
+              child: Checkbox(
+                activeColor: Colors.white54,
+                checkColor: Colors.green,
+                value: item.value == 'OK',
+                onChanged: isEdit()
+                    ? (value) {
+                        setState(() {
+                          item.value = value! ? 'OK' : '';
+                        });
+                      }
+                    : null,
+              ),
+            ),
+          // if (item.inputType == 'pdf')
+          if (item.inputType == 'pdf')
+            Expanded(
+                flex: 0,
+                child: IconButton(
+                  icon: Image.asset(
+                    "assets/images/pdf.png",
+                    // height: 10,
+                    cacheHeight: 25,
+                  ),
+                  onPressed: () async {
+                    await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            icon: Align(
+                              alignment: Alignment.centerRight,
+                              child: IconButton(
+                                icon: Icon(Icons.close),
+                                onPressed: () => Navigator.of(context).pop(),
+                              ),
+                            ),
+                            iconColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                            content: SizedBox(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  SizedBox(
+                                    height: 100,
+                                    width: 100,
+                                    child: IconButton(
+                                      //if user click this button, user can upload image from gallery
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        getPdf(item);
+                                      },
+                                      icon: Column(
+                                        children: [
+                                          Icon(Icons.upload),
+                                          Text('Upload PDF'),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  if (item.image != null && item.value == null)
+                                    SizedBox(
+                                      height: 100,
+                                      width: 100,
+                                      child: IconButton(
+                                        //if user click this button. user can upload image from camera
+                                        onPressed: () async {
+                                          await OpenFilex.open(
+                                              item.image?.path);
+                                        },
+                                        icon: Column(
+                                          children: [
+                                            Icon(
+                                                Icons.document_scanner_rounded),
+                                            Text('View PDF'),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  if (item.value != null)
+                                    SizedBox(
+                                      height: 100,
+                                      width: 100,
+                                      child: IconButton(
+                                        //if user click this button. user can upload image from camera
+                                        onPressed: () async {
+                                          await GetPDFbyPath(item.value ?? '');
+                                          base64ToPdf(
+                                              pdfString ?? '', getFilename());
+                                        },
+                                        icon: Column(
+                                          children: [
+                                            Icon(
+                                                Icons.document_scanner_rounded),
+                                            Text('View PDF'),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          );
+                        });
+                  },
+                )),
+          if (item.inputType == 'json')
+            Expanded(
+                flex: 0,
+                child: IconButton(
+                  icon: Image.asset(
+                    "assets/images/pdf.png",
+                    // height: 10,
+                    cacheHeight: 25,
+                  ),
+                  onPressed: () async {
+                    await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            icon: Align(
+                              alignment: Alignment.centerRight,
+                              child: IconButton(
+                                icon: Icon(Icons.close),
+                                onPressed: () => Navigator.of(context).pop(),
+                              ),
+                            ),
+                            iconColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                            content: SizedBox(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  SizedBox(
+                                    height: 100,
+                                    width: 100,
+                                    child: IconButton(
+                                      //if user click this button, user can upload image from gallery
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        getPdf(item);
+                                      },
+                                      icon: Column(
+                                        children: [
+                                          Icon(Icons.upload),
+                                          Text('Upload JSON'),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  if (item.image != null && item.value == null)
+                                    SizedBox(
+                                      height: 100,
+                                      width: 100,
+                                      child: IconButton(
+                                        //if user click this button. user can upload image from camera
+                                        onPressed: () async {
+                                          await OpenFilex.open(
+                                              item.image?.path);
+                                        },
+                                        icon: Column(
+                                          children: [
+                                            Icon(
+                                                Icons.document_scanner_rounded),
+                                            Text('View PDF'),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  if (item.value != null)
+                                    SizedBox(
+                                      height: 100,
+                                      width: 100,
+                                      child: IconButton(
+                                        //if user click this button. user can upload image from camera
+                                        onPressed: () async {
+                                          await GetPDFbyPath(item.value ?? '');
+                                          base64ToPdf(
+                                              pdfString ?? '', getFilename());
+                                        },
+                                        icon: Column(
+                                          children: [
+                                            Icon(
+                                                Icons.document_scanner_rounded),
+                                            Text('View PDF'),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          );
+                        });
+                  },
+                ))
+        ],
+      ),
+    );
+  }
+
+  Future<String> GetPDFbyPath(String path) async {
+    String pdf64base = "";
+    try {
+      var request = http.Request(
+          'GET',
+          Uri.parse(
+              'http://wmsservices.seprojects.in/api/Image/GetImage?imgPath=${path}'));
+      print(
+          'http://wmsservices.seprojects.in/api/Image/GetImage?imgPath=${path}');
+
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        pdf64base = await response.stream.bytesToString();
+        setState(() {
+          pdfString = pdf64base.replaceAll('"', '');
+        });
+      } else {
+        print(response.reasonPhrase);
+      }
+    } catch (_, ex) {
+      throw Exception(ex);
+    }
+    return pdf64base.replaceAll('"', '');
+  }
+
+  base64ToPdf(String base64String, String fileName) async {
+    var bytes = base64Decode(base64String);
+    final output = await getTemporaryDirectory();
+    final file = File("${output.path}/$fileName.pdf");
+    await file.writeAsBytes(bytes.buffer.asUint8List());
+    await OpenFilex.open("${output.path}/$fileName.pdf");
   }
 
   List<int> isCheckedList = List.generate(6, (_) => 0);
-  /*getECMFeed() {
-    Widget? widget = const Center(child: CircularProgressIndicator());
-    if (subProcessName!.isNotEmpty && _ChecklistModel!.isNotEmpty) {
-      widget = Column(
-        children: [
-          for (var subProcess in subProcessName!)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: ExpandableTile(
-                  title: Text(
-                    subProcess.toUpperCase(),
-                    softWrap: true,
-                  ),
-                  body: Column(children: [
-                    for (var item in _ChecklistModel!.where((e) =>
-                        e.subProcessName == subProcess &&
-                        e.processId == processId &&
-                        e.inputType != 'image'))
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Text(item.description!,
-                                  textAlign: TextAlign.left, softWrap: true),
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            if (item.inputType == 'text' ||
-                                item.inputType == 'float')
-                              Expanded(
-                                flex: 1,
-                                child: TextFormField(
-                                  initialValue: item.value,
-                                  decoration: InputDecoration(
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1,
-                                          color: Colors.blue), //<-- SEE HERE
-                                    ),
-                                    suffixText: (item.inputText != null &&
-                                            item.inputText!.isNotEmpty)
-                                        ? item.inputText!
-                                        : '',
-                                  ),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      item.value = value;
-                                    });
-                                  },
-                                ),
-                              ),
-                            if (item.inputType == 'boolean')
-                              Expanded(
-                                  flex: 0,
-                                  child: Checkbox(
-                                    activeColor: Colors.white54,
-                                    checkColor: Colors.green,
-                                    value: item.value == 'OK' ? true : false,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        item.value = value! ? 'OK' : '';
-                                      });
-                                    },
-                                  ))
-                          ],
-                        ),
-                      )
-                  ])),
-            )
-        ],
-      );
-    } else {
-      widget = const Center(child: CircularProgressIndicator());
-    }
-    return widget;
-  }
-*/
+
   getWorkedByNAme(String userid) async {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -1543,8 +1626,8 @@ class _NodeDetailsState extends State<NodeDetails> {
       final res = await http.get(Uri.parse(
           'http://wmsservices.seprojects.in/api/login/GetUserDetailsByMobile?mobile=&userid=$userid&conString=$conString'));
 
-      print(
-          'http://wmsservices.seprojects.in/api/login/GetUserDetailsByMobile?mobile=&userid=$userid&conString=$conString');
+      // print(
+      //     'http://wmsservices.seprojects.in/api/login/GetUserDetailsByMobile?mobile=&userid=$userid&conString=$conString');
 
       if (res.statusCode == 200) {
         var json = jsonDecode(res.body);
@@ -1554,10 +1637,11 @@ class _NodeDetailsState extends State<NodeDetails> {
           setState(() {
             workdoneby = loginResult.firstname.toString();
           });
-          print(loginResult.firstname.toString());
+          // print(loginResult.firstname.toString());
           return loginResult.firstname.toString();
-        } else
-          return '';
+        }
+        // else
+        //   return '';
       } else {
         return '';
       }
@@ -1575,8 +1659,8 @@ class _NodeDetailsState extends State<NodeDetails> {
       final res = await http.get(Uri.parse(
           'http://wmsservices.seprojects.in/api/login/GetUserDetailsByMobile?mobile=&userid=$userid&conString=$conString'));
 
-      print(
-          'http://wmsservices.seprojects.in/api/login/GetUserDetailsByMobile?mobile=&userid=$userid&conString=$conString');
+      // print(
+      //     'http://wmsservices.seprojects.in/api/login/GetUserDetailsByMobile?mobile=&userid=$userid&conString=$conString');
 
       if (res.statusCode == 200) {
         var json = jsonDecode(res.body);
@@ -1588,10 +1672,11 @@ class _NodeDetailsState extends State<NodeDetails> {
             approvedId = userid;
           });
 
-          print(loginResult.firstname.toString());
+          // print(loginResult.firstname.toString());
           return loginResult.firstname.toString();
-        } else
-          return '';
+        }
+        // else
+        //   return '';
         // throw Exception("Login Failed");
       } else {
         return '';
@@ -1907,13 +1992,16 @@ class _NodeDetailsState extends State<NodeDetails> {
         int approveStatus = 0;
         int checkCount = _checkList
             .where((e) =>
-                (e.value == null || e.value!.isEmpty) && e.inputType != "image")
+                (e.value == null || e.value!.isEmpty) &&
+                e.inputType != "image" &&
+                e.inputType != "pdf")
             .length;
         int imageCount = _checkList
             .where((e) =>
                 ((e.value == null || e.value!.isEmpty) ||
-                    e.imageByteArray != null) &&
-                e.inputType == "image")
+                        e.imageByteArray != null) &&
+                    e.inputType == "image" ||
+                e.inputType == 'pdf')
             .length;
         int imagewithvalue = imageList!
             .where((e) =>
@@ -1926,12 +2014,16 @@ class _NodeDetailsState extends State<NodeDetails> {
 
         var _imglistdataWithoutNullValue = imageList!
             .where((item) =>
-                item.inputType!.contains("image") &&
+                (item.inputType!.contains("image") ||
+                    item.inputType!.contains("pdf")) &&
                 item.imageByteArray != null)
             .toList();
 
         if (checkCount !=
-                _checkList.where((e) => e.inputText != "image").length ||
+                _checkList
+                    .where(
+                        (e) => e.inputText != "image" && e.inputType != "pdf")
+                    .length ||
             imageCount != 0) {
           if (checkCount == 0 && _imglistdataWithoutNullValue.length < 3) {
             await showDialog(
@@ -2056,7 +2148,8 @@ class _NodeDetailsState extends State<NodeDetails> {
       // before continuing
       await Future.wait(imageList
           .where((element) =>
-              element.inputType == 'image' && element.image != null)
+              (element.inputType == 'image' || element.inputType == 'pdf') &&
+              element.image != null)
           .map((element) async {
         String? imagePathValue = await uploadImage(imagePath, element.image);
         if (imagePathValue!.isNotEmpty) {
@@ -2123,6 +2216,140 @@ class _NodeDetailsState extends State<NodeDetails> {
         int approveStatus = 0;
         int checkCount = _checkList
             .where((e) =>
+                (e.value == null || e.value!.isEmpty) && e.inputType != "image")
+            .length;
+        int imageCount = _checkList
+            .where((e) =>
+                ((e.value == null || e.value!.isEmpty) ||
+                    e.imageByteArray != null) &&
+                e.inputType == "image")
+            .length;
+        int imagewithvalue = _checkList
+            .where((e) =>
+                ((e.value == null || e.value!.isEmpty) || e.image != null) &&
+                e.inputType == "image")
+            .length;
+        bool isPartialProcess =
+            selectedProcess!.toLowerCase().contains("dry") ||
+                selectedProcess!.toLowerCase().contains('auto');
+
+        var _imglistdataWithoutNullValue = _checkList
+            .where((item) =>
+                item.inputType!.contains("image") &&
+                item.imageByteArray != null)
+            .toList();
+
+        if (checkCount !=
+                _checkList.where((e) => e.inputText != "image").length ||
+            imageCount != 0) {
+          if (checkCount == 0 && _imglistdataWithoutNullValue.length < 3) {
+            await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Message"),
+                  content: Text("Minimum 3 Images are required to proceed"),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("OK"),
+                    ),
+                  ],
+                );
+              },
+            );
+            return false;
+          } else if (imageCount >= 3 && checkCount == 0) {
+            approveStatus = isPartialProcess ? 1 : 2;
+          } else if (!isPartialProcess) {
+            approveStatus = 1;
+          } else {
+            if (imageCount < 3)
+              await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Message"),
+                    content: Text("Minimum 3 Images are required to proceed"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text("OK"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            if (checkCount != 0)
+              await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Message"),
+                    content:
+                        Text("Partially done is not allow in this process"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text("OK"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            // print("Partially done is not allow in this process");
+            return false;
+          }
+        } else {
+          return false;
+        }
+
+        int flagCounter = 0;
+        for (var subpro in subProcessName!) {
+          var list = _checkList
+              .where((element) =>
+                  element.subProcessName!.toLowerCase() == subpro.toLowerCase())
+              .toList();
+          respflag = await insertCheckListDataWithSiteTeamEngineer_send(
+              list, list.first.subProcessId!,
+              apporvedStatus: approveStatus);
+          if (respflag) {
+            flagCounter++;
+          }
+        }
+        if (flagCounter == subProcessName!.length) {
+          getECMData(selectedProcess!);
+          setState(() {
+            isSubmited = true;
+          });
+          setState(() {
+            Source = widget.Source;
+          });
+
+          await listdatacheckup();
+          await DBSQL.instance.deleteCheckListData(
+              datasoff.first.deviceId!, datasoff.first.processId!);
+          await getECMData(selectedProcess!);
+          setState(() {
+            isSubmited = true;
+          });
+          setState(() {
+            Source = widget.Source;
+          });
+          flag = true;
+        } else
+          throw new Exception();
+      }
+      /* if (_checkList != null) {
+        int approveStatus = 0;
+        int checkCount = _checkList
+            .where((e) =>
                 (e.image == null || e.imageByteArray!.isEmpty) &&
                 e.inputType != "image")
             .length;
@@ -2130,6 +2357,11 @@ class _NodeDetailsState extends State<NodeDetails> {
             .where((e) =>
                 ((e.image == null || e.imageByteArray!.isEmpty) ||
                     e.image != null) &&
+                e.inputType == "image")
+            .length;
+        int imagewithvalue = _checkList
+            .where((e) =>
+                ((e.value == null || e.value!.isEmpty) || e.image != null) &&
                 e.inputType == "image")
             .length;
         bool isPartialProcess =
@@ -2219,7 +2451,7 @@ class _NodeDetailsState extends State<NodeDetails> {
           flag = true;
         } else
           throw new Exception();
-      }
+      }*/
     } catch (_, ex) {
       flag = false;
     }
@@ -2364,7 +2596,8 @@ class _NodeDetailsState extends State<NodeDetails> {
           allow = true;
         else if (selectedProcess!.toLowerCase().contains("dry") &&
             (mech == 2.toString() || mech == 3.toString()) &&
-            (erec == 2.toString() || erec == 3.toString()))
+            (erec == 2.toString() || erec == 3.toString()) &&
+            !_proj.toLowerCase().contains('alirajpur'))
           allow = true;
         else if (selectedProcess!.toLowerCase().contains("wet") &&
             (mech == 2.toString() || mech == 3.toString()) &&
@@ -2395,8 +2628,9 @@ class _NodeDetailsState extends State<NodeDetails> {
           allow = true;
         else if (selectedProcess!.toLowerCase().contains("erection"))
           allow = true;
-        else if (selectedProcess!.toLowerCase().contains("dry comm") &&
-            (erec == 2.toString() || erec == 3.toString()))
+        else if (_proj.toLowerCase().contains('alirajpur demo') ||
+            selectedProcess!.toLowerCase().contains("dry comm") &&
+                (erec == 2.toString() || erec == 3.toString()))
           allow = true;
         else if (selectedProcess!.toLowerCase().contains("wet commissioning") &&
             (erec == 2.toString() || erec == 3.toString()) &&
@@ -2732,145 +2966,3 @@ class PreviewImageWidget extends StatelessWidget {
     );
   }
 }
-
-/*
-Future<int> submitData(String remark, {String teamMember = ""}) async {
-  try {
-    String approvedStatus = '';
-    var list = <CheckListItem>[]; // Define the CheckListItem class as needed
-    var listData = list.where((x) =>
-        x.inputType != "image" && x.isMultiValue != 1);
-    var listDataM = list.where((x) =>
-        x.inputType != "image" &&
-        x.value != null &&
-        x.isMultiValue != 1);
-    var listM = list.where((x) =>
-        x.inputType != "image" && x.isMultiValue == 1);
-    var listDataM2 = list.where((x) =>
-        x.inputType != "image" &&
-        x.value != null &&
-        x.isMultiValue == 1 &&
-        x.checkEmptyMultiValue);
-    var listDataBoolMulti = list.where((x) =>
-        x.inputType.contains("bool") &&
-        (x.boolValue1 != null ||
-            x.boolValue2 != null ||
-            x.boolValue3 != null ||
-            x.boolValue4 != null ||
-            x.boolValue5 != null ||
-            x.boolValue6 != null) &&
-        x.isMultiValue == 1);
-    var listDataTextMulti = list.where((x) =>
-        x.inputType.contains("text") &&
-        (x.textValue1 != null ||
-            x.textValue2 != null ||
-            x.textValue3 != null ||
-            x.textValue4 != null ||
-            x.textValue5 != null ||
-            x.textValue6 != null) &&
-        x.isMultiValue == 1);
-
-    var imgList = list.where((x) => x.inputType == "image");
-    var imgListData = list.where((x) =>
-        x.inputType == "image" &&
-        (x.mediaFile != null || x.isOfflineImage));
-
-    var userId = int.parse(Application.current.properties["WebUserId"]);
-    String dirPath = '';
-
-    String checklistData, valueData;
-    int subprocessId;
-    int flag = 0;
-    int booleanCount =
-        listData.where((x) => x.inputType == "boolean" && x.isMultiValue != 1).length;
-    int notOKCount = listData.where((x) => x.inputType == "boolean" && x.value == "NotOK" && x.isMultiValue != 1).length;
-    bool isOK = notOKCount < (booleanCount / 2);
-    if (list.length == listData.length &&
-        listM.length == listDataM.length &&
-        list.first.processName.toLowerCase().contains("dry comm") &&
-        isOK) {
-      approvedStatus = "1";
-    } else if (list.length == listData.length &&
-        listM.length == listDataM.length &&
-        !list.first.processName.toLowerCase().contains("dry comm") &&
-        isOK) {
-      approvedStatus = "2";
-    } else {
-      var countData = listData.length +
-          imgListData.length +
-          listDataBoolMulti.length +
-          listDataTextMulti.length;
-      if (countData != 0 && !list.first.processName.toLowerCase().contains("dry comm")) {
-        approvedStatus = "1";
-      }
-    }
-
-    if (approvedStatus == "1" || approvedStatus == "2") {
-      var imgDataCount = list.where((x) =>
-          x.inputType == "image" && (x.mediaFile != null || x.value != null)).length;
-      if (list.first.processName.toLowerCase().contains("dry comm") &&
-          approvedStatus == "1" &&
-          imgDataCount < 3) {
-        return 4;
-      } else if (!list.first.processName.toLowerCase().contains("dry comm") &&
-          approvedStatus == "2" &&
-          imgDataCount < 3) {
-        return 4;
-      }
-
-      dirPath = "${Application.current.properties["ProjectName"]}/${_Source.toUpperCase()}/$deviceId/";
-
-      for (var img in imgListData) {
-        String path = '';
-        if (img.isOfflineImage) {
-          path = await ds.postImage(dirPath, img.imageByteArray, img.imagePath);
-        } else {
-          path = await ds.postImage(dirPath, img.mediaFile);
-        }
-        if (!path.toLowerCase().contains("fail") && path.isNotEmpty) {
-          img.value = path;
-        } else {
-          return 2;
-        }
-      }
-      int subprocessCount = 0;
-      for (var iterator in list.map((x) => x.subProcessId).toSet()) {
-        String msg = '';
-        subprocessId = iterator;
-        checklistData = list
-            .where((x) => x.subProcessId == iterator)
-            .map((x) => x.checkListId)
-            .join(",");
-        valueData = list
-            .where((x) => x.subProcessId == iterator)
-            .map((x) => x.value ?? '')
-            .join(",");
-        bool conStrFlag = conString.contains("User ID=dba");
-        if (conStrFlag) {
-          var insertData = InsertCheckListDataWithTeamMember(
-              processId, subprocessId, checklistData, deviceId, userId, valueData,
-              remark, _TempDT, approvedStatus, _Source, conString, true, teamMember);
-          msg = await ds.postCheckListItemAsync(insertData);
-        } else {
-          var insertData = InsertCheckListDataNew(
-              processId, subprocessId, checklistData, deviceId, userId, valueData,
-              remark, _TempDT, approvedStatus, _Source, conString);
-          msg = await ds.postCheckListItemAsync(insertData);
-        }
-        if (!msg.contains("FAIL") && msg.isNotEmpty) {
-          flag++;
-          subprocessCount++;
-        }
-      }
-      if (subprocessCount == list.map((x) => x.subProcessId).toSet().length) {
-        flag = 3;
-      } else {
-        flag = 1;
-      }
-    }
-    return flag;
-  } catch (ex) {
-    return 1;
-  }
-}
-*/

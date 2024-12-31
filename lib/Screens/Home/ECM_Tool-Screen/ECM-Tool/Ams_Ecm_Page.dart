@@ -792,7 +792,7 @@ class _AmsPageState extends State<AmsPage> with SingleTickerProviderStateMixin {
                             ),
                             Text(
                               '( ' +
-                                  (_DisplayList![index].areaName!.trim())
+                                  ((_DisplayList![index].areaName ?? '').trim())
                                       .toString() +
                                   ' - ' +
                                   (_DisplayList![index].description ?? '')

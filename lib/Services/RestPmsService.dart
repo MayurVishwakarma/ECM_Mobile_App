@@ -95,7 +95,9 @@ Future<List<ECM_Checklist_Model>> getOMSECMCheckListByProcessId(
       List<ECM_Checklist_Model> result = <ECM_Checklist_Model>[];
       json['data']['Response']
           .forEach((v) => result.add(ECM_Checklist_Model.fromJson(v)));
-      return result;
+      return result
+          .where((element) => element.processId == _processId)
+          .toList();
     } else {
       throw Exception("API Consumed Failed");
     }

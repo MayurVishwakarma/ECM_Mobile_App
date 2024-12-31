@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_interpolation_to_compose_strings, curly_braces_in_flow_control_structures, non_constant_identifier_names, prefer_const_constructors, avoid_print, prefer_is_empty, avoid_unnecessary_containers, unused_local_variable, must_be_immutable, camel_case_types, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_null_comparison, prefer_typing_uninitialized_variables, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_interpolation_to_compose_strings, curly_braces_in_flow_control_structures, non_constant_identifier_names, prefer_const_constructors, avoid_print, prefer_is_empty, avoid_unnecessary_containers, unused_local_variable, must_be_immutable, camel_case_types, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_null_comparison, prefer_typing_uninitialized_variables, prefer_const_literals_to_create_immutables, file_names, unrelated_type_equality_checks
 
 import 'dart:async';
 import 'dart:convert';
@@ -89,7 +89,6 @@ class _Oms_HistoryState extends State<Oms_History> {
                 child: FittedBox(
                   child: Text(
                     distibutroryModel.description!,
-                    textScaleFactor: 1,
                     style: TextStyle(
                       fontSize: 13,
                     ),
@@ -142,7 +141,6 @@ class _Oms_HistoryState extends State<Oms_History> {
               child: FittedBox(
                 child: Text(
                   areaModel.areaName ?? "",
-                  textScaleFactor: 1,
                   style: TextStyle(fontSize: 13),
                 ),
               ),
@@ -281,7 +279,6 @@ class _Oms_HistoryState extends State<Oms_History> {
                                     return Text(
                                       "Something Went Wrong: " +
                                           snapshot.error.toString(),
-                                      textScaleFactor: 1,
                                     );
                                   } else {
                                     return Center(child: Container());
@@ -334,7 +331,6 @@ class _Oms_HistoryState extends State<Oms_History> {
                                         children: [
                                           Text(
                                             'CHAK NO.',
-                                            textScaleFactor: 1,
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 12,
@@ -342,7 +338,6 @@ class _Oms_HistoryState extends State<Oms_History> {
                                           ),
                                           Text(
                                             '(Distri-Area)',
-                                            textScaleFactor: 1,
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 10,
@@ -359,7 +354,6 @@ class _Oms_HistoryState extends State<Oms_History> {
                                   child: Center(
                                     child: Text(
                                       'Elctrical',
-                                      textScaleFactor: 1,
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 14,
@@ -372,7 +366,6 @@ class _Oms_HistoryState extends State<Oms_History> {
                                   child: Center(
                                     child: Text(
                                       'Mechanical',
-                                      textScaleFactor: 1,
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 14,
@@ -522,7 +515,6 @@ class _Oms_HistoryState extends State<Oms_History> {
                           Expanded(
                             child: Center(
                               child: Text(_DisplayList![index].chakNo!,
-                                  textScaleFactor: 1,
                                   style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
@@ -542,7 +534,6 @@ class _Oms_HistoryState extends State<Oms_History> {
                                             .description
                                             .toString() +
                                         ' )',
-                                    textScaleFactor: 1,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 10,
@@ -689,6 +680,9 @@ class _Oms_HistoryState extends State<Oms_History> {
 
         final res = await http.get(Uri.parse(
             'http://wmsservices.seprojects.in/api/OMS/OmsDamageReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&pageIndex=$_page&pageSize=$_limit&conString=$conString'));
+
+        print(
+            'http://wmsservices.seprojects.in/api/OMS/OmsDamageReportStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&pageIndex=$_page&pageSize=$_limit&conString=$conString');
         var json = jsonDecode(res.body);
         List<DamageModel> fetchedData = <DamageModel>[];
         json['data']['Response']

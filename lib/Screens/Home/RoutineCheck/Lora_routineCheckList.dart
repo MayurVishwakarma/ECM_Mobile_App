@@ -1011,8 +1011,8 @@ class _RoutineCheckList_LoraState extends State<RoutineCheckList_Lora> {
               context,
               MaterialPageRoute(
                   builder: (context) => RoutineManual_CheckList(
-                      _DisplayList[index].gateWayId!,
-                      _DisplayList[index].gateWayName!,
+                      _DisplayList[index].gateWayId ?? 0,
+                      _DisplayList[index].gateWayName ?? '',
                       _DisplayList[index].areaName ?? '',
                       _DisplayList[index].description ?? '',
                       widget.ProjectName!,

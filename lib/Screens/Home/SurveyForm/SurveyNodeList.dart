@@ -1,38 +1,23 @@
-// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, sort_child_properties_last, import_of_legacy_library_into_null_safe, use_key_in_widget_constructors, library_private_types_in_public_api, unused_import, unused_element, prefer_interpolation_to_compose_strings, avoid_print, prefer_is_empty, non_constant_identifier_names, use_build_context_synchronously, unused_local_variable, unused_catch_stack
+// ignore_for_file: use_key_in_widget_constructors, file_names, library_private_types_in_public_api, non_constant_identifier_names, unused_local_variable, prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_catch_stack, unrelated_type_equality_checks, unused_field
 
-import 'dart:convert';
 import 'package:ecm_application/Model/Project/ECMTool/ECMCountMasterModel.dart';
-import 'package:ecm_application/Model/Project/ECMTool/PMSChackListModel.dart';
-import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/ECM-Tool/Ams_Ecm_Page.dart';
-import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/ECM-Tool/Lora_Ecm_Page.dart';
-import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/Oms30Ha_Ecm_Page.dart';
-import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/ECM-Tool/Oms_Ecm_Page.dart';
-import 'package:ecm_application/Screens/Home/ECM_Tool-Screen/ECM-Tool/Rms_Ecm_Page.dart';
-import 'package:ecm_application/Screens/Home/RoutineCheck/Lora_routineCheckList.dart';
-import 'package:ecm_application/Screens/Home/RoutineCheck/RoutineCheckScreen.dart';
-import 'package:ecm_application/Services/RestPmsService.dart';
-import 'package:ecm_application/core/SQLite/Screen/Offline_ListMySql.dart';
-import 'package:ecm_application/core/SQLite/Screen/Offline_ListSQL.dart';
-import 'package:http/http.dart' as http;
 import 'package:ecm_application/Model/Project/Login/AreaModel.dart';
 import 'package:ecm_application/Model/Project/Login/DistibutoryModel.dart';
-import 'package:ecm_application/Model/Project/ECMTool/PMSListViewModel.dart';
 import 'package:ecm_application/Operations/StatelistOperation.dart';
-import 'package:ecm_application/core/app_export.dart';
+import 'package:ecm_application/Screens/Home/SurveyForm/DeviceList/SurveyAmsList.dart';
+import 'package:ecm_application/Screens/Home/SurveyForm/DeviceList/SurveyLoraList.dart';
+import 'package:ecm_application/Screens/Home/SurveyForm/DeviceList/SurveyOmsList.dart';
+import 'package:ecm_application/Screens/Home/SurveyForm/DeviceList/SurveyRmsList.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:toggle_switch/toggle_switch.dart';
-import 'package:line_icons/line_icons.dart';
-import 'package:ecm_application/Model/Project/Login/State_list_Model.dart';
 
-class RoutineCheckScreenCommon extends StatefulWidget {
+class SurveyNodeListScreen extends StatefulWidget {
   @override
-  _RoutineCheckScreenCommonState createState() =>
-      _RoutineCheckScreenCommonState();
+  _SurveyNodeListScreenState createState() => _SurveyNodeListScreenState();
 }
 
-class _RoutineCheckScreenCommonState extends State<RoutineCheckScreenCommon> {
+class _SurveyNodeListScreenState extends State<SurveyNodeListScreen> {
   int pageIndex = 0;
 
   @override
@@ -42,9 +27,12 @@ class _RoutineCheckScreenCommonState extends State<RoutineCheckScreenCommon> {
     getDropDownAsync();
   }
 
-  String? rcString = '1000';
+  ECMStatusCountMasterModel? _DisplayList;
+
+  String? dcString = '1111';
   String? projectName;
   String? userType = '';
+
   var area = 'All';
   var distibutory = 'ALL';
 
@@ -57,8 +45,7 @@ class _RoutineCheckScreenCommonState extends State<RoutineCheckScreenCommon> {
   getDataString() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
-      rcString = preferences.getString('RcString');
-
+      dcString = preferences.getString('DcString');
       projectName = preferences.getString('ProjectName');
       userType = preferences.getString('usertype');
     });
@@ -74,23 +61,26 @@ class _RoutineCheckScreenCommonState extends State<RoutineCheckScreenCommon> {
   }
 
   var source = 'OMS';
-  bool isToggled = false;
+  // bool isToggled = false;
   @override
   Widget build(BuildContext context) {
     final pages = [
-      if (rcString![0] == '1') RoutineCheckScreen(projectName!),
-      if (rcString![1] == '1') RoutineCheckScreen(projectName!),
-      if (rcString![2] == '1') RoutineCheckScreen(projectName!),
-      if (rcString![3] == '1') RoutineCheckList_Lora(projectName!),
+      if (dcString![0] == '1') SurveyOmsList(),
+      if (dcString![1] == '1') SurveyAmsList(),
+      if (dcString![2] == '1') SurveyRmsList(),
+      if (dcString![3] == '1') SurveyLoraList(),
     ];
+
     return Scaffold(
         backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text('Site Survey Form'),
+        ),
         body: pages[pageIndex],
         bottomNavigationBar: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-              // border: Border.all(color: ColorConstant.black900),
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
@@ -113,7 +103,7 @@ class _RoutineCheckScreenCommonState extends State<RoutineCheckScreenCommon> {
                   color: Colors.black,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   tabs: [
-                    if (rcString![0] == '1')
+                    if (dcString![0] == '1')
                       GButton(
                         textColor: Colors.black,
                         icon: Icons.select_all,
@@ -138,7 +128,7 @@ class _RoutineCheckScreenCommonState extends State<RoutineCheckScreenCommon> {
                           ),
                         ),
                       ),
-                    if (rcString![1] == '1')
+                    if (dcString![1] == '1')
                       GButton(
                         textColor: Colors.black,
                         icon: Icons.select_all,
@@ -163,7 +153,7 @@ class _RoutineCheckScreenCommonState extends State<RoutineCheckScreenCommon> {
                           ),
                         ),
                       ),
-                    if (rcString![2] == '1')
+                    if (dcString![2] == '1')
                       GButton(
                         textColor: Colors.black,
                         icon: Icons.select_all,
@@ -188,7 +178,7 @@ class _RoutineCheckScreenCommonState extends State<RoutineCheckScreenCommon> {
                           ),
                         ),
                       ),
-                    if (rcString![3] == '1')
+                    if (dcString![3] == '1')
                       GButton(
                         textColor: Colors.black,
                         icon: Icons.select_all,

@@ -1,6 +1,4 @@
-//this page fully work on for Mysql project offline list Screen
-
-// ignore_for_file: unused_field, prefer_typing_uninitialized_variables, unused_local_variable, non_constant_identifier_names, camel_case_types, must_be_immutable
+// ignore_for_file: unused_field, prefer_typing_uninitialized_variables, unused_local_variable, non_constant_identifier_names, camel_case_types, must_be_immutable, file_names, no_leading_underscores_for_local_identifiers, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -85,7 +83,7 @@ class _Offline_ListMySqlState extends State<Offline_ListMySql> {
                   ),
                 ),
               ])
-            : Center(
+            : const Center(
                 child: Card(
                   elevation: 5,
                   child: Padding(
@@ -162,7 +160,7 @@ class _Offline_ListMySqlState extends State<Offline_ListMySql> {
                           // height: 50,
                           width: double.infinity,
                           decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 56, 131, 230),
+                              color: Colors.amber.shade400,
                               borderRadius: BorderRadius.circular(5)),
                           child: Center(
                               child: Column(
@@ -174,11 +172,7 @@ class _Offline_ListMySqlState extends State<Offline_ListMySql> {
                                     fontSize: 14, color: Colors.white),
                               ),
                               Text(
-                                '( ' +
-                                    Listdata[index].areaName.toString() +
-                                    '-' +
-                                    Listdata[index].description.toString() +
-                                    ' )',
+                                '( ${Listdata[index].areaName}-${Listdata[index].description} )',
                                 softWrap: true,
                                 style: const TextStyle(color: Colors.white),
                               )

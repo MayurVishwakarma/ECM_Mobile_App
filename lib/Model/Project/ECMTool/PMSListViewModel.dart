@@ -33,42 +33,45 @@ class PMSListViewModel {
   dynamic deviceNo;
   dynamic deviceName;
   dynamic projectName;
+  bool? isSelected;
 
-  PMSListViewModel(
-      {this.omsId,
-      this.chakNo,
-      this.amsId,
-      this.amsNo,
-      this.rmsId,
-      this.rmsNo,
-      this.isChecking,
-      this.gateWayId,
-      this.gatewayNo,
-      this.gatewayName,
-      this.process1,
-      this.process2,
-      this.process3,
-      this.process4,
-      this.process5,
-      this.process6,
-      this.areaName,
-      this.description,
-      this.mechanical,
-      this.erection,
-      this.dryCommissioning,
-      this.wetCommissioning,
-      this.trenching,
-      this.pipeInatallation,
-      this.autoDryCommissioning,
-      this.autoWetCommissioning,
-      this.chainage,
-      this.coordinates,
-      this.networkType,
-      this.deviceType,
-      this.deviceId,
-      this.deviceNo,
-      this.projectName,
-      this.deviceName});
+  PMSListViewModel({
+    this.omsId,
+    this.chakNo,
+    this.amsId,
+    this.amsNo,
+    this.rmsId,
+    this.rmsNo,
+    this.isChecking,
+    this.gateWayId,
+    this.gatewayNo,
+    this.gatewayName,
+    this.process1,
+    this.process2,
+    this.process3,
+    this.process4,
+    this.process5,
+    this.process6,
+    this.areaName,
+    this.description,
+    this.mechanical,
+    this.erection,
+    this.dryCommissioning,
+    this.wetCommissioning,
+    this.trenching,
+    this.pipeInatallation,
+    this.autoDryCommissioning,
+    this.autoWetCommissioning,
+    this.chainage,
+    this.coordinates,
+    this.networkType,
+    this.deviceType,
+    this.deviceId,
+    this.deviceNo,
+    this.projectName,
+    this.deviceName,
+    this.isSelected,
+  });
 
   PMSListViewModel.fromJson(Map<String, dynamic> json) {
     omsId = json['OmsId'];
@@ -105,6 +108,7 @@ class PMSListViewModel {
     deviceNo = json['deviceNo'];
     deviceName = json['deviceName'];
     projectName = json['projectName'];
+    isSelected = json['isSelected'];
   }
 
   Map<String, dynamic> toJson() {
@@ -143,6 +147,7 @@ class PMSListViewModel {
     data['deviceId'] = this.deviceId;
     data['deviceNo'] = this.deviceNo;
     data['deviceName'] = this.deviceName;
+    data['isSelected'] = this.isSelected;
     return data;
   }
 }

@@ -283,6 +283,7 @@ class _RoutineCheckScreenState extends State<RoutineCheckScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('build');
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(title: const Text('OMS List'), actions: [
@@ -300,6 +301,10 @@ class _RoutineCheckScreenState extends State<RoutineCheckScreen> {
       ]),
       body: RefreshIndicator(
         onRefresh: () async {
+          setState(() {
+            _page = 0;
+          });
+          _DisplayList = [];
           _firstLoad();
         },
         child: GestureDetector(
@@ -962,14 +967,7 @@ class _RoutineCheckScreenState extends State<RoutineCheckScreen> {
           scrollDirection: Axis.vertical,
           controller: _controller,
           child: Container(
-            margin: EdgeInsets.only(
-                left: 
-                  8.00,
-               
-                right: 
-                  8.00,
-                
-                bottom: (13.00)),
+            margin: EdgeInsets.only(left: 8.00, right: 8.00, bottom: (13.00)),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
@@ -1211,7 +1209,11 @@ class _RoutineCheckScreenState extends State<RoutineCheckScreen> {
   // This function will be called when the app launches (see the initState function)
   void _firstLoad() async {
     setState(() {
+      _page = 0;
       _isFirstLoadRunning = true;
+      _hasNextPage = true;
+      _isFirstLoadRunning = false;
+      _isLoadMoreRunning = false;
     });
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -1247,7 +1249,7 @@ class _RoutineCheckScreenState extends State<RoutineCheckScreen> {
     if (_hasNextPage == true &&
         _isFirstLoadRunning == false &&
         _isLoadMoreRunning == false &&
-        _controller.position.extentAfter < 300) {
+        _controller.position.extentAfter < 200) {
       setState(() {
         _isLoadMoreRunning = true; // Display a progress indicator at the bottom
       });
@@ -1258,7 +1260,9 @@ class _RoutineCheckScreenState extends State<RoutineCheckScreen> {
         String? conString = preferences.getString('ConString');
 
         final res = await http.get(Uri.parse(
-            'http://wmsservices.seprojects.in/api/Routine/RoutineStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&RoutineStatus=$process&DateSort=0&StartDate=01-01-1900&EndDate=01-01-1900&NextSchedule=$nextschedule&pageIndex=$_page&pageSize=$_limit&conString=$conString'));
+            'http://wmsservices.seprojects.in/api/Routine/RoutineStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&RoutineStatus=$process&DateSort=$isDateSort&StartDate=01-01-1900&EndDate=01-01-1900&NextSchedule=$nextschedule&pageIndex=$_page&pageSize=$_limit&source=oms&conString=$conString'));
+        print(
+            'http://wmsservices.seprojects.in/api/Routine/RoutineStatus?Search=$_search&areaId=$area&DistributoryId=$distibutory&RoutineStatus=$process&DateSort=$isDateSort&StartDate=01-01-1900&EndDate=01-01-1900&NextSchedule=$nextschedule&pageIndex=$_page&pageSize=$_limit&source=oms&conString=$conString');
         var json = jsonDecode(res.body);
         List<RoutineCheckMasterModel> fetchedData = <RoutineCheckMasterModel>[];
         json['data']['Response'].forEach(

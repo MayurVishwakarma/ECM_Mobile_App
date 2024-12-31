@@ -48,6 +48,7 @@ class _OmsPageState extends State<OmsPage> {
   @override
   void dispose() {
     _controller.removeListener(_loadMore);
+
     super.dispose();
   }
 
@@ -86,7 +87,7 @@ class _OmsPageState extends State<OmsPage> {
     try {
       for (var item in listview) {
         if (item.omsId == _DisplayList![index].omsId) {
-          return Color.fromRGBO(108, 211, 180, 1);
+          return Colors.amber.shade400;
         }
       }
       return Colors.blue;
@@ -197,7 +198,6 @@ class _OmsPageState extends State<OmsPage> {
                 child: FittedBox(
                   child: Text(
                     distibutroryModel.description!,
-                    textScaleFactor: 1,
                     style: TextStyle(
                       fontSize: 13,
                     ),
@@ -250,7 +250,6 @@ class _OmsPageState extends State<OmsPage> {
               child: FittedBox(
                 child: Text(
                   areaModel.areaName ?? "",
-                  textScaleFactor: 1,
                   style: TextStyle(fontSize: 13),
                 ),
               ),
@@ -314,7 +313,6 @@ class _OmsPageState extends State<OmsPage> {
               child: FittedBox(
                 child: Text(
                   processModel.processName!,
-                  textScaleFactor: 1,
                   softWrap: true,
                   style: TextStyle(fontSize: 13),
                 ),
@@ -340,6 +338,58 @@ class _OmsPageState extends State<OmsPage> {
 
   getProcessStatus(BuildContext context, List<ProcessModel> values) {
     try {
+      // Determine the initial value for the DropdownButton
+      final initialValue = (selectedProcessStatus == null ||
+              values
+                  .where((element) => element == selectedProcessStatus)
+                  .isEmpty)
+          ? values.first
+          : selectedProcessStatus;
+
+      return Container(
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 168, 211, 237),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: DropdownButton<ProcessModel>(
+          underline: Container(color: Colors.transparent),
+          value: initialValue,
+          isExpanded: true,
+          items: values.map((processModel) {
+            return DropdownMenuItem<ProcessModel>(
+              value: processModel,
+              child: Center(
+                child: FittedBox(
+                  child: Text(
+                    processModel.processStatusName ?? '',
+                    softWrap: true,
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+          onChanged: (selectedValue) {
+            if (selectedValue != null) {
+              setState(() {
+                selectedProcessStatus = selectedValue;
+                processStatus =
+                    selectedProcessStatus?.processStatusId.toString() ?? '';
+              });
+              _firstLoad();
+            }
+          },
+        ),
+      );
+    } catch (ex) {
+      // print(ex);
+      return Container();
+    }
+  }
+
+  /*getProcessStatus(BuildContext context, List<ProcessModel> values) {
+    try {
       return Container(
         padding: EdgeInsets.all(5),
         decoration: BoxDecoration(
@@ -360,7 +410,7 @@ class _OmsPageState extends State<OmsPage> {
                 child: FittedBox(
                   child: Text(
                     processModel.processStatusName!,
-                    textScaleFactor: 1,
+                 
                     softWrap: true,
                     style: TextStyle(fontSize: 13),
                   ),
@@ -391,7 +441,7 @@ class _OmsPageState extends State<OmsPage> {
       return Container();
     }
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -496,7 +546,6 @@ class _OmsPageState extends State<OmsPage> {
                                     return Text(
                                       "Something Went Wrong: " +
                                           snapshot.error.toString(),
-                                      textScaleFactor: 1,
                                     );
                                   } else {
                                     return Center(child: Container());
@@ -521,7 +570,7 @@ class _OmsPageState extends State<OmsPage> {
                                   "Something Went Wrong: " /*+
                                       snapshot.error.toString()*/
                                   ,
-                                  textScaleFactor: 1,
+                               
                                 )*/
                                         ;
                                   } else {
@@ -635,7 +684,6 @@ class _OmsPageState extends State<OmsPage> {
                 var conString;
                 SharedPreferences preferences =
                     await SharedPreferences.getInstance();
-
                 preferences.setString(
                     'Mechanical', _DisplayList![index].mechanical.toString());
                 preferences.setString(
@@ -760,7 +808,6 @@ class _OmsPageState extends State<OmsPage> {
                                               ConvertLongtoShortString(
                                                   _processlist[i].processName!),
                                               softWrap: true,
-                                              textScaleFactor: 1,
                                               style: TextStyle(fontSize: 12),
                                             ),
                                             Padding(
@@ -861,17 +908,17 @@ class _OmsPageState extends State<OmsPage> {
     try {
       proStatus = proStatus.toLowerCase();
       if (proStatus.contains('mechan'))
-        status = int.tryParse(model.mechanical!);
+        status = int.tryParse(model.mechanical ?? '0');
       else if (proStatus.contains('erect'))
-        status = int.tryParse(model.erection!);
+        status = int.tryParse(model.erection ?? '0');
       else if (proStatus.contains('auto dry'))
         status = int.tryParse(model.autoDryCommissioning);
       else if (proStatus.contains('auto wet'))
         status = int.tryParse(model.autoWetCommissioning);
       else if (proStatus.contains('dry comm'))
-        status = int.tryParse(model.dryCommissioning!);
+        status = int.tryParse(model.dryCommissioning ?? '0');
       else if (proStatus.contains('wet comm'))
-        status = int.tryParse(model.wetCommissioning!);
+        status = int.tryParse(model.wetCommissioning ?? '0');
     } catch (_) {}
     return status;
   }

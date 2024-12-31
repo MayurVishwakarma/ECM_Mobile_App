@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, sort_child_properties_last, unused_element, prefer_typing_uninitialized_variables, unused_field, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_collection_literals, duplicate_ignore, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, no_leading_underscores_for_local_identifiers, unnecessary_null_in_if_null_operators, must_be_immutable, avoid_function_literals_in_foreach_calls, unused_local_variable, use_build_context_synchronously, curly_braces_in_flow_control_structures, unnecessary_null_comparison, unnecessary_new, unused_import, camel_case_types, library_private_types_in_public_api, file_names, unused_catch_stack
+// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, sort_child_properties_last, unused_element, prefer_typing_uninitialized_variables, unused_field, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_collection_literals, duplicate_ignore, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, no_leading_underscores_for_local_identifiers, unnecessary_null_in_if_null_operators, must_be_immutable, avoid_function_literals_in_foreach_calls, unused_local_variable, use_build_context_synchronously, curly_braces_in_flow_control_structures, unnecessary_null_comparison, unnecessary_new, unused_import, camel_case_types, library_private_types_in_public_api, file_names, unused_catch_stack, avoid_print
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -89,7 +89,7 @@ class _LoraDamage_ScreenState extends State<LoraDamage_Screen> {
     "Info",
     "Issues"
   ];
-Future getImage(ImageSource media, int index) async {
+  Future getImage(ImageSource media, int index) async {
     var img = await picker.pickImage(source: media, imageQuality: 30);
     var byte = await img!.readAsBytes();
     setState(() {
@@ -667,7 +667,7 @@ Future getImage(ImageSource media, int index) async {
   }
 
   void uploadAlert1(int index) {
-    if (isEdit!) {
+    if (isEdit) {
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -722,7 +722,7 @@ Future getImage(ImageSource media, int index) async {
   }
 
   void uploadAlert2(int index) {
-    if (isEdit!) {
+    if (isEdit) {
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -817,7 +817,7 @@ Future getImage(ImageSource media, int index) async {
                 //
                 if (_remarkController != null) {
                   Navigator.of(context).pop();
-                   if (_ChecklistModel!.isNotEmpty) {
+                  if (_ChecklistModel!.isNotEmpty) {
                     damageCheckListData(_ChecklistModel!).then((value) =>
                         _showToast(
                             isSubmited!
@@ -825,8 +825,7 @@ Future getImage(ImageSource media, int index) async {
                                 : "Something Went Wrong!!!",
                             MessageType: isSubmited! ? 0 : 1));
                   } else if (_MaterialCheckListModel!.isNotEmpty) {
-                    damageCheckListDataForMaterial(
-                            _MaterialCheckListModel!)
+                    damageCheckListDataForMaterial(_MaterialCheckListModel!)
                         .then((value) => _showToast(
                             isSubmited!
                                 ? "Data Updated Successfully"
@@ -1566,7 +1565,6 @@ Future getImage(ImageSource media, int index) async {
       // }
       getECMData(selectedProcess!);
     } else {
-      
       _IssueCheckListModel = [];
       _ChecklistModel = [];
       _InfoCheckListModel = [];
@@ -1587,9 +1585,8 @@ Future getImage(ImageSource media, int index) async {
             workedondate = (value.first.datetime ?? '').toString();
             getWorkedByNAme((value.first.userId ?? '').toString());
             _ChecklistModel = value;
-            imageList.addAll(value.where((element) =>
-                element.type == 'Image'));
-                print(imageList.length);
+            imageList.addAll(value.where((element) => element.type == 'Image'));
+            print(imageList.length);
             for (var element in _ChecklistModel!) {
               processList!.add(element.type!);
             }
@@ -1778,7 +1775,8 @@ Future getImage(ImageSource media, int index) async {
               )
         ],
       );
-    } else if (processList!.isNotEmpty && (_MaterialCheckListModel ?? []).isNotEmpty) {
+    } else if (processList!.isNotEmpty &&
+        (_MaterialCheckListModel ?? []).isNotEmpty) {
       widget = Column(
         children: [
           for (var subProcess in processList!)
@@ -1942,7 +1940,7 @@ Future getImage(ImageSource media, int index) async {
                                   activeColor: Colors.white54,
                                   checkColor: Color.fromARGB(255, 251, 3, 3),
                                   value: item.value == '1' ? true : false,
-                                  onChanged: isEdit!
+                                  onChanged: isEdit
                                       ? (value) {
                                           setState(() {
                                             item.value = value! ? '1' : '';
@@ -2002,7 +2000,7 @@ Future getImage(ImageSource media, int index) async {
                                   activeColor: Colors.white54,
                                   checkColor: Color.fromARGB(255, 251, 3, 3),
                                   value: item.value == '1' ? true : false,
-                                  onChanged: isEdit!
+                                  onChanged: isEdit
                                       ? (value) {
                                           setState(() {
                                             item.value = value! ? '1' : '';
@@ -2023,17 +2021,16 @@ Future getImage(ImageSource media, int index) async {
     return widget;
   }
 
-    Future<bool> damageCheckListDataForIssues(
+  Future<bool> damageCheckListDataForIssues(
       List<DamageIssuesMasterModel> _checkList, String _Controller) async {
     bool flag = false;
     var respflag;
     try {
       if (_checkList != null) {
         int flagCounter = 0;
-        
-          respflag = await insertIssues(
-              _checkList, _Controller, modelData!.gateWayId!, widget.Source!);
-      
+
+        respflag = await insertIssues(
+            _checkList, _Controller, modelData!.gateWayId!, widget.Source!);
 
         if (respflag) {
           getECMData(selectedProcess!);
@@ -2056,10 +2053,9 @@ Future getImage(ImageSource media, int index) async {
     try {
       if (_checkList != null) {
         int flagCounter = 0;
-        
-          respflag = await insertInformation(
-              _checkList, _Controller, modelData!.gateWayId!, widget.Source!);
-        
+
+        respflag = await insertInformation(
+            _checkList, _Controller, modelData!.gateWayId!, widget.Source!);
 
         if (respflag) {
           getECMData(selectedProcess!);
@@ -2113,10 +2109,10 @@ Future getImage(ImageSource media, int index) async {
     try {
       if (_checkList != null) {
         int flagCounter = 0;
-        
-          respflag = await insertDamageReportCommon(
-              _checkList, modelData!.gateWayId!, widget.Source!);
-       
+
+        respflag = await insertDamageReportCommon(
+            _checkList, modelData!.gateWayId!, widget.Source!);
+
         // else if (widget.Source == 'lora') {
         //   respflag = await insertLoraDamageReport(_checkList, modelData!.omsId!, widget.Source!);
         // }
@@ -2134,7 +2130,6 @@ Future getImage(ImageSource media, int index) async {
     }
     return flag;
   }
- 
 
 //Damage form insert
   Future<bool> insertDamageReportCommon(
@@ -2212,6 +2207,7 @@ Future getImage(ImageSource media, int index) async {
       throw Exception();
     }
   }
+
 /*
 //Material insertion
   Future<bool> insertRectifyCommon(List<MaterialConsumptionModel> checklist,
@@ -2516,9 +2512,7 @@ class PreviewImageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Preview Image')),
-      body: Container(
-        child: PhotoView(imageProvider: MemoryImage(bytearray!)),
-      ),
+      body: PhotoView(imageProvider: MemoryImage(bytearray!)),
     );
   }
 }

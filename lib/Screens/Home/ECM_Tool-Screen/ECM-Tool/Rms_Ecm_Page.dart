@@ -440,217 +440,184 @@ class _RmsPageState extends State<RmsPage> with SingleTickerProviderStateMixin {
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(color: Colors.grey.shade200),
-                child: _DisplayList!.isNotEmpty
-                    ? Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      //search
+                      Stack(
                         children: [
-                            //search
-                            Stack(
-                              children: [
-                                Positioned(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.black),
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.white,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: TextField(
-                                              onChanged: (value) async {
-                                                setState(() {
-                                                  _search = value;
-                                                });
-                                              },
-                                              cursorColor: Colors.black,
-                                              keyboardType: TextInputType.text,
-                                              textInputAction:
-                                                  TextInputAction.go,
-                                              decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                  contentPadding:
-                                                      EdgeInsets.symmetric(
-                                                          horizontal: 15),
-                                                  hintText: "Search"),
-                                            ),
-                                          ),
-                                          IconButton(
-                                            splashColor: Colors.blue,
-                                            icon: Icon(Icons.search),
-                                            onPressed: () {
-                                              getpop(context);
-
-                                              setState(() {
-                                                _page = 0;
-                                                _hasNextPage = true;
-                                                _isFirstLoadRunning = false;
-                                                _isLoadMoreRunning = false;
-                                                _DisplayList =
-                                                    <PMSListViewModel>[];
-                                              });
-                                              _firstLoad();
-                                              Future.delayed(
-                                                  Duration(seconds: 1), () {
-                                                Navigator.pop(
-                                                    context); //pop dialog
-                                              });
-                                            },
-                                          ),
-                                        ],
+                          Positioned(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.black),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextField(
+                                        onChanged: (value) async {
+                                          setState(() {
+                                            _search = value;
+                                          });
+                                        },
+                                        cursorColor: Colors.black,
+                                        keyboardType: TextInputType.text,
+                                        textInputAction: TextInputAction.go,
+                                        decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    horizontal: 15),
+                                            hintText: "Search"),
                                       ),
                                     ),
-                                  ),
+                                    IconButton(
+                                      splashColor: Colors.blue,
+                                      icon: Icon(Icons.search),
+                                      onPressed: () {
+                                        getpop(context);
+
+                                        setState(() {
+                                          _page = 0;
+                                          _hasNextPage = true;
+                                          _isFirstLoadRunning = false;
+                                          _isLoadMoreRunning = false;
+                                          _DisplayList = <PMSListViewModel>[];
+                                        });
+                                        _firstLoad();
+                                        Future.delayed(Duration(seconds: 1),
+                                            () {
+                                          Navigator.pop(context); //pop dialog
+                                        });
+                                      },
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      //dropdown
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            /// This Future Builder is Used for Area DropDown list
+                            FutureBuilder(
+                              future: futureArea,
+                              builder: (BuildContext context,
+                                  AsyncSnapshot snapshot) {
+                                if (snapshot.hasData) {
+                                  return Expanded(
+                                      child: getArea(context, snapshot.data!));
+                                } else if (snapshot.hasError) {
+                                  return Text(
+                                    "Something Went Wrong: " +
+                                        snapshot.error.toString(),
+                                    textScaleFactor: 1,
+                                  );
+                                } else {
+                                  return Center(child: Container());
+                                }
+                              },
+                            ),
+                            SizedBox(
+                              width: 10,
                             ),
 
-                            //dropdown
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  /// This Future Builder is Used for Area DropDown list
-                                  FutureBuilder(
-                                    future: futureArea,
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot snapshot) {
-                                      if (snapshot.hasData) {
-                                        return Expanded(
-                                            child: getArea(
-                                                context, snapshot.data!));
-                                      } else if (snapshot.hasError) {
-                                        return Text(
-                                          "Something Went Wrong: " +
-                                              snapshot.error.toString(),
-                                          textScaleFactor: 1,
-                                        );
-                                      } else {
-                                        return Center(child: Container());
-                                      }
-                                    },
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-
-                                  ///This Future Builder is Used for Distibutory DropDown List
-                                  FutureBuilder(
-                                    future: futureDistributory,
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot snapshot) {
-                                      if (snapshot.hasData) {
-                                        return Expanded(
-                                            child: getDist(
-                                                context, snapshot.data!));
-                                      } else if (snapshot.hasError) {
-                                        return Container() /*Text(
+                            ///This Future Builder is Used for Distibutory DropDown List
+                            FutureBuilder(
+                              future: futureDistributory,
+                              builder: (BuildContext context,
+                                  AsyncSnapshot snapshot) {
+                                if (snapshot.hasData) {
+                                  return Expanded(
+                                      child: getDist(context, snapshot.data!));
+                                } else if (snapshot.hasError) {
+                                  return Container() /*Text(
                                   "Something Went Wrong: " /*+
                                       snapshot.error.toString()*/
                                   ,
                                   textScaleFactor: 1,
                                 )*/
-                                            ;
-                                      } else {
-                                        return Center(child: Container());
-                                      }
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  if (ProcessList != null)
-                                    Expanded(
-                                        child:
-                                            getProcess(context, ProcessList!)),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  if (ProcessStatusList != null &&
-                                      process != 'All')
-                                    Expanded(
-                                        child: getProcessStatus(
-                                            context,
-                                            ProcessStatusList!
-                                                .where((element) =>
-                                                    element.processId ==
-                                                    int.tryParse(process))
-                                                .toList())),
-                                ],
-                              ),
-                            ),
-
-                            //listview
-                            Expanded(
-                              child: Scrollbar(
-                                controller: _controller,
-                                interactive: true,
-                                thickness: 10,
-                                radius: Radius.circular(15),
-                                thumbVisibility: true,
-                                child: SingleChildScrollView(
-                                  physics:
-                                      const AlwaysScrollableScrollPhysics(),
-                                  scrollDirection: Axis.vertical,
-                                  controller: _controller,
-                                  child: SizedBox(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: _isFirstLoadRunning
-                                        ? Center(
-                                            child: CircularProgressIndicator(),
-                                          )
-                                        : Column(children: [
-                                            getBody(),
-                                            // when the _loadMore function is running
-                                            if (_isLoadMoreRunning == true)
-                                              Container(),
-                                            // Center(
-                                            //   child: CircularProgressIndicator(),
-                                            // ),
-
-                                            // When nothing else to load
-                                            if (_hasNextPage == false)
-                                              Container(),
-                                          ]),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ])
-                    : Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/images/soon.gif',
-                              width: 200,
-                              height: 200,
-                            ),
-                            SizedBox(height: 20.0),
-                            Text(
-                              'Page under construction',
-                              style: TextStyle(
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                      ;
+                                } else {
+                                  return Center(child: Container());
+                                }
+                              },
                             ),
                           ],
                         ),
-                      ))),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            if (ProcessList != null)
+                              Expanded(
+                                  child: getProcess(context, ProcessList!)),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            if (ProcessStatusList != null && process != 'All')
+                              Expanded(
+                                  child: getProcessStatus(
+                                      context,
+                                      ProcessStatusList!
+                                          .where((element) =>
+                                              element.processId ==
+                                              int.tryParse(process))
+                                          .toList())),
+                          ],
+                        ),
+                      ),
+
+                      //listview
+                      Expanded(
+                        child: Scrollbar(
+                          controller: _controller,
+                          interactive: true,
+                          thickness: 10,
+                          radius: Radius.circular(15),
+                          thumbVisibility: true,
+                          child: SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            scrollDirection: Axis.vertical,
+                            controller: _controller,
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              child: _isFirstLoadRunning
+                                  ? Center(
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : Column(children: [
+                                      getBody(),
+                                      // when the _loadMore function is running
+                                      if (_isLoadMoreRunning == true)
+                                        Container(),
+                                      // Center(
+                                      //   child: CircularProgressIndicator(),
+                                      // ),
+
+                                      // When nothing else to load
+                                      if (_hasNextPage == false) Container(),
+                                    ]),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]))),
       ),
     );
   }
@@ -689,16 +656,16 @@ class _RmsPageState extends State<RmsPage> with SingleTickerProviderStateMixin {
                           projectName, source, viewdata, listdatas)),
                   (Route<dynamic> route) => true,
                 ).whenComplete(() {
-                      _firstLoad();
-                      getDropDownAsync();
-                      _controller = ScrollController()..addListener(_loadMore);
-                      _acontroller = AnimationController(
-                        duration: Duration(milliseconds: 1000),
-                        vsync: this,
-                      )..repeat(reverse: true);
-                      _animation = Tween<double>(begin: 0.0, end: 10.0)
-                          .animate(_acontroller);
-                    });
+                  _firstLoad();
+                  getDropDownAsync();
+                  _controller = ScrollController()..addListener(_loadMore);
+                  _acontroller = AnimationController(
+                    duration: Duration(milliseconds: 1000),
+                    vsync: this,
+                  )..repeat(reverse: true);
+                  _animation = Tween<double>(begin: 0.0, end: 10.0)
+                      .animate(_acontroller);
+                });
                 viewdata = _DisplayList![index];
                 listdatas = _DisplayList![index].rmsId;
               },

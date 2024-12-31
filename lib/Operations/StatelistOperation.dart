@@ -2,10 +2,12 @@
 
 import 'dart:convert';
 import 'package:ecm_application/Model/Common/PieChartModel.dart';
+import 'package:ecm_application/Model/Project/ECMTool/PMSListViewModel.dart';
 import 'package:ecm_application/Model/Project/Login/AreaModel.dart';
 import 'package:ecm_application/Model/Project/Constants.dart';
 import 'package:ecm_application/Model/Project/Login/DistibutoryModel.dart';
 import 'package:ecm_application/Model/Project/ECMTool/PMSChackListModel.dart';
+import 'package:ecm_application/Model/Project/Login/ProjectUserModel.dart';
 import 'package:ecm_application/Model/Project/Login/State_list_Model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -70,8 +72,8 @@ Future<List<AreaModel>> getAreaid() async {
     final response = await http.get(Uri.parse(
         'http://wmsservices.seprojects.in/api/OMS/GetAreaList?conString=$conString'));
     print('Area Id API');
-    /*print(
-        'http://wmsservices.seprojects.in/api/OMS/GetAreaList?conString=$conString');*/
+    print(
+        'http://wmsservices.seprojects.in/api/OMS/GetAreaList?conString=$conString');
 
     if (response.statusCode == 200) {
       var json = jsonDecode(response.body);
@@ -102,6 +104,8 @@ Future<List<DistibutroryModel>> getDistibutoryid(
 
     final response = await http.get(Uri.parse(
         'http://wmsservices.seprojects.in/api/OMS/GetDistributoryList?areaid=$areaId&deviceType=$devType&conString=$conString'));
+    print(
+        'http://wmsservices.seprojects.in/api/OMS/GetDistributoryList?areaid=$areaId&deviceType=$devType&conString=$conString');
     print('Distributory Api');
 
     if (response.statusCode == 200) {
@@ -151,5 +155,47 @@ Future<List<PMSChaklistModel>> getProcessid({String source = 'OMS'}) async {
     }
   } catch (e) {
     throw Exception('Failed to load API');
+  }
+}
+
+Future<List<PMSListViewModel>>? getProjectNodeList(
+    String source, String conString) async {
+  try {
+    final res = await http.get(Uri.parse(
+        'http://wmsservices.seprojects.in/api/PMS/ECMReportStatus?Search=&areaId=all&DistributoryId=all&Process=all&ProcessStatus=all&pageIndex=0&pageSize=250000&Source=$source&conString=$conString'));
+
+    var json = jsonDecode(res.body);
+    List<PMSListViewModel> fetchedData = <PMSListViewModel>[];
+    json['data']['Response']
+        .forEach((e) => fetchedData.add(PMSListViewModel.fromJson(e)));
+
+    if (fetchedData.length > 0) {
+      return fetchedData;
+    } else {
+      return [];
+    }
+  } catch (err) {
+    print('Something went wrong');
+    return [];
+  }
+}
+
+Future<List<ProjectsUserModel>> getProjetsUsers(String conString) async {
+  try {
+    final res = await http.get(Uri.parse(
+        'http://wmsservices.seprojects.in//api/Project/getProjectUsers?conString=$conString'));
+
+    var json = jsonDecode(res.body);
+    List<ProjectsUserModel> fetchedData = <ProjectsUserModel>[];
+    json.forEach((e) => fetchedData.add(ProjectsUserModel.fromJson(e)));
+
+    if (fetchedData.length > 0) {
+      return fetchedData;
+    } else {
+      return [];
+    }
+  } catch (err) {
+    print('Something went wrong');
+    return [];
   }
 }

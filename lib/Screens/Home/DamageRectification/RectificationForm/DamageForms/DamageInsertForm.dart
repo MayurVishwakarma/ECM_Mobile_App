@@ -363,7 +363,7 @@ class _DamageInsertState extends State<DamageInsert> {
                         });
                       },
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(Icons.delete),
                           Text('Delete'),
                         ],
@@ -376,7 +376,7 @@ class _DamageInsertState extends State<DamageInsert> {
                         getImage(ImageSource.gallery, index);
                       },
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(Icons.image),
                           Text('From Gallery'),
                         ],
@@ -390,7 +390,7 @@ class _DamageInsertState extends State<DamageInsert> {
                         getImage(ImageSource.camera, index);
                       },
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(Icons.camera),
                           Text('From Camera'),
                         ],
@@ -469,7 +469,7 @@ class _DamageInsertState extends State<DamageInsert> {
                         getImage1(ImageSource.gallery, index);
                       },
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(Icons.image),
                           Text('From Gallery'),
                         ],
@@ -483,7 +483,7 @@ class _DamageInsertState extends State<DamageInsert> {
                         getImage1(ImageSource.camera, index);
                       },
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(Icons.camera),
                           Text('From Camera'),
                         ],
@@ -563,7 +563,7 @@ class _DamageInsertState extends State<DamageInsert> {
                         getImage1(ImageSource.gallery, index);
                       },
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(Icons.image),
                           Text('From Gallery'),
                         ],
@@ -577,7 +577,7 @@ class _DamageInsertState extends State<DamageInsert> {
                         getImage1(ImageSource.camera, index);
                       },
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(Icons.camera),
                           Text('From Camera'),
                         ],
@@ -619,7 +619,7 @@ class _DamageInsertState extends State<DamageInsert> {
                         getImage1(ImageSource.gallery, index);
                       },
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(Icons.image),
                           Text('From Gallery'),
                         ],
@@ -632,7 +632,7 @@ class _DamageInsertState extends State<DamageInsert> {
                         getImage1(ImageSource.camera, index);
                       },
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(Icons.camera),
                           Text('From Camera'),
                         ],
@@ -674,7 +674,7 @@ class _DamageInsertState extends State<DamageInsert> {
                         getImage2(ImageSource.gallery, index);
                       },
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(Icons.image),
                           Text('From Gallery'),
                         ],
@@ -687,7 +687,7 @@ class _DamageInsertState extends State<DamageInsert> {
                         getImage2(ImageSource.camera, index);
                       },
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(Icons.camera),
                           Text('From Camera'),
                         ],
@@ -729,7 +729,7 @@ class _DamageInsertState extends State<DamageInsert> {
                         getImage(ImageSource.gallery, index);
                       },
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(Icons.image),
                           Text('From Gallery'),
                         ],
@@ -742,7 +742,7 @@ class _DamageInsertState extends State<DamageInsert> {
                         getImage(ImageSource.camera, index);
                       },
                       child: Row(
-                        children: [
+                        children: const [
                           Icon(Icons.camera),
                           Text('From Camera'),
                         ],
@@ -940,12 +940,12 @@ class _DamageInsertState extends State<DamageInsert> {
                       unselectedLabelColor: Colors.black,
                       tabs: listdistinctProcess
                           .map((e) => FittedBox(
-                            child: Text(
+                                child: Text(
                                   e.replaceAll(' ', '\n'),
                                   softWrap: true,
                                   style: TextStyle(fontSize: 10),
                                 ),
-                          ))
+                              ))
                           .toList(),
                       onTap: (value) async {
                         setState(() {
@@ -1170,7 +1170,10 @@ class _DamageInsertState extends State<DamageInsert> {
                               }
                             }),
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blueGrey),
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)),
+                                backgroundColor: Colors.blue),
                           ),
                           // Row(
                           //   children: [
@@ -1571,8 +1574,8 @@ class _DamageInsertState extends State<DamageInsert> {
               workedondate = (value.first.datetime ?? '').toString();
               getWorkedByNAme((value.first.userId ?? '').toString());
               _ChecklistModel = value;
-              imageList.addAll(value.where((element) =>
-                  element.type == 'Image'));
+              imageList
+                  .addAll(value.where((element) => element.type == 'Image'));
               for (var element in _ChecklistModel!) {
                 processList!.add(element.type!);
               }
@@ -1602,9 +1605,8 @@ class _DamageInsertState extends State<DamageInsert> {
               workedondate = (value.first.datetime ?? '').toString();
               getWorkedByNAme((value.first.userId ?? '').toString());
               _ChecklistModel = value;
-              imageList.addAll(value.where((element) =>
-                  element.type == 'Image' &&
-                  element.rmsId == modelData!.rmsId));
+              imageList
+                  .addAll(value.where((element) => element.type == 'Image'));
               for (var element in _ChecklistModel!) {
                 processList!.add(element.type!);
               }
@@ -2280,7 +2282,7 @@ class _DamageInsertState extends State<DamageInsert> {
       var checkListId = checklist.map((e) => e.id).toList().join(",");
       var valueData = checklist.map((e) => e.value ?? '').toList().join(",");
 
-      var Insertobj = new Map<String, dynamic>();
+      var Insertobj = Map<String, dynamic>();
 
       Insertobj["id"] = Id;
       Insertobj["rectifydata"] = checkListId;
@@ -2298,19 +2300,20 @@ class _DamageInsertState extends State<DamageInsert> {
                 'http://wmsservices.seprojects.in/api/Rectify/InsertRectifyReport'));
         request.headers.addAll(headers);
         request.body = json.encode(Insertobj);
+        print(request.body);
         http.StreamedResponse response = await request.send();
         if (response.statusCode == 200) {
           dynamic json = jsonDecode(await response.stream.bytesToString());
           if (json["Status"] == "Ok") {
             return true;
           } else {
-            throw new Exception();
+            throw Exception();
           }
         } else {}
       } else {}
-      throw new Exception();
+      throw Exception();
     } catch (_) {
-      throw new Exception();
+      throw Exception();
     }
   }
 
@@ -2339,7 +2342,7 @@ class _DamageInsertState extends State<DamageInsert> {
       var checkListId = checklist.map((e) => e.id).toList().join(",");
       var valueData = checklist.map((e) => e.value ?? '').toList().join(",");
 
-      var Insertobj = new Map<String, dynamic>();
+      var Insertobj = Map<String, dynamic>();
 
       // api/Information?imgDirPath={imgDirPath}&Api={Api}
 
@@ -2367,13 +2370,13 @@ class _DamageInsertState extends State<DamageInsert> {
           if (json["Status"] == "Ok") {
             return true;
           } else {
-            throw new Exception();
+            throw Exception();
           }
         } else {}
       } else {}
-      throw new Exception();
+      throw Exception();
     } catch (_) {
-      throw new Exception();
+      throw Exception();
     }
   }
 
@@ -2401,7 +2404,7 @@ class _DamageInsertState extends State<DamageInsert> {
       var checkListId = checklist.map((e) => e.id).toList().join(",");
       var valueData = checklist.map((e) => e.value ?? '').toList().join(",");
 
-      var Insertobj = new Map<String, dynamic>();
+      var Insertobj = Map<String, dynamic>();
 
       // api/Information?imgDirPath={imgDirPath}&Api={Api}
 
@@ -2422,19 +2425,20 @@ class _DamageInsertState extends State<DamageInsert> {
                 'http://wmsservices.seprojects.in/api/infoReport/InsertInfoReport'));
         request.headers.addAll(headers);
         request.body = json.encode(Insertobj);
+
         http.StreamedResponse response = await request.send();
         if (response.statusCode == 200) {
           dynamic json = jsonDecode(await response.stream.bytesToString());
           if (json["Status"] == "Ok") {
             return true;
           } else {
-            throw new Exception();
+            throw Exception();
           }
         } else {}
       } else {}
-      throw new Exception();
+      throw Exception();
     } catch (_) {
-      throw new Exception();
+      throw Exception();
     }
   }
 

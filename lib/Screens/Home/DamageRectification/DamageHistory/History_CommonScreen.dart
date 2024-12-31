@@ -1,13 +1,13 @@
 // ignore_for_file: unnecessary_import, must_be_immutable, non_constant_identifier_names, prefer_const_constructors, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, unnecessary_null_in_if_null_operators, no_leading_underscores_for_local_identifiers, unused_field, sort_child_properties_last, prefer_const_literals_to_create_immutables, camel_case_types, avoid_unnecessary_containers, sized_box_for_whitespace, unused_local_variable, prefer_typing_uninitialized_variables, use_build_context_synchronously
 
-import 'dart:convert';
+// import 'dart:convert';
 import 'package:ecm_application/Model/Project/Damage/DamageHistory.dart';
 import 'package:ecm_application/Model/Project/Damage/DamageReportDetails._Model.dart';
 import 'package:ecm_application/Model/Project/Damage/OmsDamageModel.dart';
 import 'package:ecm_application/Screens/Home/DamageRectification/DamageHistory/Details_CommonScreen.dart';
-import 'package:http/http.dart' as http;
-import 'package:ecm_application/Model/Common/EngineerModel.dart';
-import 'package:ecm_application/Model/Project/Constants.dart';
+// import 'package:http/http.dart' as http;
+// import 'package:ecm_application/Model/Common/EngineerModel.dart';
+// import 'package:ecm_application/Model/Project/Constants.dart';
 import 'package:ecm_application/Services/RestDamage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -39,7 +39,7 @@ class _History_CommonListState extends State<History_CommonList> {
   }
 
   var workedondate = '';
-  var workdoneby = '';
+  // var workdoneby = '';
   var remarkval = '';
   var userName = '';
   var chakNo = '';
@@ -292,7 +292,9 @@ class _History_CommonListState extends State<History_CommonList> {
                                                 ),
                                                 Text(
                                                   // "Api data",
-                                                  workdoneby,
+                                                  _DisplayList![index]
+                                                          .username ??
+                                                      '',
                                                   style: TextStyle(
                                                     fontSize: 12,
                                                     fontWeight: FontWeight.bold,
@@ -446,7 +448,7 @@ class _History_CommonListState extends State<History_CommonList> {
           setState(() {
             remarkval = value.first.remark ?? '';
             workedondate = (value.first.dateTime ?? '').toString();
-            getWorkedByNAme((value.first.userId ?? '').toString());
+            // getWorkedByNAme((value.first.userId ?? '').toString());
             _DisplayList = value;
           });
         });
@@ -455,7 +457,7 @@ class _History_CommonListState extends State<History_CommonList> {
           setState(() {
             remarkval = value.first.remark ?? "";
             workedondate = (value.first.dateTime ?? '').toString();
-            getWorkedByNAme((value.first.userId ?? '').toString());
+            // getWorkedByNAme((value.first.userId ?? '').toString());
             _DisplayList = value;
           });
         });
@@ -464,7 +466,7 @@ class _History_CommonListState extends State<History_CommonList> {
           setState(() {
             remarkval = value.first.remark ?? "";
             workedondate = (value.first.dateTime ?? '').toString();
-            getWorkedByNAme((value.first.userId ?? '').toString());
+            // getWorkedByNAme((value.first.userId ?? '').toString());
             _DisplayList = value;
           });
         });
@@ -474,7 +476,7 @@ class _History_CommonListState extends State<History_CommonList> {
           setState(() {
             remarkval = value.first.remark ?? "";
             workedondate = (value.first.dateTime ?? '').toString();
-            getWorkedByNAme((value.first.userId ?? '').toString());
+            // getWorkedByNAme((value.first.userId ?? '').toString());
             _DisplayList = value;
           });
         });
@@ -482,7 +484,7 @@ class _History_CommonListState extends State<History_CommonList> {
     } catch (_) {}
   }
 
-  getWorkedByNAme(String userid) async {
+  /* getWorkedByNAme(String userid) async {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       String? conString = preferences.getString('ConString');
@@ -495,9 +497,9 @@ class _History_CommonListState extends State<History_CommonList> {
         if (json['Status'] == WebApiStatusOk) {
           EngineerNameModel loginResult =
               EngineerNameModel.fromJson(json['data']['Response']);
-          setState(() {
-            workdoneby = loginResult.firstname.toString();
-          });
+          // setState(() {
+          //   workdoneby = loginResult.firstname.toString();
+          // });
 
           return loginResult.firstname.toString();
         } else
@@ -509,5 +511,5 @@ class _History_CommonListState extends State<History_CommonList> {
       userName = '';
       return '';
     }
-  }
+  }*/
 }

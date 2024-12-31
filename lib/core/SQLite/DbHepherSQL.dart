@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable
+// ignore_for_file: unused_local_variable, file_names, non_constant_identifier_names
 
 import 'package:ecm_application/Model/Project/ECMTool/ECM_Checklist_Model.dart';
 import 'package:ecm_application/Model/Project/ECMTool/PMSChackListModel.dart';
@@ -10,7 +10,7 @@ const _databaseVersion = 1;
 
 //Checklist Create table
 class DBSQL {
-  static final _databaseName = "SQLDbsss.db3";
+  static const _databaseName = "SQLDbsss.db3";
   final table = 'SQL_tbl';
   final id = "id";
   final checkListId = "checkListId";
@@ -779,7 +779,7 @@ class DBSQL {
 
 //Pms list create table
 class ListViewModel {
-  static final _databaseName = "PMS.db3";
+  static const _databaseName = "PMS.db3";
   final table = 'New_tbl';
   final id = "id";
   final omsId = 'omsId';
@@ -957,7 +957,7 @@ class ListViewModel {
     // Query the table for all The FarmerResponse.
     final List<Map<String, dynamic>> maps = await db.rawQuery(
         "SELECT * FROM $table where projectName='$projectName' AND deviceType='$deviceType'");
-    print(maps);
+    // print(maps);
     // Convert the List<Map<String, dynamic> finalo a List<FarmerResponse>.
     return List.generate(maps.length, (i) {
       return PMSListViewModel(
@@ -1004,7 +1004,7 @@ class ListViewModel {
     // Query the table for all The FarmerResponse.
     final List<Map<String, dynamic>> maps =
         await db.rawQuery("SELECT * FROM $table where omsId=$omsId");
-    print(maps);
+    // print(maps);
     // Convert the List<Map<String, dynamic> finalo a List<FarmerResponse>.
     return List.generate(maps.length, (i) {
       return PMSListViewModel(
@@ -1270,7 +1270,7 @@ class ListViewModel {
 
 //process list create table
 class ListModel {
-  static final _databaseName = "PMSlist.db3";
+  static const _databaseName = "PMSlist.db3";
   final table = 'pmslist_tbl';
   final id = "id";
   final checkListId = 'checkListId';

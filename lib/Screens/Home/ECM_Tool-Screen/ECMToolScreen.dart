@@ -48,6 +48,8 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
   Future<List<DistibutroryModel>>? futureDistributory;
   Future<List<AreaModel>>? futureArea;
 
+  bool? isload = false;
+
   getDataString() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
@@ -394,7 +396,6 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
                                             return Text(
                                               "Something Went Wrong: " +
                                                   snapshot.error.toString(),
-                                              textScaleFactor: 1,
                                             );
                                           } else {
                                             return Center(child: Container());
@@ -425,134 +426,85 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
                                 ),
 
                                 //Total Node Count
-                                Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.blue.shade200),
-                                    width: double.infinity,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(8),
-                                      child: Text(
-                                        "Total Node: " +
-                                            _DisplayList!.sCount.toString(),
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold),
+                                if (isload == false)
+                                  Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.blue.shade200),
+                                          width: double.infinity,
+                                          child: Padding(
+                                            padding: EdgeInsets.all(8),
+                                            child: Text(
+                                              "Total Node: " +
+                                                  _DisplayList!.sCount
+                                                      .toString(),
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ),
 
-                                // Count Container
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  child: SizedBox(
-                                      width: double.infinity,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          //Mechenical
-                                          if (_DisplayList!.pendingMechanical !=
-                                              0)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5.0),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    border: Border.all(
-                                                        color: Colors.black),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                child: Column(
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Container(
-                                                        height: 20,
-                                                        width: double.infinity,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                                color: Colors
-                                                                    .blue
-                                                                    .shade200),
-                                                        child: Center(
-                                                          child: Text(
-                                                            'Mechanical Installation',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
+                                      // Count Container
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        child: SizedBox(
+                                            width: double.infinity,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                //Mechenical
+                                                if (_DisplayList!
+                                                        .pendingMechanical !=
+                                                    0)
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 5.0),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.black),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5)),
+                                                      child: Column(
                                                         children: [
                                                           Padding(
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/notcompletted.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Commented.png'),
-                                                                    height: 20,
-                                                                    width: 20,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Partially.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Completed.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/fullydone.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                ],
+                                                            child: Container(
+                                                              height: 20,
+                                                              width: double
+                                                                  .infinity,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                      color: Colors
+                                                                          .blue
+                                                                          .shade200),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  'Mechanical Installation',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
@@ -560,144 +512,154 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text('PENDING: ' +
-                                                                      _DisplayList!
-                                                                          .pendingMechanical
-                                                                          .toString()),
-                                                                  Text('COMMENTED: ' +
-                                                                      _DisplayList!
-                                                                          .rejectedMechanical
-                                                                          .toString()),
-                                                                  Text('PARTIALLY DONE: ' +
-                                                                      _DisplayList!
-                                                                          .partiallyMechanical
-                                                                          .toString()),
-                                                                  Text('FULLY DONE:' +
-                                                                      _DisplayList!
-                                                                          .fullyMechanical
-                                                                          .toString()),
-                                                                  Text('FULLY DONE & APPROVED: ' +
-                                                                      _DisplayList!
-                                                                          .fullyApprovedMechanical
-                                                                          .toString())
-                                                                ],
-                                                              ),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/notcompletted.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Commented.png'),
+                                                                          height:
+                                                                              20,
+                                                                          width:
+                                                                              20,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Partially.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Completed.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/fullydone.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text('PENDING: ' +
+                                                                            _DisplayList!.pendingMechanical.toString()),
+                                                                        Text('COMMENTED: ' +
+                                                                            _DisplayList!.rejectedMechanical.toString()),
+                                                                        Text('PARTIALLY DONE: ' +
+                                                                            _DisplayList!.partiallyMechanical.toString()),
+                                                                        Text('FULLY DONE:' +
+                                                                            _DisplayList!.fullyMechanical.toString()),
+                                                                        Text('FULLY DONE & APPROVED: ' +
+                                                                            _DisplayList!.fullyApprovedMechanical.toString())
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
                                                             ),
-                                                          )
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          //Controll Unit
-                                          if (_DisplayList!.pendingErection !=
-                                              0)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5.0),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    border: Border.all(
-                                                        color: Colors.black),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                child: Column(
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Container(
-                                                        height: 20,
-                                                        width: double.infinity,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                                color: Colors
-                                                                    .blue
-                                                                    .shade200),
-                                                        child: Center(
-                                                          child: Text(
-                                                            'Control Unit Erection',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
+                                                  ),
+                                                //Controll Unit
+                                                if (_DisplayList!
+                                                        .pendingErection !=
+                                                    0)
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 5.0),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.black),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5)),
+                                                      child: Column(
                                                         children: [
                                                           Padding(
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/notcompletted.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Commented.png'),
-                                                                    height: 20,
-                                                                    width: 20,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Partially.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Completed.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/fullydone.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                ],
+                                                            child: Container(
+                                                              height: 20,
+                                                              width: double
+                                                                  .infinity,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                      color: Colors
+                                                                          .blue
+                                                                          .shade200),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  'Control Unit Erection',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
@@ -705,143 +667,154 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text('PENDING: ' +
-                                                                      _DisplayList!
-                                                                          .pendingErection
-                                                                          .toString()),
-                                                                  Text('COMMENTED: ' +
-                                                                      _DisplayList!
-                                                                          .rejectedErection
-                                                                          .toString()),
-                                                                  Text('PARTIALLY DONE: ' +
-                                                                      _DisplayList!
-                                                                          .partiallyErection
-                                                                          .toString()),
-                                                                  Text('FULLY DONE: ' +
-                                                                      _DisplayList!
-                                                                          .fullyErection
-                                                                          .toString()),
-                                                                  Text('FULLY DONE & APPROVED: ' +
-                                                                      _DisplayList!
-                                                                          .fullyApprovedErection
-                                                                          .toString())
-                                                                ],
-                                                              ),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/notcompletted.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Commented.png'),
+                                                                          height:
+                                                                              20,
+                                                                          width:
+                                                                              20,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Partially.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Completed.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/fullydone.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text('PENDING: ' +
+                                                                            _DisplayList!.pendingErection.toString()),
+                                                                        Text('COMMENTED: ' +
+                                                                            _DisplayList!.rejectedErection.toString()),
+                                                                        Text('PARTIALLY DONE: ' +
+                                                                            _DisplayList!.partiallyErection.toString()),
+                                                                        Text('FULLY DONE: ' +
+                                                                            _DisplayList!.fullyErection.toString()),
+                                                                        Text('FULLY DONE & APPROVED: ' +
+                                                                            _DisplayList!.fullyApprovedErection.toString())
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
                                                             ),
-                                                          )
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          //Wet Comm
-                                          if (_DisplayList!.pendingWetComm != 0)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5.0),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    border: Border.all(
-                                                        color: Colors.black),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                child: Column(
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Container(
-                                                        height: 20,
-                                                        width: double.infinity,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                                color: Colors
-                                                                    .blue
-                                                                    .shade200),
-                                                        child: Center(
-                                                          child: Text(
-                                                            'Dry Commissionning',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
+                                                  ),
+                                                //Wet Comm
+                                                if (_DisplayList!
+                                                        .pendingWetComm !=
+                                                    0)
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 5.0),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.black),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5)),
+                                                      child: Column(
                                                         children: [
                                                           Padding(
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/notcompletted.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Commented.png'),
-                                                                    height: 20,
-                                                                    width: 20,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Partially.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Completed.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/fullydone.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                ],
+                                                            child: Container(
+                                                              height: 20,
+                                                              width: double
+                                                                  .infinity,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                      color: Colors
+                                                                          .blue
+                                                                          .shade200),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  'Dry Commissionning',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
@@ -849,143 +822,154 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text('PENDING: ' +
-                                                                      _DisplayList!
-                                                                          .pendingDryComm
-                                                                          .toString()),
-                                                                  Text('COMMENTED: ' +
-                                                                      _DisplayList!
-                                                                          .rejectedDryComm
-                                                                          .toString()),
-                                                                  Text('PARTIALLY DONE: ' +
-                                                                      _DisplayList!
-                                                                          .partiallyDryComm
-                                                                          .toString()),
-                                                                  Text('FULLY DONE: ' +
-                                                                      _DisplayList!
-                                                                          .fullyDryComm
-                                                                          .toString()),
-                                                                  Text('FULLY DONE & APPROVED: ' +
-                                                                      _DisplayList!
-                                                                          .fullyApprovedDryComm
-                                                                          .toString())
-                                                                ],
-                                                              ),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/notcompletted.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Commented.png'),
+                                                                          height:
+                                                                              20,
+                                                                          width:
+                                                                              20,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Partially.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Completed.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/fullydone.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text('PENDING: ' +
+                                                                            _DisplayList!.pendingDryComm.toString()),
+                                                                        Text('COMMENTED: ' +
+                                                                            _DisplayList!.rejectedDryComm.toString()),
+                                                                        Text('PARTIALLY DONE: ' +
+                                                                            _DisplayList!.partiallyDryComm.toString()),
+                                                                        Text('FULLY DONE: ' +
+                                                                            _DisplayList!.fullyDryComm.toString()),
+                                                                        Text('FULLY DONE & APPROVED: ' +
+                                                                            _DisplayList!.fullyApprovedDryComm.toString())
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
                                                             ),
-                                                          )
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          //Dry Comm
-                                          if (_DisplayList!.pendingDryComm != 0)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5.0),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    border: Border.all(
-                                                        color: Colors.black),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                child: Column(
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Container(
-                                                        height: 20,
-                                                        width: double.infinity,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                                color: Colors
-                                                                    .blue
-                                                                    .shade200),
-                                                        child: Center(
-                                                          child: Text(
-                                                            'Wet Commissionning',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
+                                                  ),
+                                                //Dry Comm
+                                                if (_DisplayList!
+                                                        .pendingDryComm !=
+                                                    0)
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 5.0),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.black),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5)),
+                                                      child: Column(
                                                         children: [
                                                           Padding(
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/notcompletted.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Commented.png'),
-                                                                    height: 20,
-                                                                    width: 20,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Partially.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Completed.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/fullydone.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                ],
+                                                            child: Container(
+                                                              height: 20,
+                                                              width: double
+                                                                  .infinity,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                      color: Colors
+                                                                          .blue
+                                                                          .shade200),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  'Wet Commissionning',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
@@ -993,144 +977,154 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text('PENDING: ' +
-                                                                      _DisplayList!
-                                                                          .pendingWetComm
-                                                                          .toString()),
-                                                                  Text('COMMENTED: ' +
-                                                                      _DisplayList!
-                                                                          .rejectedWetComm
-                                                                          .toString()),
-                                                                  Text('PARTIALLY DONE: ' +
-                                                                      _DisplayList!
-                                                                          .partiallyWetComm
-                                                                          .toString()),
-                                                                  Text('FULLY DONE: ' +
-                                                                      _DisplayList!
-                                                                          .fullyWetComm
-                                                                          .toString()),
-                                                                  Text('FULLY DONE & APPROVED: ' +
-                                                                      _DisplayList!
-                                                                          .fullyApprovedWetComm
-                                                                          .toString())
-                                                                ],
-                                                              ),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/notcompletted.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Commented.png'),
+                                                                          height:
+                                                                              20,
+                                                                          width:
+                                                                              20,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Partially.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Completed.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/fullydone.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text('PENDING: ' +
+                                                                            _DisplayList!.pendingWetComm.toString()),
+                                                                        Text('COMMENTED: ' +
+                                                                            _DisplayList!.rejectedWetComm.toString()),
+                                                                        Text('PARTIALLY DONE: ' +
+                                                                            _DisplayList!.partiallyWetComm.toString()),
+                                                                        Text('FULLY DONE: ' +
+                                                                            _DisplayList!.fullyWetComm.toString()),
+                                                                        Text('FULLY DONE & APPROVED: ' +
+                                                                            _DisplayList!.fullyApprovedWetComm.toString())
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
                                                             ),
-                                                          )
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          //Tower Installation
-                                          if (_DisplayList!.pendingProcess1 !=
-                                              0)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5.0),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    border: Border.all(
-                                                        color: Colors.black),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                child: Column(
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Container(
-                                                        height: 20,
-                                                        width: double.infinity,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                                color: Colors
-                                                                    .blue
-                                                                    .shade200),
-                                                        child: Center(
-                                                          child: Text(
-                                                            'Tower Installation',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
+                                                  ),
+                                                //Tower Installation
+                                                if (_DisplayList!
+                                                        .pendingProcess1 !=
+                                                    0)
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 5.0),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.black),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5)),
+                                                      child: Column(
                                                         children: [
                                                           Padding(
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/notcompletted.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Commented.png'),
-                                                                    height: 20,
-                                                                    width: 20,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Partially.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Completed.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/fullydone.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                ],
+                                                            child: Container(
+                                                              height: 20,
+                                                              width: double
+                                                                  .infinity,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                      color: Colors
+                                                                          .blue
+                                                                          .shade200),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  'Tower Installation',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
@@ -1138,143 +1132,153 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text('PENDING: ' +
-                                                                      _DisplayList!
-                                                                          .pendingProcess1
-                                                                          .toString()),
-                                                                  Text('COMMENTED: ' +
-                                                                      _DisplayList!
-                                                                          .rejectedProcess1
-                                                                          .toString()),
-                                                                  Text('PARTIALLY DONE: ' +
-                                                                      _DisplayList!
-                                                                          .partiallyProcess1
-                                                                          .toString()),
-                                                                  Text('FULLY DONE:' +
-                                                                      _DisplayList!
-                                                                          .fullyProcess1
-                                                                          .toString()),
-                                                                  Text('FULLY DONE & APPROVED: ' +
-                                                                      _DisplayList!
-                                                                          .fullyApprovedProcess1
-                                                                          .toString())
-                                                                ],
-                                                              ),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/notcompletted.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Commented.png'),
+                                                                          height:
+                                                                              20,
+                                                                          width:
+                                                                              20,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Partially.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Completed.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/fullydone.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text('PENDING: ' +
+                                                                            _DisplayList!.pendingProcess1.toString()),
+                                                                        Text('COMMENTED: ' +
+                                                                            _DisplayList!.rejectedProcess1.toString()),
+                                                                        Text('PARTIALLY DONE: ' +
+                                                                            _DisplayList!.partiallyProcess1.toString()),
+                                                                        Text('FULLY DONE:' +
+                                                                            _DisplayList!.fullyProcess1.toString()),
+                                                                        Text('FULLY DONE & APPROVED: ' +
+                                                                            _DisplayList!.fullyApprovedProcess1.toString())
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
                                                             ),
-                                                          )
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          if (_DisplayList!.pendingProcess2 !=
-                                              0)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5.0),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    border: Border.all(
-                                                        color: Colors.black),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                child: Column(
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Container(
-                                                        height: 20,
-                                                        width: double.infinity,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                                color: Colors
-                                                                    .blue
-                                                                    .shade200),
-                                                        child: Center(
-                                                          child: Text(
-                                                            'Control Unit Erection',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
+                                                  ),
+                                                if (_DisplayList!
+                                                        .pendingProcess2 !=
+                                                    0)
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 5.0),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.black),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5)),
+                                                      child: Column(
                                                         children: [
                                                           Padding(
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/notcompletted.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Commented.png'),
-                                                                    height: 20,
-                                                                    width: 20,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Partially.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Completed.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/fullydone.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                ],
+                                                            child: Container(
+                                                              height: 20,
+                                                              width: double
+                                                                  .infinity,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                      color: Colors
+                                                                          .blue
+                                                                          .shade200),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  'Control Unit Erection',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
@@ -1282,143 +1286,153 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text('PENDING: ' +
-                                                                      _DisplayList!
-                                                                          .pendingProcess2
-                                                                          .toString()),
-                                                                  Text('COMMENTED: ' +
-                                                                      _DisplayList!
-                                                                          .rejectedProcess2
-                                                                          .toString()),
-                                                                  Text('PARTIALLY DONE: ' +
-                                                                      _DisplayList!
-                                                                          .partiallyProcess2
-                                                                          .toString()),
-                                                                  Text('FULLY DONE:' +
-                                                                      _DisplayList!
-                                                                          .fullyProcess2
-                                                                          .toString()),
-                                                                  Text('FULLY DONE & APPROVED: ' +
-                                                                      _DisplayList!
-                                                                          .fullyApprovedProcess2
-                                                                          .toString())
-                                                                ],
-                                                              ),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/notcompletted.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Commented.png'),
+                                                                          height:
+                                                                              20,
+                                                                          width:
+                                                                              20,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Partially.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Completed.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/fullydone.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text('PENDING: ' +
+                                                                            _DisplayList!.pendingProcess2.toString()),
+                                                                        Text('COMMENTED: ' +
+                                                                            _DisplayList!.rejectedProcess2.toString()),
+                                                                        Text('PARTIALLY DONE: ' +
+                                                                            _DisplayList!.partiallyProcess2.toString()),
+                                                                        Text('FULLY DONE:' +
+                                                                            _DisplayList!.fullyProcess2.toString()),
+                                                                        Text('FULLY DONE & APPROVED: ' +
+                                                                            _DisplayList!.fullyApprovedProcess2.toString())
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
                                                             ),
-                                                          )
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          if (_DisplayList!.pendingProcess3 !=
-                                              0)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5.0),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    border: Border.all(
-                                                        color: Colors.black),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                child: Column(
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Container(
-                                                        height: 20,
-                                                        width: double.infinity,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                                color: Colors
-                                                                    .blue
-                                                                    .shade200),
-                                                        child: Center(
-                                                          child: Text(
-                                                            'Commissioning',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
+                                                  ),
+                                                if (_DisplayList!
+                                                        .pendingProcess3 !=
+                                                    0)
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 5.0),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.black),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5)),
+                                                      child: Column(
                                                         children: [
                                                           Padding(
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/notcompletted.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Commented.png'),
-                                                                    height: 20,
-                                                                    width: 20,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Partially.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Completed.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/fullydone.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                ],
+                                                            child: Container(
+                                                              height: 20,
+                                                              width: double
+                                                                  .infinity,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                      color: Colors
+                                                                          .blue
+                                                                          .shade200),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  'Commissioning',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
@@ -1426,144 +1440,153 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text('PENDING: ' +
-                                                                      _DisplayList!
-                                                                          .pendingProcess3
-                                                                          .toString()),
-                                                                  Text('COMMENTED: ' +
-                                                                      _DisplayList!
-                                                                          .rejectedProcess3
-                                                                          .toString()),
-                                                                  Text('PARTIALLY DONE: ' +
-                                                                      _DisplayList!
-                                                                          .partiallyProcess3
-                                                                          .toString()),
-                                                                  Text('FULLY DONE:' +
-                                                                      _DisplayList!
-                                                                          .fullyProcess3
-                                                                          .toString()),
-                                                                  Text('FULLY DONE & APPROVED: ' +
-                                                                      _DisplayList!
-                                                                          .fullyApprovedProcess3
-                                                                          .toString())
-                                                                ],
-                                                              ),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/notcompletted.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Commented.png'),
+                                                                          height:
+                                                                              20,
+                                                                          width:
+                                                                              20,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Partially.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Completed.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/fullydone.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text('PENDING: ' +
+                                                                            _DisplayList!.pendingProcess3.toString()),
+                                                                        Text('COMMENTED: ' +
+                                                                            _DisplayList!.rejectedProcess3.toString()),
+                                                                        Text('PARTIALLY DONE: ' +
+                                                                            _DisplayList!.partiallyProcess3.toString()),
+                                                                        Text('FULLY DONE:' +
+                                                                            _DisplayList!.fullyProcess3.toString()),
+                                                                        Text('FULLY DONE & APPROVED: ' +
+                                                                            _DisplayList!.fullyApprovedProcess3.toString())
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
                                                             ),
-                                                          )
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          if (_DisplayList!
-                                                  .pendingAutoDryComm !=
-                                              0)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5.0),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    border: Border.all(
-                                                        color: Colors.black),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                child: Column(
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Container(
-                                                        height: 20,
-                                                        width: double.infinity,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                                color: Colors
-                                                                    .blue
-                                                                    .shade200),
-                                                        child: Center(
-                                                          child: Text(
-                                                            'Auto Dry Commissionning',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
+                                                  ),
+                                                if (_DisplayList!
+                                                        .pendingAutoDryComm !=
+                                                    0)
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 5.0),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.black),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5)),
+                                                      child: Column(
                                                         children: [
                                                           Padding(
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/notcompletted.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Commented.png'),
-                                                                    height: 20,
-                                                                    width: 20,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Partially.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Completed.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/fullydone.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                ],
+                                                            child: Container(
+                                                              height: 20,
+                                                              width: double
+                                                                  .infinity,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                      color: Colors
+                                                                          .blue
+                                                                          .shade200),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  'Auto Dry Commissionning',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
@@ -1571,144 +1594,153 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text('PENDING: ' +
-                                                                      _DisplayList!
-                                                                          .pendingAutoDryComm
-                                                                          .toString()),
-                                                                  Text('COMMENTED: ' +
-                                                                      _DisplayList!
-                                                                          .rejectedAutoDryComm
-                                                                          .toString()),
-                                                                  Text('PARTIALLY DONE: ' +
-                                                                      _DisplayList!
-                                                                          .partiallyAutoDryComm
-                                                                          .toString()),
-                                                                  Text('FULLY DONE: ' +
-                                                                      _DisplayList!
-                                                                          .fullyAutoDryComm
-                                                                          .toString()),
-                                                                  Text('FULLY DONE & APPROVED: ' +
-                                                                      _DisplayList!
-                                                                          .fullyApprovedWetComm
-                                                                          .toString())
-                                                                ],
-                                                              ),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/notcompletted.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Commented.png'),
+                                                                          height:
+                                                                              20,
+                                                                          width:
+                                                                              20,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Partially.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Completed.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/fullydone.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text('PENDING: ' +
+                                                                            _DisplayList!.pendingAutoDryComm.toString()),
+                                                                        Text('COMMENTED: ' +
+                                                                            _DisplayList!.rejectedAutoDryComm.toString()),
+                                                                        Text('PARTIALLY DONE: ' +
+                                                                            _DisplayList!.partiallyAutoDryComm.toString()),
+                                                                        Text('FULLY DONE: ' +
+                                                                            _DisplayList!.fullyAutoDryComm.toString()),
+                                                                        Text('FULLY DONE & APPROVED: ' +
+                                                                            _DisplayList!.fullyApprovedWetComm.toString())
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
                                                             ),
-                                                          )
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          if (_DisplayList!
-                                                  .pendingAutoWetComm !=
-                                              0)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5.0),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    border: Border.all(
-                                                        color: Colors.black),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                child: Column(
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Container(
-                                                        height: 20,
-                                                        width: double.infinity,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                                color: Colors
-                                                                    .blue
-                                                                    .shade200),
-                                                        child: Center(
-                                                          child: Text(
-                                                            'Auto Wet Commissionning',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
+                                                  ),
+                                                if (_DisplayList!
+                                                        .pendingAutoWetComm !=
+                                                    0)
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 5.0),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.black),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5)),
+                                                      child: Column(
                                                         children: [
                                                           Padding(
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/notcompletted.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Commented.png'),
-                                                                    height: 20,
-                                                                    width: 20,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Partially.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Completed.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                  Image(
-                                                                    image: AssetImage(
-                                                                        'assets/images/fullydone.png'),
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                  ),
-                                                                ],
+                                                            child: Container(
+                                                              height: 20,
+                                                              width: double
+                                                                  .infinity,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                      color: Colors
+                                                                          .blue
+                                                                          .shade200),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  'Auto Wet Commissionning',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
@@ -1716,50 +1748,123 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
                                                             padding:
                                                                 const EdgeInsets
                                                                     .all(8.0),
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text('PENDING: ' +
-                                                                      _DisplayList!
-                                                                          .pendingAutoWetComm
-                                                                          .toString()),
-                                                                  Text('COMMENTED: ' +
-                                                                      _DisplayList!
-                                                                          .rejectedAutoWetComm
-                                                                          .toString()),
-                                                                  Text('PARTIALLY DONE: ' +
-                                                                      _DisplayList!
-                                                                          .partiallyAutoWetComm
-                                                                          .toString()),
-                                                                  Text('FULLY DONE: ' +
-                                                                      _DisplayList!
-                                                                          .fullyAutoWetComm
-                                                                          .toString()),
-                                                                  Text('FULLY DONE & APPROVED: ' +
-                                                                      _DisplayList!
-                                                                          .fullyApprovedWetComm
-                                                                          .toString())
-                                                                ],
-                                                              ),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/notcompletted.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Commented.png'),
+                                                                          height:
+                                                                              20,
+                                                                          width:
+                                                                              20,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Partially.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/Completed.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                        Image(
+                                                                          image:
+                                                                              AssetImage('assets/images/fullydone.png'),
+                                                                          height:
+                                                                              15,
+                                                                          width:
+                                                                              15,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    height: 150,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text('PENDING: ' +
+                                                                            _DisplayList!.pendingAutoWetComm.toString()),
+                                                                        Text('COMMENTED: ' +
+                                                                            _DisplayList!.rejectedAutoWetComm.toString()),
+                                                                        Text('PARTIALLY DONE: ' +
+                                                                            _DisplayList!.partiallyAutoWetComm.toString()),
+                                                                        Text('FULLY DONE: ' +
+                                                                            _DisplayList!.fullyAutoWetComm.toString()),
+                                                                        Text('FULLY DONE & APPROVED: ' +
+                                                                            _DisplayList!.fullyApprovedWetComm.toString())
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
                                                             ),
-                                                          )
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                        ],
-                                      )),
-                                ),
+                                                  ),
+                                              ],
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                                if (isload == true)
+                                  SizedBox(
+                                    height: 150,
+                                    width: double.infinity,
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  )
                               ]),
                             ),
                           )
@@ -1795,7 +1900,6 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
                 child: FittedBox(
                   child: Text(
                     distibutroryModel.description!,
-                    textScaleFactor: 1,
                     style: TextStyle(
                       fontSize: 10,
                     ),
@@ -1811,6 +1915,7 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
               distibutory = selectedDistributory!.id == 0
                   ? "All"
                   : selectedDistributory!.id.toString();
+              isload = true;
             });
             await getECMReportStatusCoun();
             // await GetOmsOverviewModel();
@@ -1842,7 +1947,6 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
               child: FittedBox(
                 child: Text(
                   areaModel.areaName ?? '',
-                  textScaleFactor: 1,
                   style: TextStyle(fontSize: 10),
                 ),
               ),
@@ -1865,6 +1969,7 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
             area = selectedArea!.areaid == 0
                 ? "All"
                 : selectedArea!.areaid.toString();
+            isload = true;
           });
           await getECMReportStatusCoun();
           // await GetOmsOverviewModel();
@@ -1910,6 +2015,7 @@ class _EcmToolScreenState extends State<EcmToolScreen> {
         print(result.sCount);
         setState(() {
           _DisplayList = result;
+          isload = false;
         });
         return result;
       } else {
